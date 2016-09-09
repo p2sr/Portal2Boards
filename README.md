@@ -12,7 +12,7 @@ Server configuration:
 1. Set the 'public' folder as the server's document root.
 2. For Apache, enable 'mod_rewrite' and 'mod_expires' for image caching and beautiful URLs.
 3. For PHP, enable the cURL extension for scraping the Steam leaderboards.
-4. Import database dump data/leaderboard.sql into phpMyAdmin.
+4. Import database dump data/dumps/leaderboard.sql into phpMyAdmin.
 5. Configure database authorization settings in secret/database.json.
 6. Set database timezone to UTC by executing data/setDatabaseTimeZoneUTC.php
 
