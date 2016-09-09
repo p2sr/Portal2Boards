@@ -1,0 +1,141 @@
+<?php include("util/PageGenerator.php") ?>
+<?php include("util/AggregatedView.php")?>
+
+<?php function getImage() {
+    if (Router::$location[2] == "sp")
+        return '/images/sp.png';
+    else if (Router::$location[2] == "coop")
+        return '/images/coop.png';
+    else if (Router::$location[2] == "overall")
+        return '/images/overall.jpg';
+    else if (Router::$location[2] == "chapter") {
+        $chapter = Router::$location[3];
+        $representativeMap = $GLOBALS["mapInfo"]["chapters"][$chapter]["maps"][0];
+        return '/images/chambers_full/'.$representativeMap.'.jpg';
+    }        
+    else
+        return "";
+} ?>
+
+<div id="aggregated">
+    <div id="chamber" class="points">
+        <div class="chamberview"  style="background-image: url(<?=getImage();?>)">
+            <div class="chamberinfo">
+                <div class="chamberchaptername">Aggregated Points and times</div>
+                <span class="chamberchambername"><?=$view->mode?></span>
+                <div class="controls pointsControls" style="float: left">
+                    <div class="button previous">
+<!--                        <span class="name">More</span>-->
+                        <span class="icon"><i class="fa fa-caret-left fa-3x" aria-hidden="true"></i></span>
+                    </div>
+                    <span class="currentPageLabel"></span>
+                    <div class="button next">
+                        <span class="icon"><i class="fa fa-caret-right fa-3x" aria-hidden="true"></i></span>
+<!--                        <span class="name">Less</span>-->
+                    </div>
+                </div>
+                <div class="controls timeControls" style="float: right">
+                    <div class="button previous">
+<!--                        <span class="name">Faster</span>-->
+                        <span class="icon"><i class="fa fa-caret-left fa-3x" aria-hidden="true"></i></span>
+                    </div>
+                    <span class="currentPageLabel"></span>
+                    <div class="button next">
+                        <span class="icon"><i class="fa fa-caret-right fa-3x" aria-hidden="true"></i></span>
+<!--                        <span class="name">Slower</span>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="time" style="float: right">
+            <?php PageGenerator::generatePages($view->times, array("AggregatedView", "getTimeEntry")) ?>
+        </div>
+        <div id="points" style="float: left">
+            <?php PageGenerator::generatePages($view->points, array("AggregatedView", "getPointEntry")) ?>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        setTimeout(function() {
+            fadeInLetters("#chamber .chamberchaptername");
+            fadeInLetters("#chamber .chamberchambername");
+        }, 1000);
+    });
+
+    function fadeInLetters(selector) {
+        var txt = $(selector).html();
+        var shiny = "";
+        for(var i=0;i<=$(selector).html().length - 1;i++) {
+            var letter = txt.charAt(i);
+            if(letter == " ") {
+                letter = "&nbsp;";
+            }
+            shiny += "<div class='seperate'>"+letter+"</div>";
+        }
+        $(selector).css("opacity", "1");
+        $(selector).html(shiny);
+        $(selector+" .seperate").each(function(index) {
+            setTimeout(function() {
+                $(selector+" .seperate:eq("+index+")").animate({opacity:1}, 150, "linear", function()
+                {
+                    setTimeout(function() {
+                        $(selector+" .seperate:eq("+index+")").animate({color: "#E1E8EB"}, 300);
+
+                    }, 200);
+
+                });
+            }, 100 * (index + 1));
+        });
+    }
+
+    //TODO: bit DRY
+    $(".pointsControls .next").click(function() {
+        var entries = $("#points").find(".entries");
+        var page = nextPage(entries);
+        var lastPage = getLastPage(entries);
+        $('.pointsControls').find('.currentPageLabel').text(page + " / " + lastPage);
+    });
+
+    $(".pointsControls .previous").click(function() {
+        var entries = $("#points").find(".entries");
+        var page = previousPage(entries);
+        var lastPage = getLastPage(entries);
+        $('.pointsControls').find('.currentPageLabel').text(page + " / " + lastPage);
+    });
+
+    $("#points").find(".entries").each(function() {
+        var lastPage = getLastPage($(this));
+        $('.pointsControls').find('.currentPageLabel')
+            .text(Math.min(1, lastPage) + " / " + lastPage)
+            .css("width", 20 + (2 * (Math.floor(Math.log(Math.max(2, lastPage)) / Math.LN10) + 1) * 7));
+    });
+
+
+    $(".timeControls .next").click(function() {
+        var entries = $("#time").find(".entries");
+        var page = nextPage(entries);
+        var lastPage = getLastPage(entries);
+        $(".timeControls").find(".currentPageLabel").text(page + " / " + lastPage);
+    });
+
+    $(".timeControls .previous").click(function() {
+        var entries = $("#time").find(".entries");
+        var page = previousPage(entries);
+        var lastPage = getLastPage(entries);
+        $(".timeControls").find(".currentPageLabel").text(page + " / " + lastPage);
+    });
+
+    $("#time").find(".entries").each(function() {
+        var lastPage = getLastPage($(this));
+        $(".timeControls").find(".currentPageLabel")
+            .text(Math.min(1, lastPage) + " / " + lastPage)
+            .css("width", 20 + (2 * (Math.floor(Math.log(Math.max(2, lastPage)) / Math.LN10) + 1) * 7));
+    });
+
+    $("#time .entries.pages").css("height", Math.min(25, <?=count($view->times)?>) * 43);
+    $("#points .entries.pages").css("height", Math.min(25, <?=count($view->points)?>) * 43);
+</script>

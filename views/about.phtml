@@ -1,0 +1,173 @@
+<div id="about">
+    <h1 class="largeTitle">About</h1>
+
+    <h1 class="title">Rules</h1>
+    <div class="container">
+        Any and all modifications of the game that changes the physics or controls in any way is strictly banned, with the exception of console commands "sv_player_funnel_into_portals" and "developer".
+        <br>
+        In particular, note that this means that changing the server tickrate is forbidden.
+    </div>
+
+    <h1 class="title">Console commands</h1>
+    <h2 class="subtitle">Gameplay</h2>
+    <div class="container smallContainer">
+        <table>
+            <tr>
+                <td>sv_player_funnel_into_portals</td>
+                <td>Enabling this will curve the player into nearby portals when falling or jumping.</td>
+            </tr>
+            <tr>
+                <td>developer</td>
+                <td>Allows you to move as soon as the chamber loads instead of being stuck for ~0.5 seconds.<br>
+                    We allow this command because the same effect can be achieved by loading the chamber
+                    from the main menu instead of restarting it. </td>
+            </tr>
+            <tr>
+                <td  style="max-width: 260px">"mat_ambient_light_b 0.1; mat_ambient_light_r 0.1; mat_ambient_light_g 0.1;"</td>
+                <td>Turns off the game's lighting and allows you to see in the dark. This is useful in Turret Factory. <br>
+                    We allow this command because it levels the playing field for players having displays with limited brightness.
+                </td>
+            </tr>
+            <tr>
+                <td>bind [KEY] taunt</td>
+                <td>Binds a key to taunt while midair in cooperative. Used to skip forced animations of new gestures.</td>
+            </tr>
+        </table>
+    </div>
+    <h2 class="subtitle">Recording demos</h2>
+    <div class="container">
+        <table>
+            <tr>
+                <td style="min-width: 260px">record [name]</td>
+                <td>Starts recording the player's inputs generating a demo (.dem) file.</td>
+            </tr>
+            <tr>
+                <td>stop</td>
+                <td>Stops the current demo recording.</td>
+            </tr>
+            <tr>
+                <td>playdemo [name]</td>
+                <td>Replays a recorded demo.</td>
+            </tr>
+            <tr>
+            <td>bind [KEY] "stop; restart_level"</td>
+                <td> Binds a key to stop the current demo and restart the chamber to start a new run. This is useful, because
+                restarting a chamber while recording to a demo called "demo" will create a new demo called "demo_2".
+                A side effect of this is that the chamber loads slightly slower, and because of this you lose about 0.40 seconds. This is prevented by stopping the demo before restarting.
+                </td>
+            </tr>
+            <tr>
+                <td>bind W "+forward; +remote_view"</td>
+                <td>Binds your W key to permanently show your partner view while playing cooperative.
+                This way you don't need to toggle the partner view manually every time the chamber is restarted.
+                </td>
+            </tr>
+            <tr>
+                <td>cl_enable_remote_splitscreen 1</td>
+                <td>Shows the partner view while replaying a cooperative demo.</td>
+            </tr>
+        </table>
+    </div>
+
+    <h1 class="title">Videos</h1>
+    <div class="container">
+        A popular tool used to convert demo files to nicely looking smooth videos is  <a href="http://forums.steampowered.com/forums/showthread.php?p=25171193">SrcDemo<sup>2</sup></a>
+    </div>
+
+<!--    TODO: link to numTrackedPlayerRanks including table with example points -->
+    <h1 class="title">Point calculation</h1>
+    <div class="container">
+        Currently, the top 200 times are tracked for each map. A player's points for a specific chamber is calculated as follows:
+        <style>
+            table {
+                font-size: 15px;
+                color: inherit;
+                padding-left: 20px;
+            }
+            td.upper_line {
+                border-top:solid 1px #555555;
+            }
+            table.fraction {
+                text-align: center; vertical-align: middle;
+                margin-top:0.5em; margin-bottom:0.5em; line-height: 1.6em;
+            }
+        </style>
+        <table class="fraction" cellpadding="0" cellspacing="0">
+            <tr>
+                <td rowspan="2" nowrap="nowrap">
+                    max[1, round[&nbsp
+                </td>
+                <td nowrap="nowrap" style="font-size: 14px;">
+                    (200 - (rank - 1))<sup>2</sup>
+                </td>
+                <td rowspan="2" nowrap="nowrap">
+                    &nbsp]]
+                </td>
+            </tr>
+            <tr>
+                <td class="upper_line" style="font-size: 14px;">
+                    200
+                </td>
+            </tr>
+        </table>
+
+        This gives us the following:
+
+        <ul>
+            <li>Rank 1: 200 points</li>
+            <li>Rank 10: 182 points</li>
+            <li>Rank 20: 164 points</li>
+            <li>Rank 50: 114 points</li>
+            <li>Rank 100: 51 points</li>
+            <li>Rank 150: 13 points</li>
+            <li>Rank 200: 1 point</li>
+        </ul>
+        Note that this scoring function gives you a proportionally higher reward for higher ranks. Hence, getting
+        a high point count requires that you have a consistently high rank on each map.
+        <br><br>
+        Additionally, <?=Leaderboard::demoBonusPoints?> bonus points are rewarded for uploading a demo for one of your records, and
+        <?=Leaderboard::youTubeBonusPoints ?> points for setting a YouTube video.
+    </div>
+
+    <h1 class="title">Team</h1>
+    <div class="container">
+        <ul>
+            <li><a href="/profile/76561198047900528">iVerb</a>: Administrator, lead developer</li>
+            <li><a href="/profile/76561198039230536">Zypeh</a>: Administrator</li>
+            <li><a href="/profile/76561198015678746">Klooger</a>: Administrator</li>
+            <li><a href="/profile/76561198095730281">Portal Rex</a>: Administrator</li>
+        </ul>
+    </div>
+
+    <h1 class="title">Miscellaneous features</h1>
+    <div class="container">
+        <ul>
+<!--            <li>Instead of using a steam ID, you can bookmark and navigate to profiles by using a boardname. Example: <a href="/profile/iVerb" class="unnamedURL"></a>.</li>-->
+            <li>Your boardname is by default the same as your steam nickname (updated daily), but can be changed under <a href="/editprofile">Edit profile</a>.</li>
+        </ul>
+    </div>
+
+    <h1 class="title">Project</h1>
+    <div class="container">
+        <p>
+        Source code: coming soon
+<!--        The source code can be found <a href="https://www.github.com/">here</a>.-->
+        </p>
+        <p>
+        This site is currently hosted for free on <a href="https://www.openshift.com/">OpenShift</a>.
+        </p>
+        <p>
+        Demos are stored using <a href="https://www.google.com/drive/">Google Drive</a>. The folder containg all demos can be found <a href="https://drive.google.com/folderview?id=0B3FgAePoQ2khX3gzc2dlNDdVZm8&usp=sharing">here</a>.
+        </p>
+    </div>
+
+    <h1 class="title">Feature suggestions</h1>
+    <div class="container">Forward any feature suggestions you may have to <a href="/profile/76561198047900528">iVerb</a></div>
+
+</div>
+
+<script>
+    $("a.unnamedURL").each(function() {
+        $(this).text(window.location.host + $(this).attr("href"));
+    })
+</script>

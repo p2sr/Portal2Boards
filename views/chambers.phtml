@@ -1,0 +1,148 @@
+<?php $mapInfo = $GLOBALS["mapInfo"]; ?>
+<?php $mode = Router::$location[2]; ?>
+<?php $youtubeIDs = (($mode == "coop") ? Cache::get("COOPyoutubeIDs") : Cache::get("SPyoutubeIDs")) ?>
+<script>
+    function goToChamber(evt) {
+        if ($(evt.target).hasClass("chamberimage")) {
+            location.href = '/chamber/' + $(evt.target).attr("map");
+        }
+    }
+</script>
+<div id="chambers">
+    <?php $i=1; foreach($mapInfo["modes"][$mode] as $chapter): ?>
+        <?php $chapterName = $mapInfo["chapters"][$chapter]["chapterName"]?>
+        <div class="chapterinfo">
+            <h1 class="chapternumber"><?= (($mode == "coop") ? "Course " : "Chapter ")."0".$i;?></h1>
+            <h1 class="chaptername"><?=$chapterName;?></h1>
+        </div>
+        <div class="chambers">
+            <?php foreach($mapInfo["chapters"][$chapter]["maps"] as $map): ?>
+                <?php $mapData = $view->board[$chapter][$map] ?>
+                <?php $mapName = $mapInfo["maps"][$map]["mapName"]?>
+                <?php $isPublic =  $mapInfo["maps"][$map]["isPublic"]?>
+                <div class="chamber">
+                    <div class="chamberimage" onclick="goToChamber(event)" map="<?=$map;?>" style="background: url('/images/chambers/<?=$map;?>.jpg'); background-size: cover">
+                        <div class="chambertitle">
+                            <div class="titlebghelper"></div>
+                            <div class="titlebg"><a href="/chamber/<?=$map;?>"><?=$mapName?></a></div>
+                        </div>
+                        <div class="chamber_icons_left">
+                            <?php if($isPublic == "1"): ?>
+                                <a href="<?php echo "http://steamcommunity.com/stats/Portal2/leaderboards/".$map;?>" class="icons" target="_blank">
+                                     <span class="icons steamLink fa-stack">
+                                          <i class="fa fa-square fa-stack-2x"></i>
+                                          <i class="fa fa-steam-square fa-stack-2x"></i>
+                                    </span>
+                                </a>
+                            <?php endif; ?>
+                        </div>
+                        <div class="chamber_icons_right">
+                            <?php if (isset($youtubeIDs[$chapter][$map][0])): ?>
+                                <span class="icons youtubeEmbedButton fa-stack"
+                                      onclick="embedOnBody(
+                                          '<?=$youtubeIDs[$chapter][$map][0]["youtubeID"]?>',
+                                          '<?=$mapInfo["maps"][$map]["mapName"]?> - <?=Leaderboard::convertToTime($youtubeIDs[$chapter][$map][0]["score"])?> - <a href=\'/profile/<?=$youtubeIDs[$chapter][$map][0]["profileNumber"]?>\'><?=Util::escapeQuotesHTML($youtubeIDs[$chapter][$map][0]["player_name"])?></a>')">
+                                    <i class="fa fa-square fa-stack-1x"></i>
+                                    <i class="fa fa-youtube-play fa-stack-2x"></i>
+                                </span>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="chamber_scores">
+                        <?php
+                            $twoplayer_highlight = false;
+                            $skipRank2 = false;
+                            $keys = array_keys($mapData);
+                            $rank1String = $mapData[$keys[0]]["userData"]["boardname"];
+                            $rank1HTML = "<a href='/profile/" . $keys[0] . "'>" . $rank1String . "</a>";
+                            $rank1youtube = $mapData[$keys[0]]["scoreData"]["youtubeID"];
+                            
+                            if ($mode == "coop") {
+                                
+                                if ($mapData[$keys[0]]["scoreData"]["score"] == $mapData[$keys[1]]["scoreData"]["score"]) {
+                                        //&& $mapData[$keys[0]]["scoreData"]["date"] == $mapData[$keys[1]]["scoreData"]["date"]) {
+                                    
+                                    if (SteamSignIn::isLoggedIn($keys[0]) || SteamSignIn::isLoggedIn($keys[1])) {
+                                        $twoplayer_highlight = true;
+                                    }
+                                    
+                                    $rank1String =  $mapData[$keys[0]]["userData"]["boardname"] . " & " .$mapData[$keys[1]]["userData"]["boardname"];
+                                    $rank1HTML = "<a href='/profile/" . $keys[0] . "'>" . $mapData[$keys[0]]["userData"]["boardname"] . "</a> & " . "<a href='/profile/" . $keys[1] . "'>" . $mapData[$keys[1]]["userData"]["boardname"] . "</a>";
+                                    $rank1youtube = ($mapData[$keys[0]]["scoreData"]["youtubeID"] != NULL)
+                                        ? $mapData[$keys[0]]["scoreData"]["youtubeID"]
+                                        : $mapData[$keys[1]]["scoreData"]["youtubeID"];
+                                    $skipRank2 = true;
+                                }
+                            }
+                        ?>
+                        <?php foreach($mapData as $player => $playerData): ?>
+                        <?php $entry = array_search($player, $keys);?>
+                        <?php if($entry == 0): ?>
+                            <div class="firstplace">
+                                <div class="entry <?php if(SteamSignIn::isLoggedIn($player) || $twoplayer_highlight) { echo "highlight"; } ?>">
+                                    <div class="dateDifference" date="<?=$playerData["scoreData"]["date"]?>"></div>
+                                    <div class="boardname">
+                                        <div class="content" style="width:100%; display: table"><?=$rank1HTML?></div>
+                                    </div>
+                                    <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$map?>" class="score">
+                                        <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?>
+                                    </a>
+                                    <div class="youtube">
+                                        <?php if ($rank1youtube != NULL): ?>
+                                            <i onclick="embedOnBody(
+                                                '<?=$rank1youtube?>',
+                                                '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($rank1String)?>');"
+                                            class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="othernoobscores">
+                        <?php elseif($skipRank2 ? ($entry < 8 && $entry != 1) : $entry < 7 ): ?>
+                          <div class="entry <?php if(SteamSignIn::isLoggedIn($player)) { echo "highlight"; } ?>">
+                              <div class="dateDifference" date="<?=$playerData["scoreData"]["date"]?>"></div>
+                              <div class="boardname"><a href="/profile/<?=$player;?>"><?=$playerData["userData"]["boardname"]?></a></div>
+                              <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$map?>" class="score">
+                                  <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?>
+                              </a>
+                              <div class="youtube">
+                                  <?php if ($playerData["scoreData"]["youtubeID"] != NULL): ?>
+                                      <i onclick="embedOnBody(
+                                          '<?=$playerData["scoreData"]["youtubeID"]?>',
+                                          '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($playerData["userData"]["boardname"])?>');"
+                                         class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                                  <?php endif; ?>
+                              </div>
+                          </div>
+                        <?php endif ?>
+                        <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    <?php $i++; endforeach; ?>
+</div>
+<script>
+    $(document).ready(function() {
+        $(".dateDifference").each(function() {
+            var date = $(this).attr("date");
+            var color = getDateDifferenceColorFromNow(date, true);
+            if (color != null) {
+                $(this).css("border-left", color + " 3px solid");
+            }
+            else {
+                $(this).removeAttr("href");
+            }
+        });
+
+        $(".firstplace .entry .boardname").each(function() {
+            var targetWidth = $(this).width();
+            var content = $(this).find(".content");
+            while(content.width()  > targetWidth ) {
+                content.css('font-size', (parseFloat(content.css('font-size')) - 0.1) + "px" );
+            }
+        });
+    });
+
+</script>

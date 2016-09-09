@@ -1,0 +1,107 @@
+<?php $mapInfo = Cache::get("maps") ?>
+<a href="/changelog" class="nav_button">
+    <div id="time_icon" class="nav_icon"></div>
+    <div class="label">Score Updates</div>
+</a>
+<a href="/chambers/sp" class="nav_button">
+    <div id="sp_icon" class="nav_icon"></div>
+    <div class="label">Single Player</div>
+</a>
+<a href="/chambers/coop" class="nav_button">
+    <div id="coop_icon" class="nav_icon"></div>
+    <div class="label">Cooperative</div>
+</a>
+<div class="nav_dropdown">
+    <div id="cube_icon" class="nav_icon"></div>
+    <div class="label">Aggregated</div>
+    <ul style="width:150px">
+      <li>
+          <a href="/aggregated/overall" style="height: 29px">
+            <div class="nav_icon" style="background: url('/images/cup_noborder.jpg'); background-size: 29px 29px;"></div>
+            <div class="label">Overall</div>
+          </a>
+      </li>
+      <li class="nav_dropdown">
+          <div style="height: 29px">
+              <div class="nav_icon" style="background: url('/images/sp_noborder.jpg'); background-size: 29px 29px;"></div>
+              <div class="label">Single Player</div>
+          </div>
+          <ul style="width:185px">
+              <li>
+                <a href="/aggregated/sp">
+                    <div class="nav_icon"><i class="fa fa-star" aria-hidden="true"></i></div>
+                    <div class="label">Total</div>
+                </a>
+              </li>
+              <?php $i = 1; foreach ($mapInfo["modes"]["sp"] as $chapter): ?>
+                  <li>
+                      <a href="/aggregated/chapter/<?=$chapter?>">
+                        <div class="nav_icon"><?=$i?></div>
+                        <div class="label"><?=$mapInfo["chapters"][$chapter]["chapterName"]?> </div>
+                      </a>
+                  </li>
+              <?php $i++; endforeach; ?>
+          </ul>
+      </li>
+      <li class="nav_dropdown">
+          <div style="height: 29px">
+              <div class="nav_icon" style="background: url('/images/coop_noborder.jpg'); background-size: 29px 29px;"></div>
+              <div class="label">Cooperative</div>
+          </div>
+          <ul style="width:185px">
+              <li>
+                  <a href="/aggregated/coop">
+                      <div class="nav_icon"><i class="fa fa-star" aria-hidden="true"></i></div>
+                      <div class="label">Total</div>
+                  </a>
+              </li>
+              <?php $i = 1; foreach ($mapInfo["modes"]["coop"] as $chapter): ?>
+                  <li>
+                      <a href="/aggregated/chapter/<?=$chapter?>">
+                        <div class="nav_icon"><?=$i?></div>
+                        <div class="label"><?=$mapInfo["chapters"][$chapter]["chapterName"]?></div>
+                      </a>
+                  </li>
+              <?php $i++; endforeach; ?>
+          </ul>
+      </li>
+    </ul>
+</div>
+<!--<a href="/leastportals" class="nav_button">-->
+<!--    <div id="lp_icon" class="nav_icon"></div>-->
+<!--    <div class="label">LEAST PORTALS</div>-->
+<!--</a>-->
+<a href="/about" class="nav_button">
+    <div id="aperture_icon" class="nav_icon"></div>
+    <div class="label">About</div>
+</a>
+
+<script>
+
+    // $(".nav_dropdown").click(function(event) {
+    //
+    //     var $dropDownContent = $(this).find("> ul");
+    //     var isVisible = $dropDownContent.css("visibility") == "visible";
+    //
+    //     if (!isVisible) {
+    //         //$dropDownContent.css("visibility", "visible");
+    //         $dropDownContent.addClass("clicked");
+    //     }
+    //     else if ($dropDownContent.hasClass("clicked")) {
+    //         $(this).parent().find(".nav_dropdown ul").css("visibility", "hidden");
+    //         $dropDownContent.css("visibility", "hidden");
+    //         $dropDownContent.removeClass("clicked");
+    //     }
+    //
+    //     event.stopPropagation();
+    // });
+
+    $(".nav_dropdown").hover(function(event) {
+        var $dropDownContent = $(this).find("> ul");
+        $dropDownContent.css("visibility", "visible");
+        
+    }, function(event) {
+        $(this).find("ul").css("visibility", "hidden");
+    });
+
+</script>

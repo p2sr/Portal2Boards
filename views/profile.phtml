@@ -1,0 +1,1223 @@
+<?php $user = $view->profile; ?>
+<?php $mapInfo = $GLOBALS["mapInfo"]; ?>
+<?php $activityDayRange = 60 ?>
+<?php $userActivity = $user->getChangelog($activityDayRange)?>
+<?php include("util/ProfileView.php")?>
+
+<div id="profile">
+    <?php if($user->userData != NULL): ?>
+        <?php $avatar = ($user->userData->avatar != NULL) ? $user->userData->avatar : "http://media.steampowered.com/steamcommunity/public/images/avatars/f9/f91787b7fb6d4a2cb8dee079ab457839b33a8845_full.jpg"; ?>
+        <div class="userinformation">
+              <div class="profilebg hasavatar">
+                  <img src="<?php echo $avatar; ?>" alt="" id="profileimage"/>
+              </div>
+              <script type="text/javascript">
+                  var Vague = $('#profileimage').Vague({
+                      intensity: 15,
+                      forceSVGUrl: false
+                  });
+                  Vague.blur();
+              </script>
+            <div class="general">
+                <div class="general-wrapper">
+                    <img src="<?php echo $avatar; ?>" alt=""/>
+                    <div class="nickname"><?php echo $user->userData->displayName; ?></div>
+                    <?php if($user->isAdmin()): ?>
+                        <div class="profile-desc">Administrator<?php if($user->userData->title != NULL) { ?>, <?=$user->userData->title?><?php } ?></div>
+                    <?php endif; ?>
+                    <div class="usericons">
+                        <?php if(strlen($user->userData->youtube) > 0): ?>
+                            <a href="http://www.youtube.com<?=$user->userData->youtube;?>" style="text-decoration : none;" target="_blank">
+                                <span class="youtubeLink fa-stack">
+                                  <i class="fa fa-square fa-stack-2x"></i>
+                                  <i class="fa fa-play fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if(strlen($user->userData->twitch) > 0): ?>
+                            <a href="http://www.twitch.tv/<?=$user->userData->twitch;?>" style="text-decoration : none;" target="_blank">
+                                <span class="twitchLink fa-stack">
+                                  <i class="fa fa-square fa-stack-2x"></i>
+                                  <i class="fa fa-twitch fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        <?php endif; ?>
+                        <a href="http://steamcommunity.com/profiles/<?=$user->profileNumber;?>" style="text-decoration : none;" target="_blank">
+                            <span class="steamLink fa-stack">
+                                  <i class="fa fa-square fa-stack-2x"></i>
+                                  <i class="fa fa-steam-square fa-stack-2x"></i>
+                            </span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php if($user->userData->banned != 1): ?>
+        <?php if($user->times->numDemos == 0 && $user->times->numYoutubeVideos == 0 && !isset($_COOKIE["upload-notification"])): ?>
+            <div class="uploadInfo" >
+                    <span>You have no demos or YouTube videos linked to any of your records.
+                    These can be uploaded by clicking the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> button to the left of each score.
+                    For each demo and YouTube video you will get bonus points!
+                        <span class="close-btn"></span>
+                    </span>
+            </div>
+        <?php endif; ?>
+
+        <div class="profile-title"><span>GLOBAL STATISTICS</span></div>
+        <div class="global-stats">
+            <div class="block-container wr">
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo $user->times->SP["chambers"]["numWRs"]; ?></div>
+                        <div class="title"><span>Single Player <br/>World Record<?php if($user->times->SP["chambers"]["numWRs"] != 1) {?>s<?php } ?></span></div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo $user->times->COOP["chambers"]["numWRs"]; ?></div>
+                        <div class="title"><span>Cooperative <br/>World Record<?php if($user->times->COOP["chambers"]["numWRs"] != 1) {?>s<?php } ?></span></div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo $user->times->numWRs; ?></div>
+                        <div class="title"><span>World Record<?php if($user->times->numWRs != 1) {?>s<?php } ?> <br/>in Total</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-container points">
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo $user->points->SP["score"];?></div>
+                        <div class="title"><span>Single Player <br/>Point<?php if($user->points->SP["score"] != 1) {?>s<?php } ?></span></div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo $user->points->COOP["score"];  ?></div>
+                        <div class="title"><span>Cooperative <br/>Point<?php if($user->points->COOP["score"] != 1) {?>s<?php } ?></span></div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo $user->points->global["score"]; ?></div>
+                        <div class="title"><span>Point<?php if($user->points->global["score"] != 1) {?>s<?php } ?>in <br/>Total</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-container ranks">
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo (isset($user->points->SP["playerRank"])) ? Grammar::number($user->points->SP["playerRank"]) : "NO"; ?></div>
+                        <div class="title"><span>Place in <br/>Single Player</span></div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo (isset($user->points->COOP["playerRank"])) ? Grammar::number($user->points->COOP["playerRank"]) : "NO"; ?></div>
+                        <div class="title"><span>Place in <br/>Cooperative</span></div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo (isset($user->points->global["playerRank"])) ? Grammar::number($user->points->global["playerRank"]) : "NO"; ?></div>
+                        <div class="title"><span>Place <br/>Overall</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-container average">
+                <div class="block">
+                    <?php $place = $user->times->SP["chambers"]["averagePlace"]; ?>
+                    <div class="block-inner" <?php if($place == NULL) : echo "title=\"You need a minimum of 10 scores in single player to determine your average place"; endif; ?>">
+                        <div class="number">
+                            <?php if ($place != NULL): ?>
+                                <?=$place?>
+                            <?php else: ?>
+                                NO
+                            <?php endif; ?>
+                        </div>
+                        <div class="title">
+                            <span>
+                                Average Place<br/>in Single Player
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="block">
+                    <?php $place = $user->times->COOP["chambers"]["averagePlace"]; ?>
+                    <div class="block-inner" <?php if($place == NULL) : echo "title=\"You need a minimum of 10 scores in cooperative to determine your average place"; endif; ?>">
+                        <div class="number">
+                            <?php if ($place != NULL): ?>
+                                <?=$place?>
+                            <?php else: ?>
+                                NO
+                            <?php endif; ?>
+                        </div>
+                        <div class="title">
+                            <span>
+                                Average Place<br/>in Cooperative
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="block">
+                    <?php $place = $user->times->globalAveragePlace; ?>
+                    <div class="block-inner" <?php if($place == NULL) : echo "title=\"You need a minimum of 10 to determine your average place"; endif; ?>">
+                        <div class="number">
+                            <?php if ($place != NULL): ?>
+                                <?=$place?>
+                            <?php else: ?>
+                                NO
+                            <?php endif; ?>
+                        </div>
+                        <div class="title">
+                            <span>
+                                Average Place<br/> Overall
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-container bestworst">
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo ($user->times->bestRank != NULL) ? Grammar::number($user->times->bestRank["scoreData"]["playerRank"]) : "NO"; ?></div>
+                        <div class="title">
+                            <span>
+                                Best Place  <?php echo ($user->times->bestRank != NULL) ? " on <br> ".ProfileView::getChamberHyperlink($user->times->bestRank["map"], $mapInfo) : ""?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number"><?php echo ($user->times->worstRank != NULL) ? Grammar::number($user->times->worstRank["scoreData"]["playerRank"]) : "NO"; ?></div>
+                        <div class="title">
+                            <span>
+                                Worst Place <?php echo ($user->times->worstRank != NULL) ? " on <br> ".ProfileView::getChamberHyperlink($user->times->worstRank["map"], $mapInfo) : ""?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="block-container oldnew">
+                <div class="block">
+                    <div class="block-inner">
+                        <div class="number">
+                            <?php echo ($user->times->oldestScore != NULL) ? Leaderboard::convertToTime($user->times->oldestScore["scoreData"]["score"]) : "NO"; ?>
+                        </div>
+                        <div class="title">
+                            <span>
+                                OLDEST Score
+                                <?php if ($user->times->oldestScore != NULL) : ?>
+                                    on <br> <?=ProfileView::getChamberHyperlink($user->times->oldestScore["map"], $mapInfo);?>
+                                    <div class="dateDifference" date="<?=$user->times->oldestScore["scoreData"]["date"]?>">
+                                    </div>
+                                <?php endif; ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="block-inner">                     
+                        <div class="number">
+                            <?php echo ($user->times->newestScore != NULL) ? Leaderboard::convertToTime($user->times->newestScore["scoreData"]["score"]) : "NO"; ?>
+                        </div>
+                        <div class="title">
+                            <span>
+                                Newest Score
+                                <?php if ($user->times->newestScore != NULL) : ?>
+                                    on <br> <?=ProfileView::getChamberHyperlink($user->times->newestScore["map"], $mapInfo);?>
+                                    <div class="dateDifference" date="<?=$user->times->newestScore["scoreData"]["date"]?>">
+                                        <a href="/changelog?profileNumber=<?=$user->profileNumber?>&chamber=<?=$user->times->newestScore["map"]?>"></a>
+                                    </div>
+                                <?php endif; ?>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="profile-title"><span>Recent Activity</span><span style="float: right"><a href="/changelog?profileNumber=<?=$user->profileNumber?>">All history</a></span></div>
+        <div class="statistics">
+            <div class="activity">
+                <?php if(count($userActivity) > 0): ?>
+                    <div id="changelogactivity" style="height: 175px;">
+                        <i class="fa fa-circle-o-notch fa-spin fa-fw loading"></i>
+                    </div>
+                <?php else: ?>
+                    <div class="noactivity">
+                        <span class="noact-wrap">
+                            <span>User has no recent score updates.</span>
+                        </span>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+        <div class="column-3">
+            <div class="column sp">
+                <div class="profile-title"><span class="title">Records in single player</span></div>
+                <div class="block-content all-records">
+                    <?php foreach($mapInfo["modes"]["sp"] as $chapterId): ?>
+                        <?php $keys = array_keys($mapInfo["modes"]["sp"]); ?>
+                        <div class="column-title">
+                            <?=$mapInfo["chapters"][$chapterId]["chapterName"];?>
+                            <?php if($chapterId == $keys[0]): ?>
+                                <div style="float: right">
+                                    <div class="cell rank" align="right" title="Current rank">#</div>
+                                    <div class="cell score" align="right">Time</div>
+                                    <div class="cell nr-diff" align="right" title="Time difference to next rank">&#916;Next</div>
+                                    <div class="cell wr-diff" align="right" title="Time difference to world record">&#916;WR</div>
+                                </div>
+                            <?php endif;?>
+                        </div>
+                        <div class="column-content">
+                            <div class="scoretable">
+                                <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
+                                    <?php if(isset($user->times->SP["chambers"]["chamber"][$chapterId][$mapId])): ?>
+                                        <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->SP["chambers"]["chamber"][$chapterId][$mapId]); ?>
+                                    <?php else: ?>
+                                        <?php ProfileView::emptyChamberScoreRow($mapId, $mapInfo); ?>
+                                    <?php endif;?>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="column mid coop">
+              <div class="profile-title"><span class="title">Records in Cooperative</span></div>
+              <div class="block-content all-records">
+                  <?php foreach($mapInfo["modes"]["coop"] as $chapterId): ?>
+                  <?php $keys = array_keys($mapInfo["modes"]["coop"]); ?>
+                      <div class="column-title">
+                          <?=$mapInfo["chapters"][$chapterId]["chapterName"];?>
+                          <?php if($chapterId == $keys[0]): ?>
+                              <div style="float: right">
+                                  <div class="cell rank" align="right" title="Current rank">#</div>
+                                  <div class="cell score" align="right">Time</div>
+                                  <div class="cell nr-diff" align="right" title="Time difference to next rank">&#916;Next</div>
+                                  <div class="cell wr-diff" align="right" title="Time difference to world record">&#916;WR</div>
+                              </div>
+                          <?php endif;?>
+                      </div>
+                      <div class="column-content">
+                          <div class="scoretable">
+                              <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
+                                  <?php if(isset($user->times->COOP["chambers"]["chamber"][$chapterId][$mapId])): ?>
+                                      <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->COOP["chambers"]["chamber"][$chapterId][$mapId]); ?>
+                                  <?php else: ?>
+                                      <?php ProfileView::emptyChamberScoreRow($mapId, $mapInfo); ?>
+                                  <?php endif;?>
+                              <?php endforeach; ?>
+                          </div>
+                      </div>
+                  <?php endforeach; ?>
+                </div>
+            </div>
+            <div class="column right timespoints">
+                <div class="profile-title"><span class="title">Aggregated times and points</span></div>
+                <div class="block-content all-records">
+                    <div class="column-title">
+                        Points
+                        <div style="float: right">
+                            <div class="cell rank" align="right" title="Current rank">#</div>
+                            <div class="cell score" align="right">Points</div>
+                            <div class="cell nr-diff" align="right" title="Point difference to next rank">&#916;Next</div>
+                            <div class="cell wr-diff" align="right" title="Point difference to world record">&#916;WR</div>
+                        </div>
+                    </div>
+                    <div class="column-content" style="margin-bottom: 5px; margin-left: 10px">
+                        <div class="scoretable">
+                            <?php foreach($mapInfo["modes"]["sp"] as $chapter): ?>
+                                <?php ProfileView::pointTimeScoreRow($user->points->chapters[$chapter], ProfileView::getChapterHyperlink($chapter, $mapInfo), false);?>
+                            <?php endforeach; ?>
+                            <div style="height:15px"></div>
+                            <?php foreach($mapInfo["modes"]["coop"] as $chapter): ?>
+                                <?php ProfileView::pointTimeScoreRow($user->points->chapters[$chapter], ProfileView::getChapterHyperlink($chapter, $mapInfo), false);?>
+                            <?php endforeach; ?>
+                            <div style="height:15px"></div>
+                            <?php ProfileView::pointTimeScoreRow($user->points->SP, "<a href='/aggregated/sp'>Single Player</a>", false);?>
+                            <?php ProfileView::pointTimeScoreRow($user->points->COOP, "<a href='/aggregated/coop'>Cooperative</a>", false);?>
+                            <?php ProfileView::pointTimeScoreRow($user->points->global, "<a href='/aggregated/overall'>Overall</a>", false);?>
+                        </div>
+                    </div>
+                    <div class="column-title">
+                        Times
+                        <div style="float: right">
+                            <div class="cell rank" align="right" title="Current rank">#</div>
+                            <div class="cell score" align="right">Time</div>
+                            <div class="cell nr-diff" align="right" title="Time difference to next rank">&#916;Next</div>
+                            <div class="cell wr-diff" align="right" title="Time difference to world record">&#916;WR</div>
+                        </div>
+                    </div>
+                    <div class="column-content" style="margin-left: 10px">
+                        <div class="scoretable">
+                            <?php foreach($mapInfo["modes"]["sp"] as $chapter): ?>
+                                <?php ProfileView::pointTimeScoreRow($user->times->chapters[$chapter], ProfileView::getChapterHyperlink($chapter, $mapInfo), true);?>
+                            <?php endforeach; ?>
+                            <div style="height:15px"></div>
+                            <?php foreach($mapInfo["modes"]["coop"] as $chapter): ?>
+                                <?php ProfileView::pointTimeScoreRow($user->times->chapters[$chapter], ProfileView::getChapterHyperlink($chapter, $mapInfo), true);?>
+                            <?php endforeach; ?>
+                            <div style="height:15px"></div>
+                            <?php ProfileView::pointTimeScoreRow($user->times->SP, "<a href='/aggregated/sp'>Single Player</a>", true);?>
+                            <?php ProfileView::pointTimeScoreRow($user->times->COOP, "<a href='/aggregated/coop'>Cooperative</a>", true);?>
+                            <?php ProfileView::pointTimeScoreRow($user->times->global, "<a href='/aggregated/overall'>Overall</a>", true);?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <?php elseif($user->userData->banned == 1): ?>
+                <div class="profile-title"><span>EXCEPTION</span></div>
+                <div class="noactivity">
+                     <span class="noact-wrap">
+                          <span>This user is banned.</span>
+                          <span class="manualsearch">Such shame.</span>
+                     </span>
+                </div>
+            <?php else: ?>
+                <div class="profile-title"><span>HERP DERP</span></div>
+                <div class="noactivity">
+                    <span class="noact-wrap">
+                      <span>Derp.</span>
+                      <span class="manualsearch">You broke the profile page.</span>
+                    </span>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php else: ?>
+        <div class="user-noexist">
+            <div class="stmt">Profile does not exist, this player has no records that are ranked.</div>
+            <div>If you believe the statement above is incorrect, please contact a site administrator.</div>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+<?php if ($user->userData == NULL) {
+    return;
+} ?>
+
+<script type="text/javascript">
+
+    var activityByScore = getActivityByScore(<?=json_encode($userActivity)?>);
+    if (Object.keys(activityByScore).length > 0) {
+        <?php if ($activityDayRange > 0): ?>
+            var firstDate = localizeDate('<?=date("Y-m-d H:i:s", Util::daysAgo($activityDayRange))?>');
+        <?php else: ?>
+            var firstDate = localizeDate(getDateFirstChange(activityByScore));
+        <?php endif; ?>
+        var activityByDate = getActivityByDate(activityByScore);
+        drawActivityChart(activityByDate, firstDate, getCurrentLocalDate(), $("#changelogactivity"));
+    }
+
+    <?php if(strlen($user->userData->twitch) == 0): ?>
+        jQuery.ajax({cache: true, dataType: 'jsonp', url: '//api.twitch.tv/api/steam/<?=$user->profileNumber;?>', success: function (data) {
+            if (data.name) {
+                var $icon =
+                    $("<a href='http://www.twitch.tv/"+data.name+"' target='_blank' rel='nofollow' style='text-decoration : none;'>"
+                        + "<span class='twitchLink fa-stack'>"
+                        + "<i class='fa fa-square fa-stack-2x'></i>"
+                        + "<i class='fa fa-twitch fa-stack-1x'></i>"
+                        + "</span>"
+                        + "</a>");
+                $(".usericons").append($icon);
+            }
+        }});
+    <?php endif; ?>
+
+    setTimeout(function() {
+        <?php if(SteamSignIn::isLoggedIn($user->profileNumber)): ?>
+            $(".uploadInfo").slideDown('slow');
+        <?php endif; ?>
+    }, 2000);
+
+    $(".global-stats .block-container").each(function() {
+        var width = 0;
+        $(this).find(".number").each(function() {
+            if($(this).width() > width) {
+                width = $(this).width();
+            }
+        });
+        $(this).find(".number").width(width);
+    });
+
+    $(".rank").each(function() {
+        drawRank($(this));
+    });
+
+    $(".row").hover(function() {
+        $scoreMenuToggle = $(this).find(".scoreMenuToggle i");
+        $scoreMenuToggle.css("display", "inline-block");
+    },
+    function() {
+        $scoreMenuToggle = $(this).find(".scoreMenuToggle i");
+        $scoreMenuToggle.css("display", "none");
+    });
+
+
+    $(".chamberScoreInfo .dateDifferenceColor").each(function() {
+        var date = $(this).attr("date");
+        if (realDate(date)) {
+            var color = getDateDifferenceColorFromNow(date, true);
+            if (color != null) {
+                $(this).css("background", color);
+                $(this).css("border-radius", "500px");
+            }
+            else {
+                $(this).removeAttr("href");
+            }
+        }
+    });
+
+    $(".dateDifference").each(function() {
+        var date = $(this).attr("date");
+        if (realDate(date)) {
+            formatDateDifferenceFromNow($(this), date, true);
+        }
+        else {
+            $(this).text("Unknown");
+        }
+    });
+
+    $(".uploadInfo .close-btn").click(function() {
+        $(".uploadInfo").slideToggle();
+        var d = new Date();
+        d.setTime(d.getTime()+(604800000));
+        var expires = "expires="+d.toGMTString();
+        document.cookie = "upload-notification=yes; " + expires;
+    });
+
+
+    var user = '<?=$user->profileNumber?>';
+    var profilePermissions = <?=(SteamSignIn::hasProfilePrivileges($user->profileNumber)) ? "true" : "false"?>;
+    var currentScoreID = null;
+    var bestScore = null;
+    var currentMap = null;
+    var $scoreMenu = null;
+    var $scoreMenuToggleIcon = null;
+    var $changeEntries = null;
+    var $status = null;
+    var entries = null;
+
+    function openScoreMenu(event, map, scoreID) {
+        var $target = $(event.target);
+
+        if ($target.hasClass("scoreMenuToggle")) {
+            $scoreMenu = $target.parent().parent().find(".scoreMenu");
+            $scoreMenuToggleIcon = $target.find("i");
+        }
+        else if ($target.hasClass("fa")) {
+            $scoreMenu = $target.parent().parent().parent().find(".scoreMenu");
+            $scoreMenuToggleIcon = $target;
+        }
+        event.stopPropagation();
+
+        if ($scoreMenu.hasClass("open")) {
+            closeScoreMenu();
+            return;
+        }
+
+        if ($scoreMenuToggleIcon.length > 0) { //not an empty score row
+            $(".scoreMenu").removeClass("open");
+            $(".scoreMenu").slideUp("slow");
+            $(".scoreMenuToggle i").attr("class", "fa fa-caret-right");
+
+            $scoreMenu.addClass("open");
+            $scoreMenuToggleIcon.attr("class", "fa fa-circle-o-notch fa-spin");
+
+            currentScoreID = scoreID;
+            currentMap = map;
+            rebuildScoreMenu();
+        }
+    }
+
+    function closeScoreMenu() {
+        $scoreMenu.removeClass("open");
+        $scoreMenu.slideUp("slow");
+        $scoreMenuToggleIcon.attr("class", "fa fa-caret-right");
+    }
+
+    function rebuildScoreMenu() {
+        $scoreMenu.slideUp("slow");
+        $scoreMenu.empty();
+
+        var $currentScoreMenu = $scoreMenu;
+        $.ajax({
+            url: '/getChangelogJSON?profileNumber=' + user + '&chamber=' + currentMap,
+            type: 'GET',
+            success: function (data) {
+                if ($currentScoreMenu != $scoreMenu || !$scoreMenu.hasClass("open")) {
+                    return;
+                }
+
+                entries = JSON.parse(data);
+                updateBestScore();
+                drawScoreMenu();
+
+                $scoreMenu.slideDown("slow");
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        }, 'json');
+    }
+
+    function updateBestScore() {
+        var unbannedEntries = entries.filter(function(e) { return e.banned == 0; });
+        bestScore = Math.min.apply(Math, unbannedEntries.map(function(o){ return o.score; }));
+    }
+
+    function drawScoreMenu() {
+        //var $chart = $("<div id='chart"+currentMap+"' style='width: 100%;'></div>");
+        //$scoreMenu.append($chart);
+
+        if (profilePermissions) {
+
+            var $descriptionButton = $(
+                "<div class='descriptionButton'>" +
+                    "<div class='button'>" +
+                        "Show info" +
+                    "</div>"+
+                "</div>");
+
+            var $description = $("<div class='descriptionContainer' style='display: none'>" +
+                    "Below is shown an overview of your score progression. You can manage the demo and YouTube video linked to each of " +
+                    "your past scores by clicking the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> " +
+                    "button to the left of it. Make sure you link the right video/demo to the right score.<br><br>"+
+                    "New scores can be submitted by clicking the 'Create new submission' button.<br><br>" +
+                    "<b>Note:</b> Bonus points can be obtained by providing proof for your current personal best. "+
+                    "You get <?=Leaderboard::demoBonusPoints?> points for uploading a demo, and "+
+                    "<?=Leaderboard::youTubeBonusPoints?> points for setting a YouTube video.<br><br>"+
+                    "<b>Note:</b> for more information about recording demos, go <a href='/about'>here</a>. <br><br>" +
+                    "<b>Note:</b> you can use timestamped YouTube videos. <br><br>" +
+                "</div>");
+
+            $descriptionButton.click(function() {
+                $descriptionButton.slideToggle("slow");
+                $description.slideToggle("slow");
+            });
+
+            $scoreMenu.append($descriptionButton);
+            $scoreMenu.append($description);
+        }
+
+        var $entryContainer = $(
+            "<div class='changeEntryContainer'>" +
+                "<div class='changeEntry header'>" +
+                    "<div class='cell changeMenuToggle'></div>" +
+                    "<div class='date'>" +
+                        "Time ago" +
+                    "</div>" +
+                    "<div class='submission'></div>" +
+                    "<div class='banned'></div>" +
+                    "<div class='demo-url'></div>" +
+                    "<div class='youtube'></div>" +
+                    "<div class='rankDiff' title='Rank before and after time was obtained'>" +
+                        "<div style='display: inline-block; text-align: center; width: 25px'>#</div>" +
+                        "<i class='fa fa-arrow-right' aria-hidden='true' style='display: inline-block;'></i>" +
+                        "<div style='display: inline-block; text-align: center; width: 25px; padding-right: 5px'>#</div>" +
+                    "</div>" +
+                    "<div class='score'>Time</div>" +
+                    "<div class='improvement' style='text-align: right' title='Time improvement'>&#916;</div>" +
+                "</div>"+
+            "</div>");
+
+        $changeEntries = $("<div class='changeEntries'></div>");
+        for (var e in entries) {
+            var entry = entries[e];
+            var $entry = addChangeEntry(entry);
+            $changeEntries.append($entry);
+        }
+
+        $entryContainer.append($changeEntries);
+        $scoreMenu.append($entryContainer);
+
+        if (profilePermissions) {
+            var $submissionContainer = $(
+                "<div class='submissionContainer'>" +
+                    "<div class='createSubmission'>" +
+                        "<div class='button'>Create new submission</div>" +
+                    "</div>" +
+                "</div>");
+
+            $submissionContainer.find(".createSubmission").click(function () {
+                createSubmission($(this), $submissionContainer);
+            });
+
+            $status = $("<div class='status'></div>");
+
+            $scoreMenu.append($submissionContainer);
+            $scoreMenu.append($status);
+        }
+
+        if ($scoreMenu.css("display") == "none") {
+            $scoreMenuToggleIcon.attr("class", "fa fa-caret-down");
+            /*
+            var activity = getActivity(entries);
+            if (Object.keys(activity).length > 0) {
+
+                $chart.css("height", "150px");
+                $scoreMenu.css("height", "0px");
+                $scoreMenu.show();
+
+                var firstDate = getDateFirstChange(activity);
+                var changesByDate = getChangesByDate(activity);
+                drawChangeChart(changesByDate, firstDate, moment().format("YYYY-MM-DD"), $chart);
+
+                $scoreMenu.hide();
+                $scoreMenu.css("height", "");
+            }
+            */
+        }
+    }
+
+    function createSubmission($button, $submissionContainer) {
+
+        if ($button.hasClass("sliding"))
+            return;
+
+        var $submissionForm = $(
+            "<form class='submissionForm' style='display: none'>" +
+                "<input type='text' name='profileNumber' style='display: none' value='"+user+"'>" +
+                "<input type='text' name='chamber' style='display: none' value='"+currentMap+"'>" +
+                "<div class='scoreInputContainer' style='display:inline-block; width: 100%;'>" +
+                    "<label for='score' style='float: left; color: inherit; margin-top: 3px;'>Time</label>" +
+                    "<input type='text' name='score' value='' style='width: 65px;'>" +
+                "</div>" +
+                "<div class='setYoutubeContainer' style='display:inline-block; width: 100%;'>" +
+                    "<label for='youtubeID' style='float: left; color: inherit; margin-top: 3px;'>Youtube URL</label>" +
+                    "<input type='text' name='youtubeID' value='' style='width: 265px;'>" +
+                "</div>" +
+                "<div class='uploadDemoContainer'>" +
+                    "<label class='button browseDemo'>" +
+                        "<input type='file' name='demoFile'/>" +
+                        "<span>Browse for demo</span>" +
+                    "</label>" +
+                    "<div class='fileName'></div>" +
+                "</div>" +
+                "<div class='button addScoreButton'>" +
+                    "Submit score" +
+                "</div>"+
+            "</form>");
+
+        $submissionContainer.append($submissionForm);
+        $button.addClass("sliding");
+        $button.slideToggle("slow", function() {
+            $button.removeClass("sliding");
+            $submissionForm.slideToggle("slow");
+        });
+
+        $submissionForm.find(".addScoreButton").click(function() {
+            var $youtubeField = $submissionForm.find(".setYoutubeContainer input");
+            var $scoreField = $submissionForm.find(".scoreInputContainer input");
+            var $demoFile = $submissionForm.find(".uploadDemoContainer input");
+
+            if ($youtubeField.val() == "" && $demoFile.val() == "") {
+                setStatusError("Choose either a demo or YouTube video to add as proof.");
+                return;
+            }
+
+            var ytURL = $youtubeField.val();
+            if (ytURL == null)
+                ytURL = "";
+
+            if (ytURL != "") {
+                ytURL = getYTURL(ytURL);
+                if (ytURL == null) {
+                    return;
+                }
+            }
+
+            var score = $scoreField.val();
+            score = getScoreFromString(score);
+            if (isNaN(score) || score == null) {
+                setStatusError("Invalid score.");
+                return;
+            }
+            else if (score >= bestScore) {
+                setStatusError("Score too high.");
+                return;
+            }
+
+            $scoreField.val(score);
+            $youtubeField.val(ytURL);
+
+            var formData = new FormData($submissionForm[0]);
+            setStatusProcessing();
+
+            $.ajax({
+                url: '/submitChange',
+                type: 'POST',
+                data: formData,
+                success: function(data) {
+                    var entry = JSON.parse(data);
+                    entries.push(entry);
+                    var $entry = addChangeEntry(entry);
+
+                    updateBestScore();
+
+                    $entry.css("display", "none");
+                    $changeEntries.prepend($entry);
+
+                    $submissionForm.slideToggle("slow", function() {
+                        $submissionForm.remove();
+                        $button.slideToggle("slow");
+                        $entry.slideToggle("slow", function() {
+                            setStatusSuccess("Time submitted.");
+                        });
+                    });
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            }, 'json');
+        });
+
+        $submissionForm.find("input[name='demoFile']").change(function (){
+            var fileNameComponents = $(this).val().split("\\");
+            var fileName = fileNameComponents[fileNameComponents.length - 1];
+            $(this).parent().parent().find(".uploadDemo").show();
+            $(this).parent().parent().find(".filename").html(fileName);
+        });
+    }
+
+    function addChangeEntry(entry) {
+        var date = entry.time_gained;
+        var $dateDifference = $("<div class='dateDifference'></div>");
+
+        if (realDate(date)) {
+            formatDateDifferenceFromNow($dateDifference, date, false);
+        }
+        else {
+            $dateDifference.text("Unknown");
+        }
+
+//        var $rank = $("<div class='rank'>"+(entry.post_rank != null ? entry.post_rank : "-")+"</div>");
+//        drawRank($rank);
+        var $preRank = $("<div class='preRank'>"+ (entry.pre_rank != null ? entry.pre_rank : "-") +"</div>");
+        if (entry.pre_rank != null)
+            drawRank($preRank);
+
+        var $postRank = $("<div class='postRank'>"+ (entry.post_rank != null ? entry.post_rank : "-") +"</div>");
+        if (entry.post_rank != null)
+            drawRank($postRank);
+
+        var $entry = $(
+            "<div class='changeEntry'>" +
+                "<div class='cell changeMenuToggle' onclick='openChangeMenu(event)'" + ((!profilePermissions) ? " style='cursor: default'" : "") + ">" +
+                    "<i class='fa fa-xs fa-caret-right' aria-hidden='true'></i>" +
+                "</div>" +
+                "<div class='date'>" +
+                    //$dateTime.prop('outerHTML') +
+                    $dateDifference.prop('outerHTML') +
+                "</div>" +
+                "<div class='banned'>" +
+                ((entry.banned == 1)
+                    ? "<i class='fa fa-exclamation-triangle' aria-hidden='true' style='padding-right: 8px' title='Banned'></i>"
+                    : "") +
+                "</div>" +
+                "<div class='submission'>" +
+                    ((entry.submission == 1)
+                        ? "<i class='fa fa-pencil' aria-hidden='true' style='padding-right: 8px' title='Submission'></i>"
+                        : "") +
+                "</div>" +
+                "<div class='demo-url'>" +
+                    "<a href='/getDemo?id="+entry.id+"'" +
+                    ((entry.hasDemo == 0)
+                        ? " style='display: none'"
+                        : " ") + ">" +
+                        "<i class='fa fa-download' aria-hidden='true'></i>" +
+                    "</a>" +
+                "</div>" +
+                "<div class='youtube'>" +
+                    "<i" +
+                    ((entry.youtubeID == null) ? " style='display: none'" : " ") +
+                    " onclick=\"embedOnBody('"+entry.youtubeID+"', '"+entry.chamberName+" - "+formatScoreTime(entry.score)+"');\"" +
+                    " class='fa fa-youtube-play' aria-hidden='true'></i>" +
+                "</div>" +
+                //$rank.prop('outerHTML') +
+               "<div class='rankDiff'>" +
+                   $preRank.prop('outerHTML') +
+//                   "<i class='fa fa-arrow-right' aria-hidden='true' style='display: inline-block; "
+//                       + ((entry.pre_rank == null)
+//                           ? "color: transparent"
+//                           : "") + "'>" +
+//                   "</i>" +
+                   $postRank.prop('outerHTML') +
+               "</div>" +
+                 "<div class='score'>" +
+                    formatScoreTime(entry.score) +
+                "</div>" +
+                "<div class='improvement'>"+ ((entry.improvement != null)
+                    ? ((entry.improvement < 0)
+                        ? ("+"+formatScoreTime(entry.improvement))
+                        : ("-"+formatScoreTime(entry.improvement)))
+                    : "-") +
+                "</div>" +
+                "<div class='changeMenu' style='padding-right: 0px'></div>" +
+            "</div>");
+
+        $entry.data(entry);
+
+        if (profilePermissions) {
+            $entry.hover(
+                function () {
+                    $changeMenuToggle = $(this).find(".changeMenuToggle i");
+                    $changeMenuToggle.css("display", "inline-block");
+                },
+                function () {
+                    $changeMenuToggle = $(this).find(".changeMenuToggle i");
+                    $changeMenuToggle.css("display", "none");
+                }
+            );
+        }
+        return $entry;
+    }
+
+    function openChangeMenu(event) {
+
+        if (!profilePermissions)
+            return;
+
+        var $target = $(event.target);
+
+        var $changeMenu, $changeMenuToggleIcon;
+        if ($target.hasClass("changeMenuToggle")) {
+            $changeMenu = $target.parent().find(".changeMenu");
+            $changeMenuToggleIcon = $target.find("i");
+        }
+        else if ($target.hasClass("fa")) {
+            $changeMenu = $target.parent().parent().find(".changeMenu");
+            $changeMenuToggleIcon = $target;
+        }
+        event.stopPropagation();
+
+        if ($changeMenu.hasClass("open")) {
+            $changeMenu.removeClass("open");
+            $changeMenu.slideUp("slow");
+            $changeMenuToggleIcon.attr("class", "fa fa-caret-right");
+            return;
+        }
+
+        if ($changeMenuToggleIcon.length > 0) { //change row accessible
+            $(".changeMenu")
+                .slideUp("slow")
+                .removeClass("open");
+            $(".changeEntry .changeMenuToggle i").attr("class", "fa fa-caret-right");
+
+            var entry = $changeMenu.closest(".changeEntry").data();
+            var entryId = entry.id;
+            if ($changeMenu.find(".changeForm").length == 0) {
+                var $content = $(
+                    "<form class='changeForm'>" +
+                        "<input type='text' name='id' style='display: none' value='" + entry.id + "'>" +
+                        "<div>" +
+                            "<div class='button deleteSubmission' style='" + ((entry.submission == 0) ? "display:none;" : "") + "'>" +
+                            "Delete Submission" +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='uploadDemoContainer'" + ((entry.hasDemo == 1) ? " style='display:none'" : "") + ">" +
+                            "<label class='button browseDemo'>" +
+                                "<input type='file' name='demoFile'/>" +
+                                "<span>Browse for demo</span>" +
+                            "</label>" +
+                            "<div class='fileName'></div>" +
+                            "<div class='button uploadDemo' style='display: none; margin-left: 3px'>" +
+                                "Upload" +
+                            "</div>" +
+                        "</div>" +
+                        "<div>" +
+                            "<div class='button deleteDemo' style='" + ((entry.hasDemo == 0) ? "display:none;" : "") + "'>" +
+                            "Delete Demo" +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='setYoutubeContainer'" + ((entry.youtubeID != null) ? " style='display:none'" : "") + "'>" +
+                            "<input type='text' name='youtubeID' value=''>" +
+                            "<div class='button setYoutube' style='margin-left: 3px'>" +
+                                "Set Youtube URL" +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='button deleteYoutube' style='" + ((entry.youtubeID == null) ? "display:none;" : "") + "'>" +
+                            "Remove Youtube URL" +
+                        "</div>" +
+                    "</form>");
+
+                $changeMenu.append($content);
+            }
+
+            $changeMenu.slideDown("slow");
+            $changeMenu.addClass("open");
+            $changeMenuToggleIcon.attr("class", "fa fa-caret-down");
+
+            $changeMenu .find(".button.deleteSubmission").click(function() {
+                var $form = $(this).closest(".changeForm");
+                var $changeRow = $form.closest(".changeEntry");
+                var entry = $changeRow.data();
+
+                var formData = new FormData($form[0]);
+                setStatusProcessing();
+                $.ajax({
+                    url: '/deleteSubmission',
+                    data: formData,
+                    type: 'POST',
+                    success: function (data) {
+                        $changeRow.slideUp("slow", function() {
+                            $changeRow.remove();
+                            setStatusSuccess("Submission deleted.");
+                        });
+
+                        var index = entries.map(function(e) { return e.id }).indexOf(entry.id);
+                        if (index > -1) {
+                            entries.splice(index, 1);
+                            updateBestScore();
+                        }
+
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'json');
+            });
+
+            $changeMenu.find(".button.setYoutube").click(function(){
+                var $setYoutubeContainer = $(this).parent();
+                var $form = $(this).closest(".changeForm");
+                var $deleteYoutubeButton = $form.find(".button.deleteYoutube");
+                var $youtubeField = $form.find("input[name='youtubeID']");
+                var $youtubeEmbed = $form.parent().parent().find(".youtube i");
+                var $youtubeEmbedScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .youtube i");
+
+                if ($youtubeField.val() != "") {
+
+                    var ytURL = $youtubeField.val();
+                    ytURL = getYTURL(ytURL);
+
+                    if (ytURL == null)
+                        return;
+
+                    $youtubeField.val(ytURL);
+
+                    setStatusProcessing();
+                    var formData = new FormData($form[0]);
+
+                    $.ajax({
+                        url: '/setYoutubeID',
+                        data: formData,
+                        type: 'POST',
+                        success: function (data) {
+                            $youtubeEmbed.attr("onclick", "embedOnBody('" + ytURL + "', '"+entry.chamberName+" - "+formatScoreTime(entry.score)+"');");
+                            $youtubeEmbed.show();
+
+                            if (currentScoreID == entryId) {
+                                $youtubeEmbedScore.attr("onclick", "embedOnBody('" + ytURL + "', '" + entry.chamberName + " - " + formatScoreTime(entry.score) + "');");
+                                $youtubeEmbedScore.show();
+                            }
+
+                            $deleteYoutubeButton.show();
+                            $setYoutubeContainer.hide();
+                            setStatusSuccess("Youtube video set.");
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }, 'json');
+                }
+                else {
+                    setStatusError("Youtube URL can't be empty.");
+                }
+            });
+
+            $changeMenu.find(".button.deleteYoutube").click(function(){
+                var $deleteYoutubeButton = $(this);
+                var $form = $(this).closest(".changeForm");
+                var $setYoutubeContainer = $form.find(".setYoutubeContainer");
+                var $youtubeEmbed = $form.parent().parent().find(".youtube i");
+                var $youtubeEmbedScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .youtube i");
+                var $youtubeField = $form.find("input[name='youtubeID']");
+                setStatusProcessing();
+
+                var formData = new FormData($form[0]);
+
+                $.ajax({
+                    url: '/deleteYoutubeID',
+                    data: formData,
+                    type: 'POST',
+                    success: function(data) {
+                        $youtubeField.val("");
+                        $deleteYoutubeButton.hide();
+                        $setYoutubeContainer.show();
+                        $youtubeEmbed.hide();
+
+                        if (currentScoreID == entryId) {
+                            $youtubeEmbedScore.hide();
+                        }
+
+                        setStatusSuccess("Youtube video removed.");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'json');
+            });
+
+            $changeMenu.find(".changeForm input[name='demoFile']").change(function (){
+                var fileNameComponents = $(this).val().split("\\");
+                var fileName = fileNameComponents[fileNameComponents.length - 1];
+                $(this).parent().parent().find(".uploadDemo").show();
+                $(this).parent().parent().find(".filename").html(fileName);
+            });
+
+            $changeMenu.find(".button.uploadDemo").click(function(){
+                var $uploadDemoContainer = $(this).parent();
+                var $form = $(this).closest(".changeForm");
+                var $deleteDemoButton = $form.find(".button.deleteDemo");
+                var $demoURL = $form.parent().parent().find(".demo-url a");
+                var $demoURLScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .demo-url a");
+
+                setStatusProcessing();
+                var formData = new FormData($form[0]);
+
+                var file = $form.find("input[type='file']").get(0).files[0];
+
+                if (file !== undefined) {
+                    if (file.size < (5 * 1024 * 1024)) {
+                        $.ajax({
+                            url: '/uploadDemo',
+                            data: formData,
+                            type: 'POST',
+                            success: function (data) {
+                                $uploadDemoContainer.hide();
+                                setStatusSuccess("Demo uploaded.");
+                                $demoURL.show();
+                                $deleteDemoButton.show();
+
+                                if (currentScoreID == entryId) {
+                                    $demoURLScore.show();
+                                }
+                            },
+                            cache: false,
+                            contentType: false,
+                            processData: false
+                        }, 'json');
+                    }
+                    else {
+                        setStatusError("File is too big. Max upload size: 5MB");
+                    }
+                }
+                else {
+                    setStatusError("No file chosen.");
+                }
+            });
+
+            $changeMenu.find(".button.deleteDemo").click(function(){
+                var $deleteButton = $(this);
+                var $form = $(this).closest(".changeForm");
+                var $uploadDemoContainer = $form.find(".uploadDemoContainer");
+                var $demoURL = $form.parent().parent().find(".demo-url a");
+                var $demoURLScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .demo-url a");
+
+                setStatusProcessing();
+                var formData = new FormData($form[0]);
+
+                $.ajax({
+                    url: '/deleteDemo',
+                    data: formData,
+                    type: 'POST',
+                    success: function(data) {
+                        $deleteButton.hide();
+                        $uploadDemoContainer.show();
+
+                        if (currentScoreID == entryId) {
+                            $demoURLScore.hide();
+                        }
+
+                        $demoURL.hide();
+                        setStatusSuccess("Demo deleted.");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'json');
+            });
+        }
+    }
+
+    function setStatus(str, icon, cachingMessage) {
+        $status.html(
+            "<i class='fa "+icon+"' aria-hidden='true'></i>" +
+            "<div class='text'>" + str + (cachingMessage ? "<br>Wait a minute for the changes to take effect." : "")+"</div>"
+        );
+
+        var $icon = $status.find("i");
+        var $text = $status.find(".text");
+        $icon.css("margin-top", ($text.height() / 2) - 5);
+    }
+
+    function setStatusProcessing() {
+        setStatus("Processing" ,'fa-circle-o-notch fa-spin', false);
+    }
+
+    function setStatusError(str) {
+        setStatus(str ,'fa-times', false);
+    }
+
+    function setStatusSuccess(str) {
+        setStatus(str ,'fa-check', true);
+    }
+
+    function getYTURL(ytURL) {
+
+        //domain name checking
+        if (ytURL.indexOf("/watch?v=") != -1) {
+            ytURL = ytURL.split("/watch?v=")[1];
+        }
+        else if (ytURL.indexOf("youtu.be/") != -1) {
+            ytURL = ytURL.split("youtu.be/")[1];
+        }
+        else {
+            setStatusError("Invalid YouTube URL. Use either youtu.be/[ID] or youtube.com/watch?v=[ID].");
+            return null;
+        }
+
+        //TODO: check yt ID
+        ytURL = ytURL.replace(/&/g, "#").replace(/\?/g, "#");
+        var ytID = ytURL.split("#")[0];
+        var timestampSeconds;
+
+        if (ytURL.indexOf("#") != -1) {
+            var timestamp;
+            if (ytURL.indexOf("#t=") != -1) {
+                timestamp = ytURL.split("#t=")[1];
+                var hours = 0;
+                var minutes = 0;
+                var seconds = 0;
+                if (timestamp.indexOf("h") != -1) {
+                    hours = timestamp.split("h")[0];
+                    timestamp = timestamp.split("h")[1];
+                }
+                if (timestamp.indexOf("m")  != -1) {
+                    minutes = timestamp.split("m")[0];
+                    timestamp = timestamp.split("m")[1];
+                }
+                if (timestamp.indexOf("s")  != -1) {
+                    seconds = timestamp.split("s")[0];
+                }
+
+                timestampSeconds = parseInt(seconds) + (parseInt(minutes) * 60) + (parseInt(hours) * 60 * 60);
+            }
+            else if (ytURL.indexOf("#start=") != -1) {
+                timestamp = ytURL.split("#start=")[1];
+                timestampSeconds = parseInt(timestamp);
+            }
+        }
+
+        if (isNaN(timestampSeconds) || timestampSeconds === undefined)
+            timestampSeconds = 0;
+
+        return ytID + "?start=" + timestampSeconds.toString();
+    }
+
+</script>

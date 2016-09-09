@@ -1,0 +1,235 @@
+<?php $mapData = $view->chamber; ?>
+<?php $mapInfo = $GLOBALS["mapInfo"]; ?>
+<?php $chapter = $mapInfo["chapters"][$mapInfo["maps"][$GLOBALS["chamberID"]]["chapterId"]]["chapterName"]; ?>
+<?php $map = $mapInfo["maps"][$GLOBALS["chamberID"]]["mapName"]; ?>
+<?php $isPublic = $mapInfo["maps"][$GLOBALS["chamberID"]]["isPublic"]; ?>
+<?php $wrs = Leaderboard::getChangelog(array("chamber" => $GLOBALS["chamberID"], "wr" => "1", "maxDaysAgo" => 0, "banned" => 0));?>
+<?php $youtubeIDs = Cache::get("youtubeIDs".$GLOBALS["chamberID"])?>
+<?php include("util/PageGenerator.php") ?>
+<?php include("util/ChamberView.php")?>
+
+<div id="chamber">
+    <div class="chamberview" style="background-image: url('/images/chambers_full/<?=$GLOBALS["chamberID"];?>.jpg')">
+        <div class="chamberinfo">
+            <div class="chamberchaptername"><?=$chapter;?></div>
+            <?php if($isPublic == "1"): ?>
+                <a href="http://steamcommunity.com/stats/Portal2/leaderboards/<?=$GLOBALS["chamberID"];?>" target="_blank" class="chamberchambername"><?=$map;?></a>
+            <?php endif; ?>
+            <?php if($isPublic == "0"): ?>
+                <span class="chamberchambername"><?=$map;?></span>
+            <?php endif; ?>
+            <div class="controls topright">
+                <div class="button linkButton chamberHistoryButton">
+                    <a href="/changelog?chamber=<?=$GLOBALS["chamberID"]?>" class="name">Chamber History</a>
+                </div>
+            </div>
+            <div class="controls left">
+                <div class="button standardButton wrHistoryButton">
+                    <span class="name">World Record History</span>
+                </div>
+                <?php if(isset($youtubeIDs[0])): ?>
+                    <div class="button standardButton videoButton">
+                        <span class="name">Video: <?=Leaderboard::convertToTime($youtubeIDs[0]["score"])?> by <?=$youtubeIDs[0]["player_name"]?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
+            <div class="controls chamberControls">
+                <div class="button previous">
+<!--                    <span class="name">Faster</span>-->
+                    <span class="icon"><i class="fa fa-caret-left fa-3x" aria-hidden="true"></i></span>
+                </div>
+                <span class="currentPageLabel"></span>
+                <div class="button next">
+                    <span class="icon"><i class="fa fa-caret-right fa-3x" aria-hidden="true"></i></span>
+<!--                    <span class="name">Slower</span>-->
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php if($isPublic == "0"): ?>
+        <div class="not-public-chambers">
+          <span class="text">
+              This chamber is not available through official Steam leaderboard pages, but is accessible by modifying the game's internal map list. A tutorial for doing this can be found <a href="http://youtu.be/8mtyKGh_e-w?t=18m30s"  target="_blank">here</a>.
+              <span class="close-btn"></span>
+          </span>
+        </div>
+    <?php endif; ?>
+
+    <div style="height: 0px; width: 100%; overflow: hidden">
+        <div id="wrHistory" style="height: 175px; width: 100%"></div>
+    </div>
+    <?php if(isset($youtubeIDs[0])): ?>
+    <div id="video" style="height: 540px; display:none;">
+    </div>
+    <?php endif; ?>
+
+    <?php PageGenerator::generatePages($mapData, array("ChamberView", "getEntry")) ?>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        setTimeout(function() {
+            fadeInLetters(".chamberchambername");
+            fadeInLetters(".chamberchaptername");
+            <?php if(!isset($_COOKIE["readthisshit"])): ?>
+                $(".not-public-chambers").slideDown();
+            <?php endif;?>
+        }, 1000);
+
+        $(".entries.pages").css("height", Math.min(25, <?=count($mapData)?>) * 43);
+    });
+
+    function fadeInLetters(selector) {
+        var txt = $(selector).html();
+        var shiny = "";
+        for(var i=0;i<=$(selector).html().length - 1;i++) {
+            var letter = txt.charAt(i);
+            if(letter == " ") {
+                letter = "&nbsp;";
+            }
+            shiny += "<div class='seperate'>"+letter+"</div>";
+        }
+        $(selector).css("opacity", "1");
+        $(selector).html(shiny);
+        $(selector+" .seperate").each(function(index) {
+            setTimeout(function() {
+                $(selector+" .seperate:eq("+index+")").animate({opacity:1}, 150, "linear", function()
+                {
+                    setTimeout(function() {
+                        $(selector+" .seperate:eq("+index+")").animate({color: "#E1E8EB"}, 300);
+
+                    }, 200);
+
+                });
+            }, 100 * (index + 1));
+        });
+    }
+
+    <?php $scores = array();
+    foreach(array_reverse($wrs) as $entry => $entryData) {
+        if ($entryData["time_gained"] != NULL) {
+            if (isset($scores[$entryData["score"]]) ? ($entryData["time_gained"] === $scores[$entryData["score"]]["time_gained"]) : true) {
+                $scores[$entryData["score"]]["time_gained"] = $entryData["time_gained"];
+                $scores[$entryData["score"]]["players"][] = $entryData["player_name"];
+            }
+        }
+    } ?>
+
+    var activity = [
+        <?php foreach($scores as $score => $scoreData): ?>
+        { year: localizeDate('<?=$scoreData["time_gained"];?>'), score: <?=$score?>, players: [
+            <?php foreach($scoreData["players"] as $player): ?>
+            '<?=addslashes($player); ?>',
+            <?php endforeach; ?>
+        ]},
+        <?php endforeach; ?>
+    ];
+
+    $element = $("#wrHistory")
+    $element.empty();
+    new Morris.Line({
+        element: $element.attr("id"),
+        data: activity,
+        parseTime: true,
+        xkey: 'year',
+        ykeys: ['score'],
+        ymin: 'auto',
+        yLabelFormat: function(y) {
+            return formatScoreTime(y);
+        },
+        hoverCallback: function(index, options, content) {
+            var data = options.data[index];
+            var playerStr = "";
+            for (var p in data.players) {
+                var player = data.players[p];
+                if (data.players.length > 1 ? data.players[data.players.length - 1] == player : false)
+                    playerStr += " and ";
+                else if (playerStr != "")
+                    playerStr += ", ";
+
+                playerStr += player;
+            }
+
+            $(".morris-hover").html(data.year + "<br>"+ formatScoreTime(data.score) + " by " + playerStr);
+        },
+        labels: ['World Record'],
+        gridTextSize: 11,
+        lineColors: ['#2f96d1'],
+        hideHover: 'auto',
+        gridTextFamily : "Segoe UI",
+        gridTextColor: "#777",
+        smooth: false
+    });
+
+    $element.parent()
+        .hide()
+        .css("height", "175px")
+        .css("overflow", "visible");
+
+    $(".wrHistoryButton").click(function() {
+        $historyContainer = $("#wrHistory").parent();
+        if ($historyContainer.is(':hidden'))
+            $historyContainer.slideDown();
+        else
+            $historyContainer.slideUp();
+    });
+
+    <?php if (count($youtubeIDs) > 0): ?>
+        $(".videoButton").click(function() {
+            $video = $("#video");
+            if ($video.is(':hidden')) {
+                embedInDiv($video, '<?=$youtubeIDs[0]["youtubeID"]?>');
+                setTimeout(function() { $video.slideDown() }, 200);
+            }
+            else {
+                $video.slideUp({
+                    complete: function() {
+                        $video.empty();
+                    }
+                });
+            }
+        });
+    <?php endif; ?>
+
+    $(".controls .next").click(function() {
+        var page = nextPage($(".entries"));
+        var lastPage = getLastPage($(".entries"));
+        $(".currentPageLabel").text(page + " / " + lastPage);
+    });
+
+    $(".controls .previous").click(function() {
+        var page = previousPage($(".entries"));
+        var lastPage = getLastPage($(".entries"));
+        $(".currentPageLabel").text(page + " / " + lastPage);
+    });
+
+    $(".entries").each(function() {
+        var lastPage = getLastPage($(".entries"));
+        $(".currentPageLabel").text(Math.min(1, lastPage) + " / " + lastPage);
+    });
+
+    var lastPage = getLastPage($(".entries"));
+    $(".currentPageLabel").css("width", 20 + (2 * (Math.floor(Math.log(Math.max(2, lastPage)) / Math.LN10) + 1) * 7));
+
+    $(".entry .date").each(function() {
+        var date = $(this).attr("date");
+        if (date !== "") {
+            formatDateDifferenceFromNow($(this), date, true)
+        }
+    });
+
+    $(".not-public-chambers .close-btn").click(function() {
+        $(".not-public-chambers").slideToggle();
+        var d = new Date();
+        d.setTime(d.getTime()+(604800000));
+        var expires = "expires="+d.toGMTString();
+        document.cookie = "readthisshit=yes; " + expires;
+    });
+
+    <?php if($isPublic == 0): ?>
+        $(".chamberchambername").click(function() {
+            $(".not-public-chambers").slideDown();
+        });
+    <?php endif; ?>
+
+</script>

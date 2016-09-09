@@ -1,0 +1,208 @@
+<?php include("util/PageGenerator.php") ?>
+<?php include("util/ChangelogView.php")?>
+<?php $mapInfo = $GLOBALS["mapInfo"]; ?>
+
+<?php function removeUnknownDates($change) { return $change["time_gained"] != NULL; } ?>
+<?php $activity = array_filter($view->changelog, "removeUnknownDates") ?>
+
+<div id="changelog">
+    <div id="filters">
+        <div id="filter_instructions_lol">Use these filters to display the changelog you want</div>
+        <div id="filter_options">
+            <form name="filters" action="/changelog" method="get">
+                <div style="float: left;" class="input">
+                    <label for="nickname">Nickname</label>
+                    <input type="text" name="boardName" value="<?=$param['boardName'];?>">
+                </div>
+                <div style="float: left;" class="input">
+                    <label for="profilenumber">Steam profile number</label>
+                    <input type="text" name="profileNumber" value="<?=$param['profileNumber'];?>">
+                </div>
+                <div style="float: left;" class="input">
+                    <label for="profilenumber">Chapter name</label>
+                    <select style="width: 100%;" name="chapter">
+                        <option value="">No chapter</option>
+                        <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
+                            <option disabled><?=$mode?></option>
+                            <?php foreach($mapInfo["modes"][$modeId] as $chapterId): ?>
+                                <?php $chapterName = $mapInfo["chapters"][$chapterId]["chapterName"]?>
+                                <option value="<?=$chapterId?>" <?php if($param['chapter'] == $chapterId) : ?>selected<?php endif; ?>>&nbsp;&nbsp;<?=$chapterName?></option>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div style="float: left;" class="input">
+                    <label for="profilenumber">Chamber name</label>
+                    <select style="width: 100%;" name="chamber">
+                        <option value="">No chamber</option>
+                        <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
+                            <option disabled><?=$mode?></option>
+                            <?php foreach($mapInfo["modes"][$modeId] as $chapterId): ?>
+                                <option disabled>&nbsp;&nbsp;<?=$mapInfo["chapters"][$chapterId]["chapterName"]?></option>
+                                <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
+                                    <?php $mapName = $mapInfo["maps"][$mapId]["mapName"]?>
+                                    <option value="<?=$mapId?>" <?php if($param['chamber'] == $mapId): ?>selected<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?=$mapName?></option>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+<!--                <div style="float: left;" class="check">
+                    <div style="position: relative; ">Singleplayer</div>
+                    <div class="checkbox <?php /*if($param['sp'] == "1"): */?>ticked<?php /*endif; */?>"></div>
+                    <input type="hidden" value="<?/*=$param['sp'];*/?>" name="sp">
+                </div>
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">Cooperative</div>
+                    <div class="checkbox <?php /*if($param['coop'] == "1"): */?>ticked<?php /*endif; */?>"></div>
+                    <input type="hidden" value="<?/*=$param['coop'];*/?>" name="coop">
+                </div>-->
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">World Record</div>
+                    <div class="checkbox <?php if($param['wr'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?=$param['wr'];?>" name="wr">
+                </div>
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">Demo</div>
+                    <div class="checkbox <?php if($param['demo'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?=$param['demo'];?>" name="demo">
+                </div>
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">YouTube</div>
+                    <div class="checkbox <?php if($param['yt'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?=$param['yt'];?>" name="yt">
+                </div>
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">Submission</div>
+                    <div class="checkbox <?php if($param['submission'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?=$param['submission'];?>" name="submission">
+                </div>
+                <!--                <div style="float: left; display: none" class="number">-->
+                <!--                    <label class="top" style="position: relative;">Max days ago</label>-->
+                <!--					<label class="bottom" style="position: relative;">Unlimited: 0</label>-->
+                <!--                    <input type="number" value="--><?//=$param['maxDaysAgo'];?><!--" name="maxDaysAgo">-->
+                <!--                </div>-->
+                <div style="float: right; margin: 30px 20px 0px 0px">
+                    <input type="submit" value="Filter"></input>
+                </div>
+            </form>
+        </div>
+    </div>
+    <?php if (count($view->changelog) == 0): ?>
+            <div style="font-size: 20px; margin: auto; width: 100%; text-align: center; color: #888;">
+                <i class="fa fa-times" style="padding-right: 10px"></i>No scores found
+            </div>
+        </div>
+        <?php return; ?>
+    <?php endif; ?>
+    <?php if (count($activity) > 0): ?>
+    <div class = 'activity'>
+            <div id= 'changelogActivity' style= 'height: 175px;'>
+                <i class="fa fa-circle-o-notch fa-spin fa-fw loading"></i>
+            </div>
+    </div>
+    <?php endif; ?>
+    <div id="entries">
+        <div class="controls">
+            <div class="button previous">
+                <!--				<span class="name">Newer</span>-->
+                <span class="icon"><i class="fa fa-caret-left fa-3x" aria-hidden="true"></i></span>
+            </div>
+            <span class="currentPageLabel"></span>
+            <div class="button next">
+                <span class="icon"><i class="fa fa-caret-right fa-3x" aria-hidden="true"></i></span>
+                <!--				<span class="name">Older</span>-->
+            </div>
+        </div>
+        <div id="firstentry">
+            <div class="date">Date</div>
+            <div class="profileIcon"></div>
+            <div class="boardname">Player</div>
+            <div class="map">Map</div>
+            <div class="chapter">Chapter</div>
+            <div class="previousscore">Previous score</div>
+            <div class="newscore">New score</div>
+            <div class="improvement">Improvement</div>
+            <div class="demo-url"></div>
+            <div class="youtube"></div>
+            <div class="submission"></div>
+            <div class="banScore"><?php if (SteamSignIn::loggedInUserIsAdmin()): ?><?php endif; ?></div>
+        </div>
+        <div id="otherentries">
+            <?php PageGenerator::generatePages($view->changelog, array("ChangelogView", "getEntry")); ?>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function() {
+        $(".checkbox").click(function() {
+            $(this).toggleClass("ticked");
+            var v = $(this).parent().find("input:eq(0)").val();
+            v = (v == 0 ? 1 : 0);
+            $(this).parent().find("input:eq(0)").val(v);
+        });
+
+        $(".entry .date").each(function() {
+            var $dateTime = $(this).find(".dateTime");
+            var $dateDifference = $(this).find(".dateDifference");
+
+            var date = $(this).attr("date");
+            if (date !== undefined && date !== "" && date !== null) {
+                formatDateDifferenceFromNow($dateDifference, date, true);
+                $dateTime.text(localizeDate(date, "ddd, YYYY-MM-DD, HH:mm:ss"));
+            }
+            else {
+                $dateTime.text("Unknown");
+            }
+        });
+
+        $(".controls .next").click(function() {
+            var page = nextPage($(".entries"));
+            var lastPage = getLastPage($(".entries"));
+            $(".currentPageLabel").text(page + " / " + lastPage);
+        });
+
+        $(".controls .previous").click(function() {
+            var page = previousPage($(".entries"));
+            var lastPage = getLastPage($(".entries"));
+            $(".currentPageLabel").text(page + " / " + lastPage);
+        });
+
+        var lastPage = getLastPage($(".entries"));
+        $(".currentPageLabel")
+            .text(Math.min(1, lastPage) + " / " + lastPage)
+            .css("width", 20 + (2 * (Math.floor(Math.log(Math.max(2, lastPage)) / Math.LN10) + 1) * 7));
+
+        $("#otherentries").css("height", Math.min(25, <?=count($view->changelog)?>) * 42);
+
+        $(".rank").each(function() {
+            drawRank($(this));
+        });
+
+        var activityByScore = getActivityByScore(<?=json_encode($activity)?>);
+        if (Object.keys(activityByScore).length > 0) {
+            var activityByDate = getActivityByDate(activityByScore);
+            drawActivityChart(activityByDate, localizeDate(getDateFirstChange(activityByDate)), getCurrentLocalDate(), $("#changelogActivity"));
+        }
+    });
+
+    function setBannedStatus(id, banStatus, clickEventTarget) {
+        $.ajax({
+            url: '/setScoreBanStatus',
+            type: 'POST',
+            success: function (data) {
+                //console.log(data);
+                var parent = $(clickEventTarget).parent().parent();
+                var oldDiv = (banStatus == 1) ? parent.find(".ban") : parent.find(".unban");
+                var newDiv = (banStatus == 0) ? parent.find(".ban") : parent.find(".unban");
+                newDiv.show();
+                oldDiv.hide();
+            },
+            data: {
+                id: id,
+                banStatus: banStatus
+            }
+        });
+    }
+
+</script>

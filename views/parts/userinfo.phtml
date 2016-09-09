@@ -1,0 +1,14 @@
+<?php if(!isset(SteamSignIn::$loggedInUser)): ?>
+	<a href="<?php echo SteamSignIn::genUrl("http://".$_SERVER['HTTP_HOST']."/login"); ?>" id="loginsteam"></a>
+	<div id="seper"></div>
+	<div id="edition"></div>
+<?php else: ?>
+	<?php $loggedInUser = SteamSignIn::$loggedInUser ?>
+	<div id="welcome" class="threelines">
+		<div class="firstline">Welcome back, <?=$loggedInUser->userData->steamname;?></div>
+		<div>Profile ID - <?=$loggedInUser->profileNumber;?></div>
+        <div><a href="/editprofile">Edit profile</a> | <a href="/profile/<?=$loggedInUser->profileNumber;?>">View profile</a> | <a href="/logout">Log out</a></div>
+	</div><img class="avatar" src="<?=$loggedInUser->userData->avatar;?>" alt="" />
+	<div id="seper"></div>
+	<div id="edition"></div>
+<?php endif; ?>

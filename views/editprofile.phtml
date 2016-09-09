@@ -1,0 +1,20 @@
+<div id="editProfile">
+    <div class="titleContainer">
+        <h1 class="title">Profile</h1>
+        <h1 class="subtitle">Edit your profile</h1>
+    </div>
+    <div class="normalcontent">
+        <form action="/editprofile" method="post">
+            <label for="twitch">Twitch username</label>
+            <input type="text" name="twitch" value="<?=$loggedInUser->userData->twitch;?>"/>
+            <label for="youtube">Youtube channel URL / user name</label>
+            <input type="text" name="youtube" value="www.youtube.com<?=$loggedInUser->userData->youtube;?>"/>
+            <label for="youtube">Board name (Keep empty to remain synced with your steam nickname)</label>
+            <input type="text" name="boardname" value="<?=$loggedInUser->userData->boardname;?>"/>
+            <button class="button" type="submit">Save</button>
+        </form>
+    </div>
+    <?php if(isset($view->msg)): ?>
+        <div><?=$view->msg?></div>
+    <?php endif; ?>
+</div>

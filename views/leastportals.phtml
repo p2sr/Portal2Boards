@@ -1,0 +1,38 @@
+<div id="leastportals">
+	<?php
+		$i=1; foreach($view->board as $board_key => $board_val): ?>
+			<div class="chapterinfo">
+			<?php
+				$chapter_number = $i;
+				if(strlen($i) != 2) {
+					$chapter_number = "0".$i;
+				}
+			?>
+			<h1 class="chapternumber">Chapter <?php echo $chapter_number;$i++;?></h1>
+			<h1 class="chaptername"><?=$board_key;?></h1>
+			</div>
+			<div class="chambers">
+			<?php foreach($board_val as $chamb_key => $chamb_val): ?>
+				<div class="chamber leastportals">
+				<div class="chamberimage"  onclick="location.href='http://steamcommunity.com/stats/Portal2/leaderboards/<?=$chamb_val[0];?>';" style="background: url('/images/chambers/<?=$chamb_val[1];?>.jpg')">
+					<div class="chambertitle">
+						<div class="titlebghelper"></div>
+						<div class="titlebg"><a href="http://steamcommunity.com/stats/Portal2/leaderboards/<?=$chamb_val[0];?>"><?=$chamb_key; ?></a></div>
+<!--						<div class="chamber_icons">-->
+<!--							<span class="icons youtubeLink fa-stack">-->
+<!--								  <i class="fa fa-square fa-stack-2x"></i>-->
+<!--								  <i class="fa fa-play fa-stack-1x"></i>-->
+<!--							</span>-->
+<!--						</div>-->
+					</div>
+					<div class="portalsused">
+						<?php $grammar = ($chamb_val[2] != 1) ? "PORTALS" : "PORTAL"; ?>
+						<div class="portalamount"><?=$chamb_val[2];?></div> <?=$grammar;?>
+					</div>
+				</div>
+
+			</div>
+		<?php endforeach; ?>
+		</div>
+	<?php endforeach; ?>
+</div>
