@@ -55,7 +55,12 @@ class DemoManager {
 
     function getDemoURL($id) {
         $file = $this->getDemoFile($id);
-        return "https://docs.google.com/uc?export=download&id=".$file->id;
+        if ($file != NULL) {
+            return "https://docs.google.com/uc?export=download&id=".$file->id;
+        }
+        else {
+            return NULL;
+        }
     }
 
     function deleteDemo($id) {

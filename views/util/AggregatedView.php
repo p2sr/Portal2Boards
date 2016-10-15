@@ -31,7 +31,7 @@ class AggregatedView
             <?php if ($convertToTime): ?>
                 <div class="score"><?= Leaderboard::convertToTime($scoreData["score"]) ?></div>
             <?php else: ?>
-                <div class="score"><?=$scoreData["score"]?></div>
+                <div class="score"><?=round($scoreData["score"])?></div>
             <?php endif; ?>
         </div>
     <?php }

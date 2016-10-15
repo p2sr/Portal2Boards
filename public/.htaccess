@@ -7,16 +7,10 @@ RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
 RewriteRule ^.*$ ./index.php
-#RewriteRule !^(^$|/home|/coop|/changelog|/aggregated|/leastportals|/views/images|/views/style|index\.php) [NC,F]
 RewriteRule ^(classes/|data/|views/|drive/|vendor/|models/|util/) - [R=404,L,NC]
 
-#RewriteCond %{REQUEST_FILENAME} -f [OR]
-#RewriteCond %{REQUEST_FILENAME} -d
-#RewriteRule .? - [L]
-#
-#RewriteRule ^([^/]*)$ index.php?page=$1 [L]
-#RewriteRule ^([^/]*)/([^/]*)$ index.php?page=$1&id=$2 [L]
-#RewriteRule ^([^/]*)/([^/]*)/([^/]*)$ index.php?page=$1&id=$2&type=$3 [L]
+php_value post_max_size 30M
+php_value upload_max_filesize 30M
 
 <FilesMatch "\.(|jpg|jpeg|png|ico|eot|svg|ttf|wolf)$">
   Header set Cache-Control "max-age=86400"

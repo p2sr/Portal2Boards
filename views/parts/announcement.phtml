@@ -1,0 +1,32 @@
+<?php $cookieName = "site-notification-09-25-2016"; ?>
+<?php $giveAnnouncement = false; ?>
+
+<?php if(!isset($_COOKIE[$cookieName]) && $giveAnnouncement): ?>
+
+    <div id="announcement">
+        <span class="notification">
+            <b>Announcement:</b> since the weekly scheduled Steam maintenance on 09-20-2016, leaderboard data for non-official chambers
+            (Container Ride, Portal Carousel, etc.) can no longer be fetched, meaning that new scores you obtain for these chambers will not be automatically synced to this website.
+            The leaderboards do however still work in-game. Until this is resolved (which could very well be never), submit any records you obtain for these chambers via your profile.
+            <!-- Note that another effect of this maintenance is that syncing new scores from the Steam leaderboards now takes longer (up to 20 minutes). -->
+        </span>
+        <span class="close-btn"></span>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            setTimeout(function() {
+                $("#announcement").slideDown("slow");
+            }, 2000);
+
+            $("#announcement .close-btn").click(function() {
+                $("#announcement").slideUp("slow");
+                var d = new Date();
+                d.setTime(d.getTime() + (<?=Router::cookieLifetime?> * 1000));
+                var expires = "expires="+d.toGMTString();
+                document.cookie = "<?=$cookieName?>=yes; " + expires;
+            });
+        });
+    </script>
+
+<?php endif; ?>

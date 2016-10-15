@@ -1,6 +1,9 @@
 function embedOnBody(youtubeID, description) {
     $("#youtube").remove();
 
+    if (youtubeID.indexOf("?start=") == -1)
+        youtubeID += "?start=0";
+
     if (description != "") {
         description = "<div id='description'>" + description + "</div>";
     }

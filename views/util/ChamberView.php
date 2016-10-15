@@ -28,6 +28,11 @@ class ChamberView
                 </a>
             </div>
             <div class="boardname"><a href="/profile/<?= $player; ?>"><?= $playerData["boardname"] ?></a></div>
+            <div class="submission">
+                <?php if ($scoreData["submission"] == 1): ?>
+                    <i class="fa fa-pencil" aria-hidden="true" data-toggle="tooltip" title="Submission"></i>
+                <?php endif; ?>
+            </div>
             <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$GLOBALS["chamberID"]?>" class="score"><?= Leaderboard::convertToTime($scoreData["score"]) ?></a>
             <div class="date" date="<?=$scoreData["date"]?>"></div>
             <div class="demo-url">
@@ -47,9 +52,12 @@ class ChamberView
                         class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
                 <?php endif; ?>
             </div>
-            <div class="submission" <?php if ($scoreData["submission"] == 1): ?> title="Submission" <?php endif; ?>>
-                <?php if ($scoreData["submission"] == 1): ?>
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
+            <div class="comment">
+                <?php if ($scoreData["note"] != NULL): ?>
+                    <i class="fa fa-comment" aria-hidden="true"
+                       data-container="body" data-toggle="popover" data-placement="top"
+                       data-content="<?=$scoreData["note"]?>">
+                    </i>
                 <?php endif; ?>
             </div>
         </div>

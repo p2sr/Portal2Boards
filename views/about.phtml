@@ -3,7 +3,7 @@
 
     <h1 class="title">Rules</h1>
     <div class="container">
-        Any and all modifications of the game that changes the physics or controls in any way is strictly banned, with the exception of console commands "sv_player_funnel_into_portals" and "developer".
+        Any and all modifications of the game that change the physics or controls in any way is strictly banned, with the exception of console commands "sv_player_funnel_into_portals" and "developer".
         <br>
         In particular, note that this means that changing the server tickrate is forbidden.
     </div>
@@ -11,7 +11,7 @@
     <h1 class="title">Console commands</h1>
     <h2 class="subtitle">Gameplay</h2>
     <div class="container smallContainer">
-        <table>
+        <table class="table table-condensed">
             <tr>
                 <td>sv_player_funnel_into_portals</td>
                 <td>Enabling this will curve the player into nearby portals when falling or jumping.</td>
@@ -36,7 +36,7 @@
     </div>
     <h2 class="subtitle">Recording demos</h2>
     <div class="container">
-        <table>
+        <table class="table table-condensed">
             <tr>
                 <td style="min-width: 260px">record [name]</td>
                 <td>Starts recording the player's inputs generating a demo (.dem) file.</td>
@@ -77,31 +77,33 @@
 <!--    TODO: link to numTrackedPlayerRanks including table with example points -->
     <h1 class="title">Point calculation</h1>
     <div class="container">
-        Currently, the top 200 times are tracked for each map. A player's points for a specific chamber is calculated as follows:
+        Currently, the top <?=Leaderboard::numTrackedPlayerRanks?> times are tracked for each map.
+        A player's points for a specific chamber is calculated as follows:
         <style>
-            table {
+            table.fraction  {
                 font-size: 15px;
                 color: inherit;
-                padding-left: 20px;
+                margin: 15px;
             }
-            td.upper_line {
+            table.fraction td.upper_line {
                 border-top:solid 1px #555555;
             }
             table.fraction {
-                text-align: center; vertical-align: middle;
+                text-align: center;
+                vertical-align: middle;
                 margin-top:0.5em; margin-bottom:0.5em; line-height: 1.6em;
             }
         </style>
         <table class="fraction" cellpadding="0" cellspacing="0">
             <tr>
                 <td rowspan="2" nowrap="nowrap">
-                    max[1, round[&nbsp
+                    max[1,&nbsp;
                 </td>
                 <td nowrap="nowrap" style="font-size: 14px;">
                     (200 - (rank - 1))<sup>2</sup>
                 </td>
                 <td rowspan="2" nowrap="nowrap">
-                    &nbsp]]
+                    <!-- &nbsp;× (1 + (0.025 × bonus)  -->]
                 </td>
             </tr>
             <tr>
@@ -113,21 +115,61 @@
 
         This gives us the following:
 
-        <ul>
-            <li>Rank 1: 200 points</li>
-            <li>Rank 10: 182 points</li>
-            <li>Rank 20: 164 points</li>
-            <li>Rank 50: 114 points</li>
-            <li>Rank 100: 51 points</li>
-            <li>Rank 150: 13 points</li>
-            <li>Rank 200: 1 point</li>
-        </ul>
-        Note that this scoring function gives you a proportionally higher reward for higher ranks. Hence, getting
-        a high point count requires that you have a consistently high rank on each map.
-        <br><br>
-        Additionally, <?=Leaderboard::demoBonusPoints?> bonus points are rewarded for uploading a demo for one of your records, and
-        <?=Leaderboard::youTubeBonusPoints ?> points for setting a YouTube video.
+        <style>
+            .pointTable th {
+                font-weight: 500;
+                color: #555;
+            }
+            .pointTable td, .pointTable th {
+                text-align: center;
+            }
+            .pointTable th:first-child, .pointTable td:first-child {
+                border-right: 1px solid #ddd;
+            }
+        </style>
+        <table class="pointTable table table-condensed" style='margin-top: 20px; width: 160px'>
+            <tr>
+                <th>Rank</th>
+                <th>Points</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>200.00</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>192.08</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>182.40</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>163.80</td>
+            </tr>
+            <tr>
+                <td>50</td>
+                <td>114.00</td>
+            </tr>
+            <tr>
+                <td>100</td>
+                <td>51.00</td>
+            </tr>
+            <tr>
+                <td>150</td>
+                <td>13.00</td>
+            </tr>
+            <tr>
+                <td>200</td>
+                <td>1.00</td>
+            </tr>
+        </table>
+
+        Note that points are displayed as whole numbers everywhere on the site by means of simple rounding.
+
     </div>
+
 
     <h1 class="title">Team</h1>
     <div class="container">
@@ -150,8 +192,8 @@
     <h1 class="title">Project</h1>
     <div class="container">
         <p>
-        Source code: coming soon
-<!--        The source code can be found <a href="https://www.github.com/">here</a>.-->
+        <!-- Source code: coming soon -->
+        The source code can be found <a href="https://github.com/iVerb1/Portal2Boards">here</a>.
         </p>
         <p>
         This site is currently hosted for free on <a href="https://www.openshift.com/">OpenShift</a>.

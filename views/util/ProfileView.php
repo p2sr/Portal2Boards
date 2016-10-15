@@ -20,24 +20,32 @@ class ProfileView
     }
     static function pointTimeScoreRow($score, $title, $isTimeData) {?>
         <div class="scoreTableEntry">
-            <div class="row">
+            <div>
                 <div class="cell title"><?=$title;?></div>
                 <div class="cell rank" align="right"><?=isset($score["playerRank"]) ? $score["playerRank"] : "-"?></div>
-                <div class="cell score" align="right"><?=isset($score["score"]) ? ($isTimeData ? Leaderboard::convertToTime($score["score"]) : $score["score"]) : "-"?></div>
-                <div class="cell nr-diff" align="right"><?=(isset($score["nextRankDiff"])) ? ($score["WRDiff"] != NULL ? ($isTimeData ? "+".Leaderboard::convertToTime($score["nextRankDiff"]) : "-".$score["nextRankDiff"]) : "-") : "-"?></div>
-                <div class="cell wr-diff" align="right"><?=(isset($score["WRDiff"])) ? ($score["WRDiff"] != NULL ? ($isTimeData ? "+".Leaderboard::convertToTime($score["WRDiff"])  : "-".$score["WRDiff"]) : "-") : "-"?></div>
+                <div class="cell score" align="right"><?=isset($score["score"]) ? ($isTimeData ? Leaderboard::convertToTime($score["score"]) : round($score["score"])) : "-"?></div>
+                <div class="cell nr-diff" align="right"><?=(isset($score["nextRankDiff"])) ? ($score["WRDiff"] != NULL ? ($isTimeData ? "+".Leaderboard::convertToTime($score["nextRankDiff"]) : "-".($isTimeData ? $score["nextRankDiff"] : round($score["nextRankDiff"]))) : "-") : "-"?></div>
+                <div class="cell wr-diff" align="right"><?=(isset($score["WRDiff"])) ? ($score["WRDiff"] != NULL ? ($isTimeData ? "+".Leaderboard::convertToTime($score["WRDiff"])  : "-".($isTimeData ? $score["WRDiff"] : round($score["WRDiff"]))) : "-") : "-"?></div>
             </div>
         </div>
     <?php }
 
     static function chamberScoreRow($user, $mapInfo, $map, $score) { ?>
         <div class="scoreTableEntry">
-            <div class="row chamberScoreInfo" date="<?=$score["date"]?>">
+            <div class="chamberScoreInfo" date="<?=$score["date"]?>">
                 <div class="cell scoreMenuToggle" onclick="openScoreMenu(event, '<?=$map?>', '<?=$score["changelogId"]?>')">
                     <i class="fa fa-xs fa-caret-right" aria-hidden="true"></i>
                 </div>
                 <div class="cell dateDifferenceColor" date="<?=$score["date"]?>"></div>
                 <div class="cell title"><?=self::getChamberHyperlink($map, $mapInfo);?></div>
+                <div class="cell comment" align="center">
+                    <i class="fa fa-comment" aria-hidden="true" 
+                        data-toggle="popover"
+                        data-content="<?=$score["note"]?>"
+                        <?php if ($score["note"] == NULL): ?> style="display:none" <?php endif; ?>
+                        >
+                    </i>
+                </div>
                 <div class="cell demo-url" align="center">
                     <a href="/getDemo?id=<?=$score["changelogId"]?>" <?php if ($score["hasDemo"] == 0): ?> style="display:none" <?php endif; ?>>
                         <i class="fa fa-download" aria-hidden="true"></i>
@@ -58,19 +66,20 @@ class ProfileView
                 <div class="cell nr-diff" align="right"><?=(isset($score["nextRankDiff"])) ? ($score["WRDiff"] != NULL ? "+".Leaderboard::convertToTime($score["nextRankDiff"]) : "-".$score["nextRankDiff"]) : "-"?></div>
                 <div class="cell wr-diff" align="right"><?=(isset($score["WRDiff"])) ? ($score["WRDiff"] != NULL ? "+".Leaderboard::convertToTime($score["WRDiff"])  : "-".$score["WRDiff"]) : "-"?></div>
             </div>
-            <div class="row scoreMenu"></div>
+            <div class="scoreMenu"></div>
         </div>
     <?php }
 
     static function emptyChamberScoreRow($map, $mapInfo) { ?>
         <div class="scoreTableEntry">
-            <div class="row chamberScoreInfo">
+            <div class="chamberScoreInfo">
                 <div class="cell scoreMenuToggle" onclick="openScoreMenu(event, '<?=$map?>')">
                     <i class="fa fa-xs fa-caret-right" aria-hidden="true"></i>
                 </div>
                 <div class="cell dateDifferenceColor"></div>
                 <div class="cell title" align="left"><?=self::getChamberHyperlink($map, $mapInfo);?></div>
                 <div class="cell demo-url"></div>
+                <div class="cell comment"></div>
                 <div class="cell youtube">
                 </div>
                 <div class="cell rank" align="right">-</div>
@@ -78,7 +87,7 @@ class ProfileView
                 <div class="cell nr-diff" align="right">-</div>
                 <div class="cell wr-diff" align="right">-</div>
             </div>
-            <div class="row scoreMenu"></div>
+            <div class="scoreMenu"></div>
         </div>
     <?php }
 }

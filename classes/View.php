@@ -13,7 +13,7 @@ class View {
     const moment = "https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.14.1/moment.min.js";
     const momentTimeZone = "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.5/moment-timezone-with-data.min.js";
     const d3 = "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js";
-    const jqueryColor = "http://code.jquery.com/color/jquery.color-2.1.0.min.js";
+    const jqueryColor = "https://cdnjs.cloudflare.com/ajax/libs/jquery-color/2.1.2/jquery.color.min.js";
 
     const pages = "/js/pages.js";
     const chart = "/js/chart.js";
@@ -51,11 +51,6 @@ class View {
             "js" => array(self::d3, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages, self::score, self::youtubeEmbed),
             "css" => array(self::morrisStyle)
         ),
-//        "leastportals" => array(
-//            "contentTemplate" => "leastportals.phtml",
-//            "pageTitle" => "Least Portals",
-//            "js" => array(self::youtubeSearch)
-//        ),
         "404" => array(
             "contentTemplate" => "404.phtml",
             "pageTitle" => "404 Not Found"
@@ -63,6 +58,11 @@ class View {
         "editprofile" => array(
             "contentTemplate" => "editprofile.phtml",
             "pageTitle" => "Edit profile"
+        ),
+        "lp" => array(
+            "contentTemplate" => "leastportals.phtml",
+            "pageTitle" => "Least Portals",
+            "js" => array(self::youtubeEmbed)
         ),
         "about" => array(
             "contentTemplate" => "about.phtml",
@@ -72,9 +72,16 @@ class View {
 
     public function __construct() {
         $this->siteTitle = "";
-        $this->addJs("https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js");
-        $this->addCss("/style/style.css");
+
         $this->addCss("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css");
+
+        $this->addJs("https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js");
+
+        $this->addCss("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css");
+        $this->addJs("https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js");
+
+        $this->addJs("/js/popover.js");
+        $this->addCss("/style/style.css");
     }
     public function addJs($path) {
         $this->js[] = $path;

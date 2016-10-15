@@ -11,7 +11,7 @@ class ChangelogView
             if (strtotime($val["time_gained"]) != strtotime(self::$lastDate)) {
                 self::$oddDateEntry = !self::$oddDateEntry;
             }
-            if(self::$oddDateEntry) { ?>
+            if(!self::$oddDateEntry) { ?>
                 style="background: #d6d6d6"<?php
             }
             self::$lastDate = $val["time_gained"];
@@ -34,25 +34,45 @@ class ChangelogView
             <div class="previousscore">
                 <?php if ($val["pre_rank"] != NULL): ?>
                     <div class="rank"><?=$val["pre_rank"]?></div>
-                <?php endif; if ($val["previous_score"] != NULL): ?>
+                <?php else: ?>
+                    <div class="rank">-</div>
+                <?php endif; ?>
+                <?php if ($val["previous_score"] != NULL): ?>
                     <a href="/changelog?profileNumber=<?=$val["profile_number"]?>&chamber=<?=$val["mapid"]?>" class="time"><?=Leaderboard::convertToTime($val["previous_score"])?></a>
-                <?php endif; ?></div>
+                <?php else: ?>
+                    <div class="time">-</div>
+                <?php endif; ?>
+            </div>
             <div class="newscore">
-            <?php if ($val["post_rank"] != NULL): ?>
-                    <div class="rank"><?=$val["post_rank"]?></div>
-                <?php endif; if ($val["score"] != NULL): ?>
-                    <a class="time" href="/changelog?profileNumber=<?=$val["profile_number"]?>&chamber=<?=$val["mapid"]?>"><?=Leaderboard::convertToTime($val["score"])?></a>
-                <?php endif; ?></div>
-            <div class="improvement">
-            <?php if($val["rank_improvement"] != null):
-                    if($val["rank_improvement"] < 0): ?>
-                        <div class="rankImprovement">+<?=abs($val["rank_improvement"])?></div>
+                <?php if ($val["post_rank"] != NULL): ?>
+                        <div class="rank"><?=$val["post_rank"]?></div>
                     <?php else: ?>
-                        <div class="rankImprovement">-<?=abs($val["rank_improvement"]);?></div>
-                    <?php endif; endif; if($val["improvement"] != null): ?>
-                <div class="time"><?=($val["improvement"] < 0) ? "+" . Leaderboard::convertToTime($val["improvement"]) : "-" . Leaderboard::convertToTime($val["improvement"]);?></div>
-                <?php endif; ?> </div>
-            <div class="demo-url"><?php if ($val["hasDemo"] == 1): ?>
+                        <div class="rank">-</div>
+                    <?php endif; ?>
+                    <?php if ($val["score"] != NULL): ?>
+                        <a class="time" href="/changelog?profileNumber=<?=$val["profile_number"]?>&chamber=<?=$val["mapid"]?>"><?=Leaderboard::convertToTime($val["score"])?></a>
+                    <?php else: ?>
+                        <div class="time">-</div>
+                    <?php endif; ?>
+            </div>
+            <div class="improvement">
+                <?php if($val["rank_improvement"] != null):
+                        if($val["rank_improvement"] < 0): ?>
+                            <div class="rankImprovement">+<?=abs($val["rank_improvement"])?></div>
+                        <?php else: ?>
+                            <div class="rankImprovement">-<?=abs($val["rank_improvement"]);?></div>
+                        <?php endif;?>
+                    <?php else: ?>
+                        <div class="rankImprovement">-</div>
+                    <?php endif; ?>
+                <?php if($val["improvement"] != null): ?>
+                    <div class="time"><?=($val["improvement"] < 0) ? "+" . Leaderboard::convertToTime($val["improvement"]) : "-" . Leaderboard::convertToTime($val["improvement"]);?></div>
+                <?php else: ?>
+                    <div class="time">-</div>
+                <?php endif; ?>
+            </div>
+            <div class="demo-url">
+                <?php if ($val["hasDemo"] == 1): ?>
                     <a href="/getDemo?id=<?=$val["id"]?>">
                         <i class="fa fa-lg fa-download" aria-hidden="true"></i>
                     </a>
@@ -65,24 +85,29 @@ class ChangelogView
                     <?php endif; ?>
                         class="youtubeEmbedButton fa fa-lg fa-youtube-play" aria-hidden="true"></i>
                 <?php endif; ?></div>
-            <div class="submission" <?php if ($val["submission"] == 1): ?> title="Submission" <?php endif; ?>>
+            <div class="comment">
+                <?php if ($val["note"] != NULL): ?>
+                    <i class="fa fa-comment" aria-hidden="true" data-toggle='popover' data-content="<?=$val["note"]?>"></i>
+                <?php endif; ?>
+            </div>
+            <div class="submission">
                 <?php if ($val["submission"] == 1): ?>
-                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <i class="fa fa-pencil" aria-hidden="true" data-toggle="tooltip" title="Submission"></i>
                 <?php endif; ?>
             </div>
             <div class="banScore" >
                 <?php if (SteamSignIn::loggedInUserIsAdmin()): ?>
-                    <div class="setBannedStatus unban" style="<?php if ($val["banned"] == 0): ?> display: none <?php endif; ?>" title="Unban">
-                        <i class="fa fa-check" aria-hidden="true" style="cursor: pointer;" onclick="setBannedStatus(<?=$val["id"]?>, 0, event.target)"></i>
+                    <div class="setBannedStatus unban" style="<?php if ($val["banned"] == 0): ?> display: none <?php endif; ?>">
+                        <i class="fa fa-check" aria-hidden="true" data-toggle="tooltip" title="Unban" style="cursor: pointer;" onclick="setBannedStatus(<?=$val["id"]?>, 0, event.target)"></i>
                     </div>
-                    <div class="setBannedStatus ban" style="<?php if ($val["banned"] == 1): ?> display: none <?php endif; ?>" Title="Ban">
-                        <i class="fa fa-ban" aria-hidden="true" style="cursor: pointer;" onclick="setBannedStatus(<?=$val["id"]?>, 1, event.target)"></i>
+                    <div class="setBannedStatus ban" style="<?php if ($val["banned"] == 1): ?> display: none <?php endif; ?>">
+                        <i class="fa fa-ban" aria-hidden="true" data-toggle="tooltip" title="Ban" style="cursor: pointer;" onclick="setBannedStatus(<?=$val["id"]?>, 1, event.target)"></i>
                     </div>
                     <div class="status" style="display: none"></div>
                 <?php else: ?>
                     <?php if ($val["banned"] == 1): ?>
-                        <div class ="banIndicator" title="Banned">
-                            <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                        <div class ="banIndicator">
+                            <i class="fa fa-exclamation-triangle" aria-hidden="true" data-toggle="tooltip" title="Banned"></i>
                         </div>
                     <?php endif; ?>
                 <?php endif; ?>

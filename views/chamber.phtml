@@ -20,16 +20,33 @@
             <?php endif; ?>
             <div class="controls topright">
                 <div class="button linkButton chamberHistoryButton">
-                    <a href="/changelog?chamber=<?=$GLOBALS["chamberID"]?>" class="name">Chamber History</a>
+                    <a href="/changelog?chamber=<?=$GLOBALS["chamberID"]?>" class="name">
+                        <i class="fa fa-fw fa-history" aria-hidden="true"></i>
+                        Chamber History
+                    </a>
                 </div>
+            </div>
+            <div class="controls topleft">
+                <?php if($isPublic): ?>
+                    <div class="button standardButton fetchChamberScoresButton">
+                        <i class="fa fa-fw fa-refresh" aria-hidden="true"></i>
+                        Fetch new scores
+                    </div>
+                <?php endif; ?>
             </div>
             <div class="controls left">
                 <div class="button standardButton wrHistoryButton">
-                    <span class="name">World Record History</span>
+                    <span class="name">
+                        <i class="fa fa-fw fa-trophy" aria-hidden="true"></i>
+                        World Record History
+                    </span>
                 </div>
                 <?php if(isset($youtubeIDs[0])): ?>
-                    <div class="button standardButton videoButton">
-                        <span class="name">Video: <?=Leaderboard::convertToTime($youtubeIDs[0]["score"])?> by <?=$youtubeIDs[0]["player_name"]?></span>
+                    <div class="button standardButton videoButton"
+                         onclick="embedOnBody('<?=$youtubeIDs[0]["youtubeID"]?>', '<?=Leaderboard::convertToTime($youtubeIDs[0]["score"])?> - <?=Util::escapeQuotesHTML($youtubeIDs[0]["player_name"])?>');">
+                        <span class="name">
+                            <i class="youtubeEmbedButton fa fa-fw fa-youtube-play" aria-hidden="true"></i> Video
+                        </span>
                     </div>
                 <?php endif; ?>
             </div>
@@ -48,10 +65,13 @@
     </div>
     <?php if($isPublic == "0"): ?>
         <div class="not-public-chambers">
-          <span class="text">
-              This chamber is not available through official Steam leaderboard pages, but is accessible by modifying the game's internal map list. A tutorial for doing this can be found <a href="http://youtu.be/8mtyKGh_e-w?t=18m30s"  target="_blank">here</a>.
-              <span class="close-btn"></span>
-          </span>
+            <span class="notification">
+              This chamber is not available through official Steam leaderboard pages, but is accessible by modifying the game's
+              internal map list. A tutorial for doing this can be found <b><a href="http://youtu.be/8mtyKGh_e-w?t=18m30s" target="_blank">here</a></b>.
+              Note that unlike an official chamber, scores you obtain for this chamber are not automatically synced to this website.
+              You therefore need to submit any scores you obtain for this chamber manually via your profile.
+            </span>
+            <span class="close-btn"></span>
         </div>
     <?php endif; ?>
 
@@ -71,7 +91,7 @@
         setTimeout(function() {
             fadeInLetters(".chamberchambername");
             fadeInLetters(".chamberchaptername");
-            <?php if(!isset($_COOKIE["readthisshit"])): ?>
+            <?php if(!isset($_COOKIE["non-official-chamber-notification-read"])): ?>
                 $(".not-public-chambers").slideDown();
             <?php endif;?>
         }, 1000);
@@ -174,22 +194,30 @@
             $historyContainer.slideUp();
     });
 
-    <?php if (count($youtubeIDs) > 0): ?>
-        $(".videoButton").click(function() {
-            $video = $("#video");
-            if ($video.is(':hidden')) {
-                embedInDiv($video, '<?=$youtubeIDs[0]["youtubeID"]?>');
-                setTimeout(function() { $video.slideDown() }, 200);
-            }
-            else {
-                $video.slideUp({
-                    complete: function() {
-                        $video.empty();
-                    }
-                });
-            }
-        });
-    <?php endif; ?>
+    var fetchingNewScores = false;
+    $(".fetchChamberScoresButton").click(function() {
+        if (!fetchingNewScores) {
+            fetchingNewScores = true;
+            $refreshIcon = $(".fetchChamberScoresButton .fa-refresh");
+            $refreshIcon.addClass("fa-spin");
+
+            $.ajax({
+                url: '/fetchNewChamberScores',
+                type: 'POST',
+                data: {chamber: <?=$GLOBALS["chamberID"]?>},
+                success: function (data) {
+                    console.log(data);
+                    // $refreshIcon.removeClass("fa-spin");
+                    document.location.href = "/chamber/<?=$GLOBALS["chamberID"]?>";
+                },
+                error: function(e){
+                    console.log(e.message);
+                },
+                cache: false
+            });
+        }
+    });
+
 
     $(".controls .next").click(function() {
         var page = nextPage($(".entries"));
@@ -221,10 +249,10 @@
     $(".not-public-chambers .close-btn").click(function() {
         $(".not-public-chambers").slideToggle();
         var d = new Date();
-        d.setTime(d.getTime()+(604800000));
-        var expires = "expires="+d.toGMTString();
-        document.cookie = "readthisshit=yes; " + expires;
-    });
+        d.setTime(d.getTime() + (<?=Router::cookieLifetime?> * 1000));
+        var expires = "expires=" + d.toGMTString();
+        document.cookie = "non-official-chamber-notification-read=yes; " + expires;
+    });;;
 
     <?php if($isPublic == 0): ?>
         $(".chamberchambername").click(function() {

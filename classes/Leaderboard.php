@@ -2,53 +2,49 @@
 class Leaderboard
 {
 
-    const demoBonusPoints = 5;
-    const youTubeBonusPoints = 5;
     const numTrackedPlayerRanks = 200;
-    static $logging = true;
+    const proofBonusPointsPercentage = 0;
 
-    protected static function log($str) {
-        if (self::$logging) {
-            print_r($str . "\n");
-        }
-    }
 
-    public static function fetchNewData()
+    public static function fetchNewData($chamber = "")
     {
-        self::log("Start retrieving rank limits per chamber");
-        $rankLimits = self::getRankLimits();
-        self::log("Finished retrieving rank limits per chamber");
-        self::log("Receiving new leaderboard data");
+        Debug::log("Start retrieving rank limits per chamber");
+        $rankLimits = self::getRankLimits($chamber);
+        Debug::log("Finished retrieving rank limits per chamber");
+
+        Debug::log("Receiving new leaderboard data");
         $newBoardData = self::getNewScores($rankLimits);
-        self::log("Receiving new leaderboard data done");
-        self::saveScores($newBoardData);
+        Debug::log("Receiving new leaderboard data done");
+
+        $oldBoards = self::getBoard(array("chamber" => $chamber));
+        self::saveScores($newBoardData, $oldBoards);
     }
 
     public static function cacheLeaderboard()
     {
-        //TODO: don't do this every caching cycle
-        self::log("Start caching maps");
+        //TODO: don't cache maps (and other unnecessary stuff) every caching cycle
+        Debug::log("Start caching maps");
         $maps = self::getMaps();
         Cache::set("maps", $maps);
-        self::log("Done caching maps");
+        Debug::log("Done caching maps");
 
-        self::log("Start caching scores");
-        $SPChamberBoard = self::getBoard(0);
-        $COOPChamberBoard = self::getBoard(1);
+        Debug::log("Start caching scores");
+        $SPChamberBoard = self::getBoard(array("mode" => "0"));
+        $COOPChamberBoard = self::getBoard(array("mode" => "1"));
         Cache::set("SPChamberBoard", $SPChamberBoard);
         Cache::set("COOPChamberBoard", $COOPChamberBoard);
-        $fullBoard = $SPChamberBoard + $COOPChamberBoard;
+        $fullBoard = $SPChamberBoard + $COOPChamberBoard; //TODO: may cause chapter id collisions if data would be organized by mode
         self::cacheChamberBoards($fullBoard);
-        self::log("Done caching scores");
+        Debug::log("Done caching scores");
 
-        self::log("Start caching points");
+        Debug::log("Start caching points");
         $SPChamberPointBoard = self::makeChamberPointBoard($SPChamberBoard);
         $COOPChamberPointBoard = self::makeChamberPointBoard($COOPChamberBoard);
         Cache::set("SPChamberPointBoard", $SPChamberPointBoard);
         Cache::set("COOPChamberPointBoard", $COOPChamberPointBoard);
-        self::log("Done caching points");
+        Debug::log("Done caching points");
 
-        self::log("Start caching point boards");
+        Debug::log("Start caching point boards");
         $generalSPPointBoard = self::makePointBoard($SPChamberPointBoard);
         $generalCOOPPointBoard = self::makePointBoard($COOPChamberPointBoard);
         $SPPointBoard = $generalSPPointBoard["board"];
@@ -71,9 +67,9 @@ class Leaderboard
                 Cache::set("chapterPointBoard".$chapter, array());
             }
         }
-        self::log("Done caching point boards");
+        Debug::log("Done caching point boards");
 
-        self::log("Start caching time boards");
+        Debug::log("Start caching time boards");
         $generalSPTimeBoard = self::makeTimeBoard($SPChamberBoard);
         $generalCOOPTimeBoard = self::makeTimeBoard($COOPChamberBoard);
         $SPTimeBoard = $generalSPTimeBoard["board"];
@@ -97,9 +93,9 @@ class Leaderboard
                 Cache::set("chapterTimeBoard".$chapter, array());
             }
         }
-        self::log("Done caching time boards");
+        Debug::log("Done caching time boards");
 
-        self::log("Start caching Youtube IDs");
+        Debug::log("Start caching Youtube IDs");
         $SPids = self::getYoutubeIDs(0);
         $COOPids = self::getYoutubeIDs(1);
         $allIds = $SPids + $COOPids;
@@ -115,21 +111,22 @@ class Leaderboard
                 }
             }
         }
-        self::log("Done caching Youtube IDs");
+        Debug::log("Done caching Youtube IDs");
 
-        self::log("Start caching changelog");
-        $changelog = Leaderboard::getChangelog(array("maxDaysAgo" => 7));
-        Cache::set("changelog", $changelog);
-        self::log("Done caching changelog");
+//        Debug::log("Start caching changelog");
+//        $changelog = Leaderboard::getChangelog(array("maxDaysAgo" => 7));
+//        Cache::set("changelog", $changelog);
+//        Debug::log("Done caching changelog");
 
-        self::log("Start caching user identification data");
+        Debug::log("Start caching user identification data");
         self::cacheProfileURLData();
-        self::log("Finished caching user identification data");
+        Debug::log("Finished caching user identification data");
     }
 
+    //TODO: generalize map list to id's instead of steam time id's
     public static function getMaps()
     {
-        $data = Database::query("SELECT steam_id, is_coop, name, chapter_id, chapters.chapter_name, is_public
+        $data = Database::query("SELECT maps.id, steam_id, is_coop, name, chapter_id, chapters.chapter_name, is_public, lp_id
                             FROM maps
                             INNER JOIN chapters ON maps.chapter_id = chapters.id
                             ORDER BY  is_coop, maps.id");
@@ -141,11 +138,18 @@ class Leaderboard
                 $mode = "sp";
             }
             $maps["modes"][$mode][$row["chapter_id"]] = $row["chapter_id"];
+
             $maps["chapters"][$row["chapter_id"]]["chapterName"] = $row["chapter_name"];
             $maps["chapters"][$row["chapter_id"]]["maps"][] = $row["steam_id"];
+
             $maps["maps"][$row["steam_id"]]["isPublic"] = $row["is_public"];
             $maps["maps"][$row["steam_id"]]["mapName"] = $row["name"];
             $maps["maps"][$row["steam_id"]]["chapterId"] = $row["chapter_id"];
+
+            if ($row["lp_id"] != NULL) {
+                $maps["lpMaps"][$row["lp_id"]] = $row["steam_id"];
+            }
+
         }
         return $maps;
     }
@@ -196,17 +200,21 @@ class Leaderboard
 
         foreach ($rankLimits as $mapID => $amount) {
             $curl_handles[$mapID] = curl_init();
-            curl_setopt($curl_handles[$mapID], CURLOPT_URL, "http://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount);
+            curl_setopt($curl_handles[$mapID], CURLOPT_URL,
+                "http://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
+
+            curl_setopt($curl_handles[$mapID], CURLOPT_FRESH_CONNECT, TRUE);
             curl_setopt($curl_handles[$mapID], CURLOPT_HEADER, 0);
             curl_setopt($curl_handles[$mapID], CURLOPT_RETURNTRANSFER, true);
             curl_setopt($curl_handles[$mapID], CURLOPT_HTTPHEADER, array(
                 'Connection: Keep-Alive',
-                'Keep-Alive: 300'
+                'Keep-Alive: 30',
+                "Cache-Control: no-cache"
             ));
             curl_setopt($curl_handles[$mapID], CURLOPT_SSL_VERIFYPEER, FALSE);
 
             curl_setopt($curl_handles[$mapID], CURLOPT_TIMEOUT, 30);
-            curl_setopt($curl_handles[$mapID], CURLOPT_DNS_CACHE_TIMEOUT, 300);
+            curl_setopt($curl_handles[$mapID], CURLOPT_DNS_CACHE_TIMEOUT, 30);
 
             curl_multi_add_handle($curl_master, $curl_handles[$mapID]);
         }
@@ -216,7 +224,7 @@ class Leaderboard
             $status = curl_multi_exec($curl_master, $active);
             $info = curl_multi_info_read($curl_master);
             if ($info["result"] != 0) {
-                throw new Exception ("<b>cURL request failed to this URL: </b>" . curl_getinfo($info['handle'], CURLINFO_EFFECTIVE_URL));
+                throw new Exception ("cURL request failed to this URL: " . curl_getinfo($info['handle'], CURLINFO_EFFECTIVE_URL));
             }
         } while ($status == CURLM_CALL_MULTI_PERFORM);
 
@@ -231,10 +239,13 @@ class Leaderboard
 
         $xml_total = 0;
 
-        foreach ($rankLimits as $mapID => $amount) {
-            curl_multi_remove_handle($curl_master, $curl_handles[$mapID]);
-            $curlgetcontent = curl_multi_getcontent($curl_handles[$mapID]);
-            if($curlgetcontent) {
+        foreach ($curl_handles as $mapID => $handle) {
+            curl_multi_remove_handle($curl_master, $handle);
+
+            $curlgetcontent = curl_multi_getcontent($handle);
+            $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+            if($curlgetcontent && $http_code == 200) {
                 $xml = microtime(true);
                 try {
                     $leaderboard = simplexml_load_string(utf8_encode($curlgetcontent));
@@ -246,42 +257,53 @@ class Leaderboard
                 $sxe = simplexml_load_string($leaderboard);
                 if ($sxe === false) {
                     foreach (libxml_get_errors() as $error) {
-                        throw new Exception ("<b>SimpleXML error: </b>" . $error->message . '\n');
+                        throw new Exception ("SimpleXML error: " . $error->message . '\n');
                     }
                 }
 
+                if (count($leaderboard->entries) == 0) {
+                    Debug::log("No leaderboard data found for chamber: " . $mapID);
+                    continue;
+                }
+
                 foreach ($leaderboard->entries as $key2 => $val2) {
+                    Debug::log(count($val2) . " entries fetched for chamber: " . $mapID);
                     foreach ($val2 as $d => $b) {
                         $steamid = $b->steamid;
                         $score = $b->score;
                         $data[$mapID][(string)$steamid] = (string)$score;
+                        //Debug::log("map ID: " . $mapID . " player steam id: " . $steamid . " score: " . $score);
                     }
                 }
+
+                Debug::log("Successfully fetched scores for map: " . $mapID);
+
                 $tt = microtime(true) - $xml;
                 $xml_total = $xml_total + $tt;
+            }
+            else {
+                Debug::log("Can't fetch scores for map: " . $mapID . ". HTTP code: " . $http_code);
             }
         }
         curl_multi_close($curl_master);
         return $data;
     }
 
-    protected static function saveScores($newScores)
+    protected static function saveScores($newScores, $oldBoards)
     {
-
-        $oldBoards = self::getBoard();
         $maps = self::getMaps();
         $changes = array();
 
-        self::log("Saving new leaderboard data");
+        Debug::log("Saving new leaderboard data");
         $db_data = Database::query("SELECT id, profile_number, score, map_id FROM changelog");
         $oldChangelog = array();
         while ($row = $db_data->fetch_assoc()) {
             $oldChangelog[$row["map_id"]][$row["profile_number"]][$row["score"]] = true; //true has no meaning
         }
-        self::log("Obtained current scores");
+        Debug::log("Obtained current scores");
 
         $users = User::getAllUserData();
-        self::log("Obtained all current users");
+        Debug::log("Obtained all current users");
 
         $userInsertions = array();
         $scoreUpdates = array();
@@ -300,14 +322,14 @@ class Leaderboard
                 $improvement = isset($oldBoards[$chapter][$chamber][$player]) ? $score < $oldBoards[$chapter][$chamber][$player]["scoreData"]["score"] : true;
 
                 if ($freshMapScore) {
-                    self::log("Fresh map score found. Player: ".$player." Map: ".$chamber." Score: ".$score);
+                    Debug::log("Fresh map score found. Player: ".$player." Map: ".$chamber." Score: ".$score);
                     $change["profileNumber"] = $player;
                     $change["score"] = $score;
                     $change["mapId"] = $chamber;
                     $scoreInsertions[] = $change;
                 }
                 elseif ($newChange && $improvement) {
-                    self::log("Updated map score found. Player: ".$player." Map: ".$chamber." Score: ".$score);
+                    Debug::log("Updated map score found. Player: ".$player." Map: ".$chamber." Score: ".$score);
                     $change["profileNumber"] = $player;
                     $change["score"] = $score;
                     $change["mapId"] = $chamber;
@@ -316,7 +338,7 @@ class Leaderboard
             }
         }
 
-        self::log("Inserting new users");
+        Debug::log("Inserting new users");
         $userInsertionRows = array();
         foreach (array_keys($userInsertions) as $user) {
             $userInsertionRows[] = "('" . $user . "')";
@@ -326,13 +348,13 @@ class Leaderboard
             Database::query("INSERT INTO usersnew (profile_number) VALUES " . $rows);
         }
         foreach (array_keys($userInsertions) as $user) {
-            self::log("Processing new user ".$user);
+            Debug::log("Processing new user ".$user);
             User::updateProfileData($user);
         }
-        self::log("Finished inserting new users");
+        Debug::log("Finished inserting new users");
 
 
-        self::log("Starting saving changelog entries");
+        Debug::log("Starting saving changelog entries");
         foreach ($scoreInsertions + $scoreUpdates as $change) {
             $chapter = $maps["maps"][$change["mapId"]]["chapterId"];
             $mapData = $oldBoards[$chapter][$change["mapId"]];
@@ -350,12 +372,12 @@ class Leaderboard
                 ? $oldBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["playerRank"]
                 : "NULL";
 
-            self::log("Inserting change. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]);
+            Debug::log("Inserting change. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]);
             Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank) 
               VALUES (NULL, '" . $change["profileNumber"] . "','" . $change["score"] . "','" . $change["mapId"] . "','" . $wr . "', ". $previousId .", ".$preRank.")
             ");
 
-            $id = Database::$instance->insert_id;
+            $id = Database::getMysqli()->insert_id;
             $changes[$id] = $change;
 
             Database::query("INSERT IGNORE INTO scores(profile_number, map_id, changelog_id)
@@ -374,17 +396,19 @@ class Leaderboard
                 ? $newBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["playerRank"]
                 : "NULL";
 
-            self::log("Updating rank of new changelog entry. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]." Rank: ".$postRank);
+            Debug::log("Updating rank of new changelog entry. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]." Rank: ".$postRank);
             Database::query("UPDATE changelog SET post_rank = ".$postRank." WHERE id = ". $id);
         }
 
-        self::log("Finished saving changelog entries");
+        Debug::log("Finished saving changelog entries");
     }
 
     //TODO: use cache for determining the limits
-    public static function getRankLimits()
+    //TODO: cleaner and more extensible parameters
+    public static function getRankLimits($chamber = "")
     {
         $rankLimits = array();
+        $whereClause = ($chamber != "") ? "maps.steam_id = {$chamber}" : "TRUE";
 
         $data = Database::query("
             SELECT maps.steam_id, IFNULL(scorecount, 0) AS cheatedScoreAmount
@@ -394,9 +418,10 @@ class Leaderboard
               FROM scores
               INNER JOIN changelog ON (scores.changelog_id = changelog.id)
               INNER JOIN usersnew ON scores.profile_number = usersnew.profile_number
-              WHERE changelog.banned = '1'  OR usersnew.banned = '1'
-              GROUP BY scores.map_id) as scores1
-            ON scores1.map_id = maps.steam_id");
+              WHERE (changelog.banned = '1'  OR usersnew.banned = '1')
+              GROUP BY scores.map_id) as scores1  
+            ON scores1.map_id = maps.steam_id
+            WHERE ". $whereClause);
 
         while ($row = $data->fetch_assoc()) {
             $rankLimits[$row["steam_id"]] = $row["cheatedScoreAmount"];
@@ -429,28 +454,39 @@ class Leaderboard
         return $rankLimits;
     }
 
-    public static function getBoard($mode = "", $chamber = "")
+    //TODO: remove limitation on characters used in parameters
+    //TODO: remove indexing by chapter id. Chamber id is sufficient.
+    public static function getBoard($parameters = array())
     {
+        $param = array("chamber" => "" , "mode" => "");
+
+        foreach ($parameters as $key => $val) {
+            if (array_key_exists($key, $param)) {
+                $result = preg_replace("/[^a-zA-Z0-9]+\s/", "", $parameters[$key]);
+                $param[$key] = Database::getMysqli()->real_escape_string($result);
+            }
+        }
+
         $query = Database::query("SELECT ranks.profile_number, u.avatar, IFNULL(u.boardname, u.steamname) as boardname,
                 chapters.id as chapterid, maps.steam_id as mapid, 
-                ranks.changelog_id, ranks.score, ranks.player_rank, ranks.score_rank,  ranks.time_gained as date, has_demo, youtube_id,
+                ranks.changelog_id, ranks.score, ranks.player_rank, ranks.score_rank, ranks.time_gained as date, has_demo, youtube_id, ranks.note, 
                 ranks.submission
             FROM usersnew as u
             JOIN (
-                SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission,
+                SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note,
                 IF( @prevMap <> sc.map_id, @rownum := 1,  @rownum := @rownum + 1 ) as rowNum,
                 IF( @prevMap <> sc.map_id, @displayRank := 1,  IF( @prevScore <> sc.score, @displayRank := @rownum,  @displayRank ) ) AS player_rank,
                 IF( @prevMap <> sc.map_id, @rank := 1,  IF( @prevScore <> sc.score, @rank := @rank + 1,  @rank ) ) AS score_rank,
                 @prevMap := sc.map_id, @prevScore := sc.score
                 FROM (
-                    SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo
+                    SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note
                     FROM scores
                     INNER JOIN changelog ON (scores.changelog_id = changelog.id)
                     WHERE scores.profile_number IN (SELECT profile_number FROM usersnew WHERE banned = 0)
                     AND scores.map_id IN (
                       SELECT steam_id 
                       FROM maps 
-                      WHERE is_coop LIKE '%{$mode}%' AND steam_id LIKE '%{$chamber}%'
+                      WHERE is_coop LIKE '%{$param["mode"]}%' AND steam_id LIKE '%{$param["chamber"]}'
                     )  
                     AND changelog.banned = '0'  
                 ) as sc
@@ -464,8 +500,9 @@ class Leaderboard
         $board = array();
         while ($row = $query->fetch_assoc()) {
             $profileNumber = $row["profile_number"];
-            $chapterId =$row["chapterid"];
+            $chapterId = $row["chapterid"];
             $mapId = $row["mapid"];
+            $board[$chapterId][$mapId][$profileNumber]["scoreData"]["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["submission"] = $row["submission"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["changelogId"] = $row["changelog_id"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["playerRank"] = $row["player_rank"];
@@ -474,7 +511,7 @@ class Leaderboard
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["date"] = $row["date"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["hasDemo"] = $row["has_demo"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["youtubeID"] = $row["youtube_id"];
-            $board[$chapterId][$mapId][$profileNumber]["userData"]["boardname"] = $row["boardname"];
+            $board[$chapterId][$mapId][$profileNumber]["userData"]["boardname"] = htmlspecialchars($row["boardname"]);
             $board[$chapterId][$mapId][$profileNumber]["userData"]["avatar"] = $row["avatar"];
         }
 
@@ -489,7 +526,10 @@ class Leaderboard
         }
     }
 
+    //TODO: remove limitation on characters used in parameters
     //TODO: replace day amount with date range
+    //TODO: allow for fetching scores of banned players
+    //TODO: clean up ugly where clauses
     public static function getChangelog($parameters = array())
     {
         $param = array("chamber" => "" , "chapter" => ""
@@ -510,30 +550,27 @@ class Leaderboard
         }
         $whereClause = "";
         if ($param['maxDaysAgo'] != 0) {
-            //$time = Util::daysAgo($param["maxDaysAgo"]);
-            //$dateStr = date("Y-m-d H:i:s", strtotime('today', $time));
-            //$whereClause = "time_gained > '".$dateStr."' AND ";
             $whereClause = "time_gained > DATE_SUB(NOW(), INTERVAL ".$param['maxDaysAgo']." DAY) AND ";
         }
         $whereClause1 = ($param['yt'] == "1") ?  "youtube_id IS NOT NULL AND " : "";
         $whereClause2 = ($param["hasDate"] == "1") ? "time_gained IS NOT NULL AND " : "";
         $whereClause3 = ($param["wr"] == "1") ? "post_rank = 1 AND " : "";
         $whereClause4 = ($param["banned"] == 0) ? "banned = 0 AND " : "";
+        $whereClause5 = ($param["id"] != "") ? "id = '{$param["id"]}' AND " : "";
 
         $changelog_data = Database::query("SELECT IFNULL(usersnew.boardname, usersnew.steamname) AS player_name, usersnew.avatar, ch.profile_number,
-                                            ch.score, ch.id, ch.pre_rank, ch.post_rank, ch.wr_gain, ch.time_gained, ch.has_demo as hasDemo, ch.youtube_id as youtubeID,
+                                            ch.score, ch.id, ch.pre_rank, ch.post_rank, ch.wr_gain, ch.time_gained, ch.has_demo as hasDemo, ch.youtube_id as youtubeID, ch.note,
                                             ch.banned, ch.submission,
                                             ch_previous.score as previous_score,
                                             maps.name as chamberName, chapters.id as chapterId, maps.steam_id AS mapid
 												FROM (
                                                     SELECT *
                                                     FROM changelog
-                                                    WHERE " . $whereClause . " " . $whereClause1 . " " . $whereClause2 . " " . $whereClause3 . " " . $whereClause4 . "
+                                                    WHERE " . $whereClause . " " . $whereClause1 . " " . $whereClause2 . " " . $whereClause3 . " " . $whereClause4 . " " . $whereClause5 . "
                                                     map_id LIKE '%{$param['chamber']}%'
                                                     AND profile_number LIKE '%{$param['profileNumber']}%'
                                                     AND submission LIKE '%{$param['submission']}%'
                                                     AND has_demo LIKE '%{$param['demo']}%'
-                                                    AND id LIKE '%{$param['id']}%'
                                                     ORDER BY time_gained DESC, score ASC, profile_number ASC
                                                 ) as ch
                                                 LEFT JOIN changelog as ch_previous ON (ch_previous.id = ch.previous_id)
@@ -545,15 +582,28 @@ class Leaderboard
                                                 AND chapters.id LIKE '%{$param['chapter']}%'
                                                 AND IFNULL(usersnew.boardname, usersnew.steamname) LIKE '%{$param['boardName']}%'
 												");
+
         $changelog = array();
         while ($row = $changelog_data->fetch_assoc()) {
+
+            $row["player_name"] = htmlspecialchars($row["player_name"]);
+            $row["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
+
             $row["improvement"] = null;
             $row["rank_improvement"] = null;
+
+            $row["pre_points"] = null;
+            $row["post_point"] = null;
+            $row["point_improvement"] = null;
+
             if ($row["previous_score"] != NULL) {
                 $row["improvement"] = ($row["previous_score"] - $row["score"]);
             }
             if ($row["pre_rank"] != NULL && $row["post_rank"] != NULL) {
                 $row["rank_improvement"] = ($row["pre_rank"] - $row["post_rank"]);
+                // $row["pre_points"] = self::getPoints($row["pre_rank"]);
+                // $row["post_points"] = self::getPoints($row["post_rank"]);
+                //$row["point_improvement"] = $row["post_points"] - $row["pre_points"];
             }
             $changelog[] = $row;
         }
@@ -574,7 +624,7 @@ class Leaderboard
              INNER JOIN maps ON changelog.map_id = maps.steam_id
              WHERE changelog.banned = 0 AND usersnew.banned = 0 AND maps.is_coop = ". $mode ."
              AND youtube_id IS NOT NULL
-             ORDER BY map_id, score, time_gained ASC");
+             ORDER BY map_id, score, time_gained, changelog.profile_number ASC");
 
         $youtubeIDs = array();
         while ($row = $data->fetch_assoc()) {
@@ -586,26 +636,26 @@ class Leaderboard
 
     public static function makeChamberPointBoard($board)
     {
-        $points = Leaderboard::numTrackedPlayerRanks;
-        while ($points >= 1) {
-            $pointArray[] = max(1, round(pow($points, 2) / Leaderboard::numTrackedPlayerRanks));
-            $points--;
-        }
-
         foreach ($board as $chapter => $chapterData) {
             foreach ($chapterData as $map => $mapData) {
                 foreach ($mapData as $user => $userScoreData) {
                     $pointBoard[$chapter][$map][$user]["userData"] = $userScoreData["userData"];
-                    $videoPoints = ($userScoreData["scoreData"]["youtubeID"] != NULL) ? self::demoBonusPoints : 0;
-                    $demoPoints = ($userScoreData["scoreData"]["hasDemo"] != 0) ? self::youTubeBonusPoints : 0;
-                    $pointBoard[$chapter][$map][$user]["scoreData"]["score"] =
-                        $pointArray[$userScoreData["scoreData"]["playerRank"] - 1]
-                        + $videoPoints
-                        + $demoPoints;
+                    
+                    $points = self::getPoints($userScoreData["scoreData"]["playerRank"]);
+                    
+                    $bonusPoints = 0;
+                    if ($userScoreData["scoreData"]["youtubeID"] != NULL || $userScoreData["scoreData"]["hasDemo"] != 0)
+                        $bonusPoints = (self::proofBonusPointsPercentage / 100) * $points;
+
+                    $pointBoard[$chapter][$map][$user]["scoreData"]["score"] = max(1, $points) + $bonusPoints;
                 }
             }
         }
         return $pointBoard;
+    }
+
+    public static function getPoints($rank) {
+        return pow(Leaderboard::numTrackedPlayerRanks - ($rank - 1), 2) / Leaderboard::numTrackedPlayerRanks;
     }
 
     //TODO: combine sorting functions
@@ -654,12 +704,21 @@ class Leaderboard
 
         foreach ($points["chapter"] as $chapter => $profileNumber) {
             uasort($points["chapter"][$chapter], array("Leaderboard", "descScoreSort"));
+            $points["chapter"][$chapter] = self::roundBoardScores($points["chapter"][$chapter]);
             $points["chapter"][$chapter] = self::calculateRanking($points["chapter"][$chapter]);
         }
         uasort($points["board"], array("Leaderboard", "descScoreSort"));
+        $points["board"] = self::roundBoardScores($points["board"]);
         $points["board"] = self::calculateRanking($points["board"]);
 
         return $points;
+    }
+
+    public static function roundBoardScores($board) {
+        foreach ($board as $profileNumber => $playerData) {
+            $board[$profileNumber]["scoreData"]["score"] = round($playerData["scoreData"]["score"]);
+        }
+        return $board;
     }
 
     public static function makeGlobalPointBoard($SPScoreBoard, $COOPScoreBoard, $overlap, $ascending)
@@ -686,6 +745,9 @@ class Leaderboard
                 }
             }
         }
+
+        $scoreBoard = self::roundBoardScores($scoreBoard);
+
         if ($ascending) {
             uasort($scoreBoard, array("Leaderboard", "ascScoreSort"));
         }
@@ -812,7 +874,7 @@ class Leaderboard
                 $nickname = $nicknames[$numbers[0]]["displayName"];
 
                 //if (preg_match("/^[a-zA-Z0-9".preg_quote("'\"£$*()][:;@~!><>,=_+¬-~")."]+$/", $nickname)) {
-                if (urlencode($nickname) == $nickname) {
+                if (urlencode($nickname) == $nickname && !is_numeric($nickname)) {
                     $nicknames[$numbers[0]]["useInURL"] = true;
                 }
                 else {
@@ -886,13 +948,13 @@ class Leaderboard
                         WHERE profile_number = '{$profileNumber}' AND map_id = '{$mapId}'");
 
                 if (Database::affectedRows() > 0)
-                    self::log("Reconfigured score for id: {$profileNumber}, map: {$mapId}");
+                    Debug::log("Reconfigured score for id: {$profileNumber}, map: {$mapId}");
             }
             else {
                 Database::query("INSERT INTO scores(profile_number, map_id, changelog_id) VALUES('{$profileNumber}', '{$mapId}', '{$minScoreId}')");
 
                 if (Database::affectedRows() > 0)
-                    self::log("Inserted score for id: {$profileNumber}, map: {$mapId}");
+                    Debug::log("Inserted score for id: {$profileNumber}, map: {$mapId}");
             }
 
         }
@@ -900,16 +962,16 @@ class Leaderboard
             Database::query("DELETE FROM scores WHERE profile_number = {$profileNumber} AND map_id = {$mapId}");
 
             if (Database::affectedRows() > 0)
-                self::log("Deleted score for id: {$profileNumber}, map: {$mapId}");
+                Debug::log("Deleted score for id: {$profileNumber}, map: {$mapId}");
         }
     }
 
-    public static function submitChange($profileNumber, $chamber, $score, $youtubeID)
+    public static function submitChange($profileNumber, $chamber, $score, $youtubeID, $comment)
     {
         $maps = Cache::get("maps");
         $chapter = $maps["maps"][$chamber]["chapterId"];
 
-        $oldBoards = self::getBoard("", $chamber);
+        $oldBoards = self::getBoard(array("chamber" => $chamber));
         $oldChamberBoard = $oldBoards[$chapter][$chamber];
 
         $wr = 0;
@@ -918,6 +980,7 @@ class Leaderboard
             $wr = 1;
         }
 
+        $comment = Database::getMysqli()->real_escape_string($comment);
         $preRank = isset($oldChamberBoard[$profileNumber])
             ? $oldChamberBoard[$profileNumber]["scoreData"]["playerRank"]
             : "NULL";
@@ -925,11 +988,11 @@ class Leaderboard
             ? $oldChamberBoard[$profileNumber]["scoreData"]["changelogId"]
             : "NULL";
 
-        Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission) 
-              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1)
+        Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission, note) 
+              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1, '".$comment."')
             ");
 
-        $id = Database::$instance->insert_id;
+        $id = Database::getMysqli()->insert_id;
 
         Database::query("INSERT IGNORE INTO scores(profile_number, map_id, changelog_id)
               VALUES ('" . $profileNumber . "','" . $chamber . "', ".$id.")
@@ -939,7 +1002,7 @@ class Leaderboard
               SET changelog_id = ".$id." 
               WHERE profile_number = ". $profileNumber . " AND map_id = " . $chamber);
 
-        $newBoards = self::getBoard("", $chamber);
+        $newBoards = self::getBoard(array("chamber" => $chamber));
         $newChamberBoard = $newBoards[$chapter][$chamber];
 
         $postRank = isset($newChamberBoard[$profileNumber])
@@ -968,50 +1031,40 @@ class Leaderboard
         self::resolveScore($change["profile_number"], $change["mapid"]);
     }
 
-}
-
-class LeastPortals extends Leaderboard
-{
-    protected function get_map_ids()
+    public static function deleteComment($id)
     {
-        $data = Database::query("SELECT lp_id FROM maps ORDER BY id");
-        while ($fuckingretardedmysqlifunctionthatdoesntreturnfuckingarrayinstantly = $data->fetch_assoc()) {
-            $steamids[$fuckingretardedmysqlifunctionthatdoesntreturnfuckingarrayinstantly["lp_id"]] = 20;
-        }
-        return $steamids;
+        Database::query("UPDATE changelog
+            SET note = NULL
+            WHERE changelog.id = '{$id}'");
     }
 
-    protected function get_leastportal_exceptions()
+    public static function setComment($id, $comment)
     {
-        $data = Database::query("SELECT map_id, profile_number FROM leastportals_exceptions");
-        while ($row = $data->fetch_assoc()) {
-            $exceptions[] = array($row["map_id"], $row["profile_number"]);
+        if ($comment != null && $comment != "") {
+            $comment = Database::getMysqli()->real_escape_string($comment);
+            print_r($comment);
+            print_r($id);
+            Database::query("UPDATE changelog
+                SET note = '{$comment}'
+                WHERE changelog.id = '{$id}'");
         }
-        return $exceptions;
     }
 
-    protected function return_leastportals_data()
+    public static function getLeastPortalsBoard($mode)
     {
-        
-        $data = Database::query("SELECT steam_id, portals FROM leastportals");
-        while ($row = $data->fetch_assoc()) {
-            $board[$row["steam_id"]] = $row["portals"];
-        }
-        return $board;
-    }
 
-    public function return_leastportals_board()
-    {
-        
-        $data = Database::query("SELECT lp.steam_id, lp.portals, maps.name, chapters.chapter_name, maps.steam_id AS steam_id_image
+        $data = Database::query("SELECT lp.steam_id, lp.portals, chapters.id as chapterId, youtube_id
 								FROM leastportals AS lp
 								INNER JOIN maps ON lp.steam_id = maps.lp_id
 								INNER JOIN chapters ON maps.chapter_id = chapters.id
+								WHERE maps.is_coop = '{$mode}'
 								ORDER BY chapters.is_multiplayer ASC, maps.id ASC
 								");
         while ($row = $data->fetch_assoc()) {
-            $board[$row["chapter_name"]][$row["name"]] = array($row["steam_id"], $row["steam_id_image"], $row["portals"]);
+            $board[$row["chapterId"]][$row["steam_id"]]["portals"] = $row["portals"];
+            $board[$row["chapterId"]][$row["steam_id"]]["youtubeId"] = $row["youtube_id"];
         }
         return $board;
     }
+
 }

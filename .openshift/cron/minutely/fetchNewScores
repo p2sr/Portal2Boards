@@ -1,1 +1,6 @@
-php -f "${OPENSHIFT_REPO_DIR}"data/fetchNewScores.php
+#!/bin/bash
+
+minute=$(date +%M)
+if [[ $minute =~ [02468]$ ]]; then
+    php -f "${OPENSHIFT_REPO_DIR}"data/fetchNewScores.php
+fi

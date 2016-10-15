@@ -70,7 +70,7 @@ class User {
             $userinfo = json_decode($content, true);
 
             if (isset($userinfo["response"]["players"][0]["personaname"]) && isset($userinfo["response"]["players"][0]["avatarfull"])) {
-                $nickname = htmlspecialchars(Database::getMysqli()->real_escape_string($userinfo["response"]["players"][0]["personaname"]));
+                $nickname = Database::getMysqli()->real_escape_string($userinfo["response"]["players"][0]["personaname"]);
                 $avatar_url = $userinfo["response"]["players"][0]["avatarfull"];
 
                 //making sure valid data was received
@@ -92,9 +92,11 @@ class User {
     }
 
     public function setUserData() {
-        
         $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName, usersnew.* FROM usersnew WHERE profile_number = '$this->profileNumber'");
         while($row = $data->fetch_object()) {
+            $row->displayName = htmlspecialchars($row->displayName);
+            $row->steamname = htmlspecialchars($row->steamname);
+            $row->boardname = htmlspecialchars($row->boardname);
             $this->userData = $row;
             return;
         }
@@ -254,10 +256,10 @@ class User {
                     }
                     else {
                         if ($times["worstRank"]["scoreData"]["playerRank"] == $scoreData["playerRank"]) {
-                            $times["worstRank"]["map"] = "several";
+                            $times["worstRank"]["map"] = "several chambers";
                         }
                         if ($times["bestRank"]["scoreData"]["playerRank"] == $scoreData["playerRank"]) {
-                            $times["bestRank"]["map"] = "several";
+                            $times["bestRank"]["map"] = "several chambers";
                         }
                         if ($times["worstRank"]["scoreData"]["playerRank"] < $scoreData["playerRank"]) {
                             $times["worstRank"]["scoreData"] = $scoreData;

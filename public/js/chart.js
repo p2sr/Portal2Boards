@@ -1,4 +1,7 @@
-function drawActivityChart(activityByDate, beginDate, endDate, $element) {
+function drawActivityChart(activityByDate, beginDate, endDate, $element, resize) {
+
+    if (resize == undefined)
+        resize = true;
 
     var activityByDay = {};
 
@@ -149,11 +152,11 @@ function drawActivityChart(activityByDate, beginDate, endDate, $element) {
                     var $rank = $("<div class='rank'>"+rank+"</div>");
                     drawRank($rank);
                     str +=
-                        "<tr>" +
-                        "<td>" + playerStr + "</td>" +
-                        "<td align='center'>" + formatScoreTime(change.changeData.score) + "</td>" +
-                        "<td align='center'>" + $rank.prop('outerHTML') + "</td>" +
-                        "<td>" + chamber + "</td>" +
+                        "<tr style='line-height: 20px'>" +
+                            "<td>" + playerStr + "</td>" +
+                            "<td align='center'>" + formatScoreTime(change.changeData.score) + "</td>" +
+                            "<td align='center'>" + $rank.prop('outerHTML') + "</td>" +
+                            "<td>" + chamber + "</td>" +
                         "</tr>";
                     i++;
                 }
@@ -169,9 +172,12 @@ function drawActivityChart(activityByDate, beginDate, endDate, $element) {
     }
 
     drawChart();
-    $(window).resize(function () {
-        drawChart();
-    });
+
+    if (resize) {
+        $(window).resize(function () {
+            drawChart();
+        });
+    }
 }
 
 function getActivityByDate(activityByScore) {

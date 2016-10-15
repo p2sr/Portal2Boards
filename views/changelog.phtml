@@ -5,6 +5,10 @@
 <?php function removeUnknownDates($change) { return $change["time_gained"] != NULL; } ?>
 <?php $activity = array_filter($view->changelog, "removeUnknownDates") ?>
 
+<script>
+    $("body").css("min-width", "1333px");
+</script>
+
 <div id="changelog">
     <div id="filters">
         <div id="filter_instructions_lol">Use these filters to display the changelog you want</div>
@@ -134,6 +138,7 @@
     </div>
 </div>
 <script>
+
     $(document).ready(function() {
         $(".checkbox").click(function() {
             $(this).toggleClass("ticked");
@@ -191,7 +196,6 @@
             url: '/setScoreBanStatus',
             type: 'POST',
             success: function (data) {
-                //console.log(data);
                 var parent = $(clickEventTarget).parent().parent();
                 var oldDiv = (banStatus == 1) ? parent.find(".ban") : parent.find(".unban");
                 var newDiv = (banStatus == 0) ? parent.find(".ban") : parent.find(".unban");

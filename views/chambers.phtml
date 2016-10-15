@@ -1,13 +1,15 @@
 <?php $mapInfo = $GLOBALS["mapInfo"]; ?>
 <?php $mode = Router::$location[2]; ?>
 <?php $youtubeIDs = (($mode == "coop") ? Cache::get("COOPyoutubeIDs") : Cache::get("SPyoutubeIDs")) ?>
+
 <script>
-    function goToChamber(evt) {
+    function goToChamber(evt, map) {
         if ($(evt.target).hasClass("chamberimage")) {
-            location.href = '/chamber/' + $(evt.target).attr("map");
+            location.href = '/chamber/' + map;
         }
     }
 </script>
+
 <div id="chambers">
     <?php $i=1; foreach($mapInfo["modes"][$mode] as $chapter): ?>
         <?php $chapterName = $mapInfo["chapters"][$chapter]["chapterName"]?>
@@ -21,7 +23,7 @@
                 <?php $mapName = $mapInfo["maps"][$map]["mapName"]?>
                 <?php $isPublic =  $mapInfo["maps"][$map]["isPublic"]?>
                 <div class="chamber">
-                    <div class="chamberimage" onclick="goToChamber(event)" map="<?=$map;?>" style="background: url('/images/chambers/<?=$map;?>.jpg'); background-size: cover">
+                    <div class="chamberimage" onclick="goToChamber(event, <?=$map;?>)" style="background: url('/images/chambers/<?=$map;?>.jpg'); background-size: cover">
                         <div class="chambertitle">
                             <div class="titlebghelper"></div>
                             <div class="titlebg"><a href="/chamber/<?=$map;?>"><?=$mapName?></a></div>
@@ -129,7 +131,7 @@
             var date = $(this).attr("date");
             var color = getDateDifferenceColorFromNow(date, true);
             if (color != null) {
-                $(this).css("border-left", color + " 3px solid");
+                $(this).css("border-left", color + " 2px solid");
             }
             else {
                 $(this).removeAttr("href");

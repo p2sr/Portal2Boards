@@ -54,13 +54,13 @@
             </div>
         </div>
         <?php if($user->userData->banned != 1): ?>
-        <?php if($user->times->numDemos == 0 && $user->times->numYoutubeVideos == 0 && !isset($_COOKIE["upload-notification"])): ?>
-            <div class="uploadInfo" >
-                    <span>You have no demos or YouTube videos linked to any of your records.
-                    These can be uploaded by clicking the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> button to the left of each score.
-                    For each demo and YouTube video you will get bonus points!
-                        <span class="close-btn"></span>
-                    </span>
+        <?php if(!isset($_COOKIE["upload-notification-read"])): ?>
+            <div class="uploadInfo">
+                <span class="notification">
+                    For linking demos or YouTube videos to any of your runs, hover over one of the chambers, and click the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> button to the left of it. This will show an overview of your score history for that chamber. In this overview, YouTube videos and demos can be linked by hovering over any of your old scores, and clicking the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> button to the left of it.
+<!--                            Note that for each demo and YouTube video linked you will get bonus points!-->
+                </span>
+                <span class="close-btn"></span>
             </div>
         <?php endif; ?>
 
@@ -82,46 +82,46 @@
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo $user->times->numWRs; ?></div>
-                        <div class="title"><span>World Record<?php if($user->times->numWRs != 1) {?>s<?php } ?> <br/>in Total</span></div>
+                        <div class="title"><span>World Record<?php if($user->times->numWRs != 1) {?>s<?php } ?><br/>overall</span></div>
                     </div>
                 </div>
             </div>
             <div class="block-container points">
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo $user->points->SP["score"];?></div>
+                        <div class="number"><?php echo round($user->points->SP["score"]);?></div>
                         <div class="title"><span>Single Player <br/>Point<?php if($user->points->SP["score"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo $user->points->COOP["score"];  ?></div>
+                        <div class="number"><?php echo round($user->points->COOP["score"]);  ?></div>
                         <div class="title"><span>Cooperative <br/>Point<?php if($user->points->COOP["score"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo $user->points->global["score"]; ?></div>
-                        <div class="title"><span>Point<?php if($user->points->global["score"] != 1) {?>s<?php } ?>in <br/>Total</span></div>
+                        <div class="number"><?php echo round($user->points->global["score"]); ?></div>
+                        <div class="title"><span>Point<?php if($user->points->global["score"] != 1) {?>s<?php } ?> <br/>overall</span></div>
                     </div>
                 </div>
             </div>
             <div class="block-container ranks">
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo (isset($user->points->SP["playerRank"])) ? Grammar::number($user->points->SP["playerRank"]) : "NO"; ?></div>
+                        <div class="number"><?php echo (isset($user->points->SP["playerRank"])) ? Util::number($user->points->SP["playerRank"]) : "NO"; ?></div>
                         <div class="title"><span>Place in <br/>Single Player</span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo (isset($user->points->COOP["playerRank"])) ? Grammar::number($user->points->COOP["playerRank"]) : "NO"; ?></div>
+                        <div class="number"><?php echo (isset($user->points->COOP["playerRank"])) ? Util::number($user->points->COOP["playerRank"]) : "NO"; ?></div>
                         <div class="title"><span>Place in <br/>Cooperative</span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo (isset($user->points->global["playerRank"])) ? Grammar::number($user->points->global["playerRank"]) : "NO"; ?></div>
+                        <div class="number"><?php echo (isset($user->points->global["playerRank"])) ? Util::number($user->points->global["playerRank"]) : "NO"; ?></div>
                         <div class="title"><span>Place <br/>Overall</span></div>
                     </div>
                 </div>
@@ -129,7 +129,7 @@
             <div class="block-container average">
                 <div class="block">
                     <?php $place = $user->times->SP["chambers"]["averagePlace"]; ?>
-                    <div class="block-inner" <?php if($place == NULL) : echo "title=\"You need a minimum of 10 scores in single player to determine your average place"; endif; ?>">
+                    <div class="block-inner" <?php if($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores in single player is required to determine the average place"; endif; ?>">
                         <div class="number">
                             <?php if ($place != NULL): ?>
                                 <?=$place?>
@@ -146,7 +146,7 @@
                 </div>
                 <div class="block">
                     <?php $place = $user->times->COOP["chambers"]["averagePlace"]; ?>
-                    <div class="block-inner" <?php if($place == NULL) : echo "title=\"You need a minimum of 10 scores in cooperative to determine your average place"; endif; ?>">
+                    <div class="block-inner" <?php if($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores in cooperative is required to determine the average place"; endif; ?>">
                         <div class="number">
                             <?php if ($place != NULL): ?>
                                 <?=$place?>
@@ -163,7 +163,7 @@
                 </div>
                 <div class="block">
                     <?php $place = $user->times->globalAveragePlace; ?>
-                    <div class="block-inner" <?php if($place == NULL) : echo "title=\"You need a minimum of 10 to determine your average place"; endif; ?>">
+                    <div class="block-inner" <?php if($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores is required to determine the average place"; endif; ?>">
                         <div class="number">
                             <?php if ($place != NULL): ?>
                                 <?=$place?>
@@ -182,7 +182,7 @@
             <div class="block-container bestworst">
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo ($user->times->bestRank != NULL) ? Grammar::number($user->times->bestRank["scoreData"]["playerRank"]) : "NO"; ?></div>
+                        <div class="number"><?php echo ($user->times->bestRank != NULL) ? Util::number($user->times->bestRank["scoreData"]["playerRank"]) : "NO"; ?></div>
                         <div class="title">
                             <span>
                                 Best Place  <?php echo ($user->times->bestRank != NULL) ? " on <br> ".ProfileView::getChamberHyperlink($user->times->bestRank["map"], $mapInfo) : ""?>
@@ -192,7 +192,7 @@
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo ($user->times->worstRank != NULL) ? Grammar::number($user->times->worstRank["scoreData"]["playerRank"]) : "NO"; ?></div>
+                        <div class="number"><?php echo ($user->times->worstRank != NULL) ? Util::number($user->times->worstRank["scoreData"]["playerRank"]) : "NO"; ?></div>
                         <div class="title">
                             <span>
                                 Worst Place <?php echo ($user->times->worstRank != NULL) ? " on <br> ".ProfileView::getChamberHyperlink($user->times->worstRank["map"], $mapInfo) : ""?>
@@ -265,10 +265,10 @@
                             <?=$mapInfo["chapters"][$chapterId]["chapterName"];?>
                             <?php if($chapterId == $keys[0]): ?>
                                 <div style="float: right">
-                                    <div class="cell rank" align="right" title="Current rank">#</div>
+                                    <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
                                     <div class="cell score" align="right">Time</div>
-                                    <div class="cell nr-diff" align="right" title="Time difference to next rank">&#916;Next</div>
-                                    <div class="cell wr-diff" align="right" title="Time difference to world record">&#916;WR</div>
+                                    <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                    <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
                                 </div>
                             <?php endif;?>
                         </div>
@@ -295,10 +295,10 @@
                           <?=$mapInfo["chapters"][$chapterId]["chapterName"];?>
                           <?php if($chapterId == $keys[0]): ?>
                               <div style="float: right">
-                                  <div class="cell rank" align="right" title="Current rank">#</div>
+                                  <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
                                   <div class="cell score" align="right">Time</div>
-                                  <div class="cell nr-diff" align="right" title="Time difference to next rank">&#916;Next</div>
-                                  <div class="cell wr-diff" align="right" title="Time difference to world record">&#916;WR</div>
+                                  <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                  <div class="cell wr-diff" align="right" data-toggle="tooltip" title="Time difference to world record">&#916;WR</div>
                               </div>
                           <?php endif;?>
                       </div>
@@ -322,13 +322,13 @@
                     <div class="column-title">
                         Points
                         <div style="float: right">
-                            <div class="cell rank" align="right" title="Current rank">#</div>
+                            <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
                             <div class="cell score" align="right">Points</div>
-                            <div class="cell nr-diff" align="right" title="Point difference to next rank">&#916;Next</div>
-                            <div class="cell wr-diff" align="right" title="Point difference to world record">&#916;WR</div>
+                            <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Point difference to next rank">&#916;Next</div>
+                            <div class="cell wr-diff" align="right" data-toggle="tooltip" title="Point difference to world record">&#916;WR</div>
                         </div>
                     </div>
-                    <div class="column-content" style="margin-bottom: 5px; margin-left: 10px">
+                    <div class="column-content" style="margin-bottom: 5px; margin-left: 7px">
                         <div class="scoretable">
                             <?php foreach($mapInfo["modes"]["sp"] as $chapter): ?>
                                 <?php ProfileView::pointTimeScoreRow($user->points->chapters[$chapter], ProfileView::getChapterHyperlink($chapter, $mapInfo), false);?>
@@ -346,13 +346,13 @@
                     <div class="column-title">
                         Times
                         <div style="float: right">
-                            <div class="cell rank" align="right" title="Current rank">#</div>
+                            <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
                             <div class="cell score" align="right">Time</div>
-                            <div class="cell nr-diff" align="right" title="Time difference to next rank">&#916;Next</div>
-                            <div class="cell wr-diff" align="right" title="Time difference to world record">&#916;WR</div>
+                            <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                            <div class="cell wr-diff" align="right" data-toggle="tooltip" title="Time difference to world record">&#916;WR</div>
                         </div>
                     </div>
-                    <div class="column-content" style="margin-left: 10px">
+                    <div class="column-content" style="margin-left: 7px">
                         <div class="scoretable">
                             <?php foreach($mapInfo["modes"]["sp"] as $chapter): ?>
                                 <?php ProfileView::pointTimeScoreRow($user->times->chapters[$chapter], ProfileView::getChapterHyperlink($chapter, $mapInfo), true);?>
@@ -410,7 +410,7 @@
             var firstDate = localizeDate(getDateFirstChange(activityByScore));
         <?php endif; ?>
         var activityByDate = getActivityByDate(activityByScore);
-        drawActivityChart(activityByDate, firstDate, getCurrentLocalDate(), $("#changelogactivity"));
+        drawActivityChart(activityByDate, firstDate, getCurrentLocalDate(), $("#changelogactivity"), false);
     }
 
     <?php if(strlen($user->userData->twitch) == 0): ?>
@@ -448,7 +448,7 @@
         drawRank($(this));
     });
 
-    $(".row").hover(function() {
+    $(".scoreTableEntry").hover(function() {
         $scoreMenuToggle = $(this).find(".scoreMenuToggle i");
         $scoreMenuToggle.css("display", "inline-block");
     },
@@ -485,11 +485,10 @@
     $(".uploadInfo .close-btn").click(function() {
         $(".uploadInfo").slideToggle();
         var d = new Date();
-        d.setTime(d.getTime()+(604800000));
+        d.setTime(d.getTime() + (<?=Router::cookieLifetime?> * 1000));
         var expires = "expires="+d.toGMTString();
-        document.cookie = "upload-notification=yes; " + expires;
+        document.cookie = "upload-notification-read=yes; " + expires;
     });
-
 
     var user = '<?=$user->profileNumber?>';
     var profilePermissions = <?=(SteamSignIn::hasProfilePrivileges($user->profileNumber)) ? "true" : "false"?>;
@@ -579,7 +578,7 @@
             var $descriptionButton = $(
                 "<div class='descriptionButton'>" +
                     "<div class='button'>" +
-                        "Show info" +
+                        "Show explanation" +
                     "</div>"+
                 "</div>");
 
@@ -588,10 +587,7 @@
                     "your past scores by clicking the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> " +
                     "button to the left of it. Make sure you link the right video/demo to the right score.<br><br>"+
                     "New scores can be submitted by clicking the 'Create new submission' button.<br><br>" +
-                    "<b>Note:</b> Bonus points can be obtained by providing proof for your current personal best. "+
-                    "You get <?=Leaderboard::demoBonusPoints?> points for uploading a demo, and "+
-                    "<?=Leaderboard::youTubeBonusPoints?> points for setting a YouTube video.<br><br>"+
-                    "<b>Note:</b> for more information about recording demos, go <a href='/about'>here</a>. <br><br>" +
+                    "<b>Note:</b> for more information about recording demos and how points are calculated for your records, go <a href='/about'>here</a>.<br><br>" +
                     "<b>Note:</b> you can use timestamped YouTube videos. <br><br>" +
                 "</div>");
 
@@ -607,21 +603,22 @@
         var $entryContainer = $(
             "<div class='changeEntryContainer'>" +
                 "<div class='changeEntry header'>" +
-                    "<div class='cell changeMenuToggle'></div>" +
+                    "<div class='cell changeMenuToggle' style='cursor: default'></div>" +
                     "<div class='date'>" +
                         "Time ago" +
                     "</div>" +
-                    "<div class='submission'></div>" +
                     "<div class='banned'></div>" +
+                    "<div class='submission'></div>" +
+                    "<div class='comment'></div>" +
                     "<div class='demo-url'></div>" +
                     "<div class='youtube'></div>" +
-                    "<div class='rankDiff' title='Rank before and after time was obtained'>" +
+                    "<div class='rankDiff' data-toggle='tooltip' title='Rank before and after time was obtained'>" +
                         "<div style='display: inline-block; text-align: center; width: 25px'>#</div>" +
                         "<i class='fa fa-arrow-right' aria-hidden='true' style='display: inline-block;'></i>" +
                         "<div style='display: inline-block; text-align: center; width: 25px; padding-right: 5px'>#</div>" +
                     "</div>" +
                     "<div class='score'>Time</div>" +
-                    "<div class='improvement' style='text-align: right' title='Time improvement'>&#916;</div>" +
+                    "<div class='improvement' style='text-align: right' data-toggle='tooltip' title='Time improvement'>&#916;</div>" +
                 "</div>"+
             "</div>");
 
@@ -644,7 +641,7 @@
                 "</div>");
 
             $submissionContainer.find(".createSubmission").click(function () {
-                createSubmission($(this), $submissionContainer);
+                createSubmission();
             });
 
             $status = $("<div class='status'></div>");
@@ -674,10 +671,15 @@
         }
     }
 
-    function createSubmission($button, $submissionContainer) {
+    function createSubmission() {
+
+        var $submissionContainer = $(".submissionContainer");
+        var $button = $(".submissionContainer .createSubmission .button");
 
         if ($button.hasClass("sliding"))
             return;
+
+        $(".submissionContainer .submissionForm").remove();
 
         var $submissionForm = $(
             "<form class='submissionForm' style='display: none'>" +
@@ -690,6 +692,10 @@
                 "<div class='setYoutubeContainer' style='display:inline-block; width: 100%;'>" +
                     "<label for='youtubeID' style='float: left; color: inherit; margin-top: 3px;'>Youtube URL</label>" +
                     "<input type='text' name='youtubeID' value='' style='width: 265px;'>" +
+                "</div>" +
+                "<div class='setCommentContainer'  style='display:inline-block; width: 100%;'>" +
+                    "<label for='comment' style='float: left; color: inherit; margin-top: 3px;'>Comment</label>" +
+                    "<input type='text' name='comment' value='' style='width: 265px;'>" +
                 "</div>" +
                 "<div class='uploadDemoContainer'>" +
                     "<label class='button browseDemo'>" +
@@ -704,18 +710,22 @@
             "</form>");
 
         $submissionContainer.append($submissionForm);
-        $button.addClass("sliding");
-        $button.slideToggle("slow", function() {
-            $button.removeClass("sliding");
-            $submissionForm.slideToggle("slow");
-        });
+
+        closeAllChangeMenus();
+        openSubmissionForm();
 
         $submissionForm.find(".addScoreButton").click(function() {
             var $youtubeField = $submissionForm.find(".setYoutubeContainer input");
             var $scoreField = $submissionForm.find(".scoreInputContainer input");
-            var $demoFile = $submissionForm.find(".uploadDemoContainer input");
+            var $commentField = $submissionForm.find(".setCommentContainer input");
+            var $demoFileChooser = $submissionForm.find(".uploadDemoContainer input");
 
-            if ($youtubeField.val() == "" && $demoFile.val() == "") {
+            var file = $demoFileChooser.get(0).files[0];
+            if (!validateFileSize(file)) {
+                return;
+            }
+
+            if ($youtubeField.val() == "" && $demoFileChooser.val() == "") {
                 setStatusError("Choose either a demo or YouTube video to add as proof.");
                 return;
             }
@@ -739,6 +749,16 @@
             }
             else if (score >= bestScore) {
                 setStatusError("Score too high.");
+                return;
+            }
+
+            var comment = $commentField.val();
+            if (!validateComment(comment)) {
+                return;
+            }
+
+            var file = $demoFileChooser.get(0).files[0];
+            if (!validateFileSize(file)) {
                 return;
             }
 
@@ -793,10 +813,9 @@
         }
         else {
             $dateDifference.text("Unknown");
+            $dateDifference.css("color", getOldDateColor());
         }
 
-//        var $rank = $("<div class='rank'>"+(entry.post_rank != null ? entry.post_rank : "-")+"</div>");
-//        drawRank($rank);
         var $preRank = $("<div class='preRank'>"+ (entry.pre_rank != null ? entry.pre_rank : "-") +"</div>");
         if (entry.pre_rank != null)
             drawRank($preRank);
@@ -816,13 +835,16 @@
                 "</div>" +
                 "<div class='banned'>" +
                 ((entry.banned == 1)
-                    ? "<i class='fa fa-exclamation-triangle' aria-hidden='true' style='padding-right: 8px' title='Banned'></i>"
+                    ? "<i class='fa fa-exclamation-triangle' aria-hidden='true' data-toggle='tooltip' title='Banned'></i>"
                     : "") +
                 "</div>" +
                 "<div class='submission'>" +
                     ((entry.submission == 1)
-                        ? "<i class='fa fa-pencil' aria-hidden='true' style='padding-right: 8px' title='Submission'></i>"
+                        ? "<i class='fa fa-pencil' aria-hidden='true' data-toggle='tooltip' title='Submission'></i>"
                         : "") +
+                "</div>" +
+                "<div class='comment'>"+
+                    "<i class='fa fa-comment' aria-hidden='true' data-toggle='popover' data-content='"+entry.note+"'" + ((entry.note == null) ? "style='display: none'" : "" ) + "></i>"+
                 "</div>" +
                 "<div class='demo-url'>" +
                     "<a href='/getDemo?id="+entry.id+"'" +
@@ -841,15 +863,10 @@
                 //$rank.prop('outerHTML') +
                "<div class='rankDiff'>" +
                    $preRank.prop('outerHTML') +
-//                   "<i class='fa fa-arrow-right' aria-hidden='true' style='display: inline-block; "
-//                       + ((entry.pre_rank == null)
-//                           ? "color: transparent"
-//                           : "") + "'>" +
-//                   "</i>" +
                    $postRank.prop('outerHTML') +
                "</div>" +
                  "<div class='score'>" +
-                    formatScoreTime(entry.score) +
+                    "<a href='/changelog?profileNumber=<?=$user->profileNumber?>&chamber="+currentMap+"'>"+formatScoreTime(entry.score)+"</a>" +
                 "</div>" +
                 "<div class='improvement'>"+ ((entry.improvement != null)
                     ? ((entry.improvement < 0)
@@ -903,10 +920,8 @@
         }
 
         if ($changeMenuToggleIcon.length > 0) { //change row accessible
-            $(".changeMenu")
-                .slideUp("slow")
-                .removeClass("open");
-            $(".changeEntry .changeMenuToggle i").attr("class", "fa fa-caret-right");
+            closeAllChangeMenus();
+            closeSubmissionForm();
 
             var entry = $changeMenu.closest(".changeEntry").data();
             var entryId = entry.id;
@@ -935,13 +950,26 @@
                             "</div>" +
                         "</div>" +
                         "<div class='setYoutubeContainer'" + ((entry.youtubeID != null) ? " style='display:none'" : "") + "'>" +
-                            "<input type='text' name='youtubeID' value=''>" +
+                            "<input type='text' name='youtubeID' value='" + ((entry.youtubeID != null) ? "www.youtube.com/watch?v="+entry.youtubeID : "") + "'>" +
                             "<div class='button setYoutube' style='margin-left: 3px'>" +
                                 "Set Youtube URL" +
                             "</div>" +
                         "</div>" +
-                        "<div class='button deleteYoutube' style='" + ((entry.youtubeID == null) ? "display:none;" : "") + "'>" +
-                            "Remove Youtube URL" +
+                        "<div>" +
+                            "<div class='button deleteYoutube' style='" + ((entry.youtubeID == null) ? "display:none;" : "") + "'>" +
+                                "Remove Youtube URL" +
+                            "</div>" +
+                        "</div>" +
+                        "<div class='setCommentContainer'" + ((entry.note != null) ? " style='display:none'" : "") + "'>" +
+                            "<input type='text' name='comment' value='"+((entry.note != null) ? entry.note : "")+"'>" +
+                            "<div class='button setComment' style='margin-left: 3px'>" +
+                                "Set Comment" +
+                            "</div>" +
+                        "</div>" +
+                        "<div>" +
+                            "<div class='button deleteComment' style='" + ((entry.note == null) ? "display:none;" : "") + "'>" +
+                                "Remove Comment" +
+                            "</div>" +
                         "</div>" +
                     "</form>");
 
@@ -975,6 +1003,84 @@
                             updateBestScore();
                         }
 
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false
+                }, 'json');
+            });
+
+            $changeMenu.find(".button.setComment").click(function(){
+                var $setYoutubeContainer = $(this).parent();
+                var $form = $(this).closest(".changeForm");
+                var $deleteCommentButton = $form.find(".button.deleteComment");
+                var $commentField = $form.find("input[name='comment']");
+                var $commentIcon = $form.parent().parent().find(".comment i");
+                var $commentIconScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .comment i");
+
+                if ($commentField.val() != "") {
+
+                    var comment = $commentField.val();
+                    if (!validateComment(comment)) {
+                        return;
+                    }
+
+                    setStatusProcessing();
+                    var formData = new FormData($form[0]);
+
+                    $.ajax({
+                        url: '/setComment',
+                        data: formData,
+                        type: 'POST',
+                        success: function (data) {
+                            $commentIcon.show();
+                            $commentIcon.attr("title", $commentField.val());
+
+                            if (currentScoreID == entryId) {
+                                $commentIconScore.show();
+                                $commentIconScore.attr("data-content", $commentField.val());
+                            }
+
+                            $deleteCommentButton.show();
+                            $setYoutubeContainer.hide();
+                            setStatusSuccess("Comment set.");
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }, 'json');
+                }
+                else {
+                    setStatusError("Comment can't be empty.");
+                }
+            });
+
+            $changeMenu.find(".button.deleteComment").click(function(){
+                var $deleteCommentButton = $(this);
+                var $form = $(this).closest(".changeForm");
+                var $setCommentContainer = $form.find(".setCommentContainer");
+                var $commentIcon = $form.parent().parent().find(".comment i");
+                var $commentIconScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .comment i");
+                var $commentField = $form.find("input[name='comment']");
+                setStatusProcessing();
+
+                var formData = new FormData($form[0]);
+
+                $.ajax({
+                    url: '/deleteComment',
+                    data: formData,
+                    type: 'POST',
+                    success: function(data) {
+                        $commentField.val("");
+                        $deleteCommentButton.hide();
+                        $setCommentContainer.show();
+                        $commentIcon.hide();
+
+                        if (currentScoreID == entryId) {
+                            $commentIconScore.hide();
+                        }
+
+                        setStatusSuccess("Comment removed.");
                     },
                     cache: false,
                     contentType: false,
@@ -1080,32 +1186,34 @@
                 setStatusProcessing();
                 var formData = new FormData($form[0]);
 
-                var file = $form.find("input[type='file']").get(0).files[0];
+                var $fileChooser = $form.find("input[type='file']");
+                var file = $fileChooser.get(0).files[0];
 
                 if (file !== undefined) {
-                    if (file.size < (5 * 1024 * 1024)) {
-                        $.ajax({
-                            url: '/uploadDemo',
-                            data: formData,
-                            type: 'POST',
-                            success: function (data) {
-                                $uploadDemoContainer.hide();
-                                setStatusSuccess("Demo uploaded.");
-                                $demoURL.show();
-                                $deleteDemoButton.show();
+                    
+                    if (!validateFileSize(file)) {
+                        return;
+                    }
 
-                                if (currentScoreID == entryId) {
-                                    $demoURLScore.show();
-                                }
-                            },
-                            cache: false,
-                            contentType: false,
-                            processData: false
-                        }, 'json');
-                    }
-                    else {
-                        setStatusError("File is too big. Max upload size: 5MB");
-                    }
+                    $.ajax({
+                        url: '/uploadDemo',
+                        data: formData,
+                        type: 'POST',
+                        success: function (data) {
+                            setStatusSuccess("Demo uploaded.");
+
+                            $uploadDemoContainer.hide();
+                            $demoURL.show();
+                            $deleteDemoButton.show();
+
+                            if (currentScoreID == entryId) {
+                                $demoURLScore.show();
+                            }
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }, 'json');
                 }
                 else {
                     setStatusError("No file chosen.");
@@ -1145,10 +1253,38 @@
         }
     }
 
+    function openSubmissionForm() {
+        var $button = $(".createSubmission .button");
+        var $submissionForm = $(".submissionForm");
+        $button.addClass("sliding");
+        $button.slideUp("slow", function() {
+            $button.removeClass("sliding");
+            if ($submissionForm.length > 0)
+                $submissionForm.slideDown("slow");
+        });
+    }
+
+    function closeSubmissionForm() {
+        var $button = $(".createSubmission .button");
+        var $submissionForm = $(".submissionForm");
+        if ($submissionForm.length > 0) {
+            $submissionForm.slideUp("slow", function () {
+                $button.slideDown("slow");
+            });
+        }
+    }
+
+    function closeAllChangeMenus() {
+        $(".changeMenu")
+            .slideUp("slow")
+            .removeClass("open");
+        $(".changeEntry .changeMenuToggle i").attr("class", "fa fa-caret-right");
+    }
+
     function setStatus(str, icon, cachingMessage) {
         $status.html(
             "<i class='fa "+icon+"' aria-hidden='true'></i>" +
-            "<div class='text'>" + str + (cachingMessage ? "<br>Wait a minute for the changes to take effect." : "")+"</div>"
+            "<div class='text'>" + str + (cachingMessage ? "<br>Wait a minute for this change to take effect." : "")+"</div>"
         );
 
         var $icon = $status.find("i");
@@ -1169,6 +1305,8 @@
     }
 
     function getYTURL(ytURL) {
+
+        ytURL = ytURL.replace(" ", "");
 
         //domain name checking
         if (ytURL.indexOf("/watch?v=") != -1) {
@@ -1218,6 +1356,24 @@
             timestampSeconds = 0;
 
         return ytID + "?start=" + timestampSeconds.toString();
+    }
+
+    function validateComment(comment) {
+        if (comment.length > 100) {
+            setStatusError("Comment cannot be longer than 100 characters.");
+            return false;
+        }
+        return true;
+    }
+
+    function validateFileSize(file) {
+        if (file !== undefined) {
+            if (file.size > <?=Router::maxUploadBytes?>) {
+                setStatusError("File is too big. Max upload size: "+(<?=Router::maxUploadBytes?> / (1024 * 1024))+"MB");
+                return false;
+            }
+        }
+        return true;
     }
 
 </script>

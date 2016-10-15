@@ -13,6 +13,7 @@ body {
     margin: 0;
     font-family: Segoe UI;
     font-size: 12px;
+    min-width: 1115px;
 }
 label {
     display: block;
@@ -24,6 +25,7 @@ input, select {
     font-family: Segoe UI;
     background: #fdfdfd;;
     color: #000;
+    font-weight: normal;
 }
 input[type=text] {
     height: 27px;
@@ -78,8 +80,9 @@ a {
     text-decoration: none;
     color: inherit;
 }
-a:hover {
+a:hover, a:focus {
     text-decoration: underline;
+    color: inherit; !important
 }
 #header {
     height: 92px;
@@ -93,7 +96,7 @@ a:hover {
     float: left;
     padding: 0px 0px 0px 32px;
     position: relative;
-    min-width: 700px;
+    min-width: 770px;
 }
 #header_right {
     /*float: right;*/
@@ -118,7 +121,8 @@ a:hover {
     /*letter-spacing: -0.5px;*/
     float: left;
     position: relative;
-    top: -7px;
+    /*top: -7px;*/
+    margin-top: 15px;
     text-transform: uppercase;
 }
 #navigation {
@@ -157,12 +161,13 @@ a:hover {
     font-family: Aperture;
     text-align: center;
     font-size: 17px;
+    background-size: cover;
 }
-#navigation .label {
+#navigation .btnLabel {
     display: inline-block;
     margin-left: 5px;
 }
-#navigation > div > .label, #navigation > a > .label {
+#navigation > div > .btnLabel, #navigation > a > .btnLabel {
     font-weight: 500;
 }
 #navigation .label:hover {
@@ -296,7 +301,7 @@ a:hover {
 #welcome .firstline {
     font-weight: bold;
 }
-.chamber {
+#leastportals .chamber, #chambers .chamber {
     display: block;
     width: 265px;
     height: 332px;
@@ -304,14 +309,15 @@ a:hover {
     border-bottom: 2px solid #c3c3c3;
     float: left;
     margin: 5px 0px 10px 20px;
+    box-sizing: content-box;
 }
-.chamber.leastportals {
+#leastportals .chamber.leastportals {
     height: 149px;
 }
-.chamber.leastportals .chamberimage {
+#leastportals .chamber.leastportals .chamberimage {
     border-bottom: 3px solid #3096d1;
 }
-.portalsused {
+#leastportals .portalsused {
     text-align: center;
     margin-top: 55px;
     color: #e1e1e1;
@@ -320,19 +326,22 @@ a:hover {
     font-weight: bold;
     text-shadow: 0px 0px 3px #000000;
     filter: dropshadow(color=#000000, offx=0, offy=0);
+    text-transform: uppercase;
 }
-.portalamount {
+#leastportals .portalamount {
     display: inline-block;
     font-size: 34px;
     position: relative;
     top: 3px;
+    padding-right: 5px;
 }
-#chambers .youtubeEmbedButton .fa-youtube-play {
+#chambers .youtubeEmbedButton .fa-youtube-play, #leastportals .youtubeEmbedButton .fa-youtube-play {
     color: #ac303C;
     font-size: 23px;
     margin-top: -2px;
+    cursor: pointer;
 }
-#chambers .youtubeEmbedButton .fa-square  {
+#chambers .youtubeEmbedButton .fa-square, #leastportals .youtubeEmbedButton .fa-square  {
     color: #ddd;
     left: 0.5px;
     top: -2.6px;
@@ -366,6 +375,7 @@ a:hover {
     height: 149px;
     cursor: pointer;
     position: relative;
+    box-sizing: content-box;
 }
 #chambers .chambertitle, #leastportals .chambertitle {
     height: 34px;
@@ -380,7 +390,8 @@ a:hover {
     color: #565656;
     text-transform: capitalize;
     float: right;
-    padding: 8px 10px 0px 6px;
+    padding: 7px 10px 1px 6px;
+    box-sizing: content-box;
 }
 #chambers .titlebg a, #leastportals .titlebg a {
     color: #565656;
@@ -435,6 +446,7 @@ a:hover {
     /*line-height: 13px;*/
     line-height: 17px;
     height: 17px;
+    box-sizing: content-box;
 }
 #chambers .chamber_scores .othernoobscores .entry .boardname {
     /*width: 170px;*/
@@ -450,11 +462,13 @@ a:hover {
 #chambers .chamber_scores .entry .youtube {
     float: right;
     font-size: 11px;
-    cursor: pointer;
     color: #777;
     padding-left: 10px;
  }
-#chambers .chamber_scores .entry .youtube:hover i {
+ #chambers .chamber_scores .entry .youtube i {
+     cursor: pointer;
+ }
+#chambers .chamber_scores .entry .youtube i:hover {
     color: #555;
 }
 #chambers .chamber_scores .entry .boardname {
@@ -467,12 +481,15 @@ a:hover {
 }
 #chambers .chamber_scores .entry .dateDifference {
     border-radius: 2px;
-    margin-left: -3px;
+    margin-left: -2px;
     width: 3px;
     display: inline-block;
     float: left;
     margin-right: -3px;
     height: 100%;
+}
+#chambers .chamber_scores .othernoobscores .entry .dateDifference {
+    margin-top: 1px;
 }
 #chambers .chamber_scores .entry .score {
     float: right;
@@ -489,18 +506,19 @@ a:hover {
 #chambers .icons.fa-stack {
     vertical-align: top;
 }
-#chambers .chamber_icons_right {
+#chambers .chamber_icons_right, #leastportals .chamber_icons_right {
     position: absolute;
     top: 124px;
     right: 7px;
 }
-#chambers .chamber_icons_left {
+#chambers .chamber_icons_left, #leastportals .chamber_icons_left {
     position: absolute;
     top: 124px;
     left: 5px;
 }
 #about {
     font-family: Segoe UI;
+    margin: 30px 0px 0px 42px;
 }
 #about .largeTitle {
     font-family: "Aperture";
@@ -513,6 +531,11 @@ a:hover {
     font-size: 20px;
     color: #3e88b3;
     text-transform: uppercase;
+    font-weight: bold;
+}
+#leastportals .chaptername, #chambers .chaptername, #editProfile .subtitle {
+    font-size: 40.5px;
+    margin-top: -11px;
 }
 #about .title {
     font-family: "Aperture";
@@ -527,14 +550,8 @@ a:hover {
     text-transform: uppercase;
     margin: 0px;
 }
-#about table {
-    font-size: 16px;
-}
-#about table td {
-    min-height: 40px;
-}
-#about {
-    margin: 30px 0px 0px 42px;
+#about table th:first-child, #about table td:first-child {
+    /*border-right: 1px solid #ddd;*/
 }
 #about .subtitle {
     padding-bottom: 10px;
@@ -544,26 +561,24 @@ a:hover {
     font-size: 16px;
     color: #444;
     width: calc(100% - 45px);
+    padding-left: 0px;
+    margin-left: 0px;
 }
 #about .smallContainer {
     margin-bottom: 20px;
 }
 #about a {
-    color: #111111;
-}
-#leastportals .chaptername, #chambers .chaptername, #editProfile .subtitle {
-    font-size: 40.5px;
-    margin-top: -20px;
+    color: #555;
+    font-weight: 500;
 }
 #chambers .chapterinfo, #leastportals .chapterinfo {
     height: 45px;
-    margin: 15px 0px 15px 20px;
+    margin: 10px 0px 20px 20px;
     clear: both;
     float: left;
 }
 #wrapper {
     min-height: 100%;
-    min-width: 1050px;
 }
 #content {
     /*overflow: hidden;*/
@@ -608,14 +623,14 @@ a:hover {
     font-weight: bold;
     color: #4b4b4b;
 }
+#changelog #filter_options {
+    margin-top: -3px;
+}
 #changelog #filters form > div.input {
     width: 13%;
 }
 #changelog #filters form >  div.input > input {
     width: 100%;
-}
-#changelog #entries {
-    min-width:1300px;
 }
 #changelog .entry a {
     display: inline-block;
@@ -632,6 +647,9 @@ a:hover {
 #changelog label {
     font-weight: normal;
     margin: 0px 0px 5px 2px;
+}
+#editProfile label {
+    font-weight: normal;
 }
 #changelog .input {
     margin: 0px 10px 0px 12px;
@@ -709,8 +727,11 @@ a:hover {
     color: #a5a5a5;
 }
 
+#changelog #firstentry > div, #changelog #otherentries .entry > div  {
+    box-sizing: content-box;
+}
 #changelog #firstentry > div:not(.profileIcon)  {
-    height: 29px;
+    height: 27px;
     float: left;
     padding-top: 12px;
 }
@@ -718,13 +739,6 @@ a:hover {
     height: 41px;
     float: left;
     line-height: 41px;
-}
-#changelog .demo-url, #changelog .youtube {
-    width: 33px;
-    text-align: center;
-}
-#changelog .demo-url i, #changelog .youtube i {
-    color: #888888;
 }
 #changelog .date {
     width: 276px;
@@ -753,7 +767,7 @@ a:hover {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    padding-right: 30px;
+    margin-right: 30px;
 }
 #changelog #entries .rank {
     display: inline-block;
@@ -799,14 +813,6 @@ a:hover {
 #changelog .worldrecord {
     width: 88px;
 }
-#changelog .banScore {
-    width: 33px;
-    text-align: center;
-}
-#changelog .banScore i {
-    font-size: 14px;
-    color: crimson;
-}
 #changelog .wr {
     background: url("/images/wr.png");
     width: 20px;
@@ -841,6 +847,9 @@ a:hover {
     color: inherit;
     white-space: nowrap;
 }
+#profile .morris-hover table tr, #changelog .morris-hover table tr   {
+    height: 18px;
+}
 #changelog .morris-hover table td:not(:last-child), #profile .morris-hover table td:not(:last-child) {
     padding-right: 15px;
 }
@@ -857,6 +866,7 @@ body > #youtube {
     left: calc(50% - 320px);
     width: 640px;
     z-index: 10000;
+    box-sizing: content-box;
 }
 body > #youtube #ytclose {
     width: 20px;
@@ -865,7 +875,8 @@ body > #youtube #ytclose {
     padding-left: 6px;
     padding-top: 5px;
     cursor: pointer;
-    color: #888
+    color: #888;
+    box-sizing: content-box;
 }
 body > #youtube #ytclose:hover {
     color: #444;
@@ -878,6 +889,7 @@ body > #youtube #descriptionContainer {
     color: #444;
     border-left: 1px solid #aaa;
     border-right: 1px solid #aaa;
+    box-sizing: content-box;
 }
 body > #youtube #description {
     width: calc(100% - 31px);
@@ -887,6 +899,7 @@ body > #youtube #description {
     line-height: 25px;
     padding-left: 5px;
     font-size: 14px;
+    box-sizing: content-box;
 }
 body > #youtube #ytplayer {
 }
@@ -915,6 +928,7 @@ body > #youtube #ytplayer {
     padding: 10px;
     /*overflow: auto;*/
     /*font-family: Segoe UI, Helvetica, sans-serif;*/
+    box-sizing: content-box;
 }
 #profile .userinformation {
     width: 100%;
@@ -961,6 +975,7 @@ body > #youtube #ytplayer {
 }
 #profile .userinformation .general .general-wrapper .nickname {
     font-size: 26px;
+    line-height: 26px;
     /*text-transform: uppercase;*/
     margin-top: 8px;
     font-family: Aperture;
@@ -1010,7 +1025,7 @@ body > #youtube #ytplayer {
     width: 15%;
 }
 #profile .global-stats .block-container.bestworst .title{
-    width: 120px;
+    width: 116px;
 }
 #profile .global-stats .block-container.oldnew .title{
     max-width: 140px;
@@ -1027,12 +1042,13 @@ body > #youtube #ytplayer {
     /*margin-left: 15px;*/
 }
 #profile .global-stats .block .number {
-    font-size: 27px;
+    font-size: 26px;
     text-align: right;
     display: inline-block;
     position: relative;
     top: -6px;
     float: left;
+    /*max-width: 73px;*/
     /*vertical-align: top;*/
     /*line-height:34px;*/
 }
@@ -1089,7 +1105,7 @@ body > #youtube #ytplayer {
     font-size: 50%;
 }
 #profile .profile-title span {
-    padding-left: 20px;
+    padding-left: 12px;
     padding-right: 20px;
 }
 #profile .profile-title {
@@ -1121,11 +1137,11 @@ body > #youtube #ytplayer {
 #profile .column-3 .block-content {
     /*padding: 20px;*/
     /*float: left;*/
-    padding: 20px 10px 0px 0px;
+    padding: 20px 12px 0px 0px;
     /*width: calc(100% - 40px);*/
 }
 #profile .column-3 .column-title {
-    margin: 0px 10px 0px 20px;
+    margin: 0px 3px 0px 12px;
     border-bottom: 1px solid #b2b2b2;
     padding-bottom: 5px;
     text-transform: uppercase;
@@ -1155,14 +1171,14 @@ body > #youtube #ytplayer {
     position: relative;
 }
 #profile .scoreMenuToggle {
-    width: 20px;
+    width: 15px;
     text-align: center;
-}
-#profile .scoreMenuToggle {
     cursor: pointer;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
+    font-size: 12px;
+    /*vertical-align: text-bottom;*/
 }
 #profile .scoreMenuToggle i {
     display:none;
@@ -1170,27 +1186,28 @@ body > #youtube #ytplayer {
 #profile .scoreMenu {
     z-index: 999;
     display: none;
-    padding: 0px 7px 13px 10px;
-    margin-left: 10px;
+    padding: 0px 0px 13px 7px;
+    margin-left: 7px;
     border-left: #b2b2b2 1px solid;
     overflow: hidden;
 }
 #profile .scoreMenu .descriptionButton {
     display: inline-block;
     cursor: pointer;
-    margin-left: 15px;
+    margin-left: 12px;
     margin-top: 13px;
-    width:100%;
+    width: calc(100% - 12px)
 }
 #profile .scoreMenu .descriptionContainer {
     padding-top: 13px;
-    margin-left: 15px;
+    margin-left: 12px;
     border-bottom: 1px solid #bbb;
 }
 #profile .scoreMenu .descriptionButton .button{
     text-align: center;
     display: inline-block;
-    width: 348px;
+    width: calc(100% - 12px);
+    margin-right: 0px;
 }
 #profile .scoreMenu .descriptionButton:hover i {
     color: #999;
@@ -1214,34 +1231,31 @@ body > #youtube #ytplayer {
     font-size: small;
 }
 #profile .sp .changeEntry .changeMenuToggle, #profile .coop .changeEntry .changeMenuToggle {
-    width: 15px;
+    width: 12px;
+    font-size: 12px;
     cursor: pointer;
 }
 #profile .sp .changeEntry .changeMenuToggle i, #profile .coop .changeEntry .changeMenuToggle i {
     display: none;
 }
 #profile .sp .changeEntry .date, #profile .coop .changeEntry .date {
-    width: 107px;
-    padding-right: 10px;
+    /*width: 82px;*/
+    width: 102px;
+    padding-right: 4px;
 }
-#profile .sp .changeEntry .banned, #profile .coop .changeEntry .banned {
-    width: 10px;
+#profile .sp .changeEntry .submission, #profile .coop .changeEntry .submission,
+#profile .sp .changeEntry .demo-url, #profile .coop .changeEntry .demo-url,
+#profile .sp .changeEntry .banned, #profile .coop .changeEntry .banned,
+#profile .sp .changeEntry .youtube, #profile .coop .changeEntry .youtube,
+#profile .sp .changeEntry .comment, #profile .coop .changeEntry .comment {
+    width: 8px;
     font-size: 11px;
     padding-right: 4px;
     color: #bbb;
-}
-#profile .sp .changeEntry .submission, #profile .coop .changeEntry .submission {
-    width: 10px;
-    font-size: 11px;
-    padding-right: 9px;
-}
-#profile .sp .changeEntry .demo-url, #profile .coop .changeEntry .demo-url {
-    /*width: 20px;*/
-    padding-right: 4px;
+    box-sizing: content-box;
 }
 #profile .sp .changeEntry .youtube, #profile .coop .changeEntry .youtube {
-    /*width: 20px;*/
-    padding-right: 5px;
+    padding-right: 36px;
 }
 #profile .sp .changeEntry .rank, #profile .coop .changeEntry .rank {
     width: 32px;
@@ -1264,21 +1278,26 @@ body > #youtube #ytplayer {
     text-align: right;
     padding-right: 0px;
 }
+#profile .sp .changeEntry .pointImprovement, #profile .coop .changeEntry .pointImprovement {
+    width: 50px;
+    text-align: right;
+    padding-right: 0px;
+}
 #profile .sp .changeEntry .dateTime, #profile .coop .changeEntry .dateTime {
     padding-right: 5px;
 }
 #profile .sp .changeEntry .score, #profile .coop .changeEntry .score {
-    width: 50px;
+    width: 45px;
     text-align: right;
 }
 #profile .sp .scoreMenu .submissionContainer, #profile .coop .scoreMenu .submissionContainer,
 #profile .sp .scoreMenu .status, #profile .coop .scoreMenu .status {
-    margin-left: 15px;
+    margin-left: 12px;
 }
 #profile .sp .scoreMenu .submissionForm, #profile .coop .scoreMenu .submissionForm {
     padding-top: 15px;
     border-top: 1px solid #bbb;
-    margin-top: 9px;
+    margin-top: 4px;
 }
 #profile .sp .scoreMenu .createSubmission, #profile .coop .scoreMenu .createSubmission {
     padding-top: 5px;
@@ -1293,9 +1312,9 @@ body > #youtube #ytplayer {
 }
 #profile .sp .scoreMenu .status .text, #profile .coop .scoreMenu .status .text {
     display: inline-block;
-    width: 335px;
-    float: right;
-    padding-left: 5px;
+    width: 341px;
+    /*float: right;*/
+    padding-left: 10px;
 }
 #profile .sp .scoreMenu .submissionForm, #profile .coop .scoreMenu .submissionForm {
     /*padding-bottom: 4px;*/
@@ -1314,7 +1333,7 @@ body > #youtube #ytplayer {
     white-space: nowrap;
 }
 #profile .changeForm .filename {
-    max-width: 165px;
+    max-width: 183px;
 }
 #profile .submissionForm .filename {
     max-width: 229px;
@@ -1326,11 +1345,11 @@ body > #youtube #ytplayer {
 #profile form {
     margin-bottom: 0px;
 }
-#profile input[name="youtubeID"] {
+#profile .setYoutubeContainer input[name="youtubeID"], #profile .setCommentContainer input[name="comment"] {
     display: inline-block;
-    width: 231px;
+    width: 252px;
 }
-#profile .uploadDemoContainer, #profile .setYoutubeContainer {
+#profile .uploadDemoContainer, #profile .setYoutubeContainer, #profile .setCommentContainer {
     margin-bottom: 3px;
     margin-top: 3px;
 }
@@ -1347,6 +1366,7 @@ body > #youtube #ytplayer {
     padding: 2px 5px 3px;
     line-height: 18px;
     margin: 3px 3px 3px 0px;
+    font-weight: normal;
 }
 #profile label.button input[type="file"] {
     position: fixed;
@@ -1365,20 +1385,20 @@ body > #youtube #ytplayer {
     /*padding-right: 5px;*/
 }
 #profile .sp .dateDifferenceColor, #profile .coop .dateDifferenceColor   {
-    height: 11px;
-    width: 3px;
+    height: 9px;
+    width: 2px;
     margin-bottom: -1px;
     margin-left: -2px;
-    margin-right: 1px;
+    /*margin-right: 1px;*/
 }
 #profile .sp .title  {
-    width: 127px;
+    width: 130px;
 }
 #profile .coop .title  {
     width: 130px;
 }
 #profile .sp .chamberScoreInfo > .rank, #profile .coop .chamberScoreInfo > .rank  {
-    width: 20px;
+    width: 27px;
 }
 #profile .sp .chamberScoreInfo > .rank i, #profile .coop .chamberScoreInfo > .rank i, #profile .timespoints .rank i {
     font-size: 11px;
@@ -1395,66 +1415,89 @@ body > #youtube #ytplayer {
 #profile .timespoints .rank i {
     margin-left: 11px;
 }
-#profile .sp .demo-url, #profile .coop .demo-url, #profile .sp .youtube, #profile .coop .youtube {
+
+
+#profile .sp .demo-url, #profile .coop .demo-url,
+#profile .sp .youtube, #profile .coop .youtube,
+#profile .sp .comment, #profile .coop .comment {
     width: 10px;
 }
 #profile .sp .demo-url i, #profile .coop .demo-url i, #profile .sp .youtube i, #profile .coop .youtube i,
-#profile .sp .submission i, #profile .coop .submission i, #profile .sp .banned i, #profile .coop .banned i {
+#profile .sp .submission i, #profile .coop .submission i, #profile .sp .banned i, #profile .coop .banned i,
+#profile .sp .comment i, #profile .coop .comment i{
     font-size: 9px;
     color: #bbb;
 }
-#profile .sp .demo-url i, #profile .coop .demo-url i, #profile .sp .youtube i, #profile .coop .youtube i {
+#profile .sp .demo-url i, #profile .coop .demo-url i,
+#profile .sp .youtube i, #profile .coop .youtube i,
+#profile .sp .comment i, #profile .coop .comment i {
     cursor: pointer;
 }
-#profile .sp .demo-url i:hover, #profile .coop .demo-url i:hover, #profile .sp .youtube i:hover, #profile .coop .youtube i:hover {
+#profile .sp .comment i:hover, #profile .coop .comment i:hover,
+#profile .sp .demo-url i:hover, #profile .coop .demo-url i:hover,
+#profile .sp .youtube i:hover, #profile .coop .youtube i:hover,
+#profile .sp .comment i:hover, #profile .coop .comment i:hover {
     color: #888;
 }
-#changelog .demo-url i, #changelog .youtube i, #chamber .demo-url i, #chamber .youtube i  {
-    cursor: pointer;
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
+
+
+
+#changelog .demo-url, #changelog .youtube, #changelog .submission, #changelog .comment, #changelog .banScore {
+    width: 27px;
+    text-align: center;
 }
-#changelog .demo-url i, #changelog .youtube i  {
-    margin-top: 16px;
+#changelog .banScore {
+    color: crimson;
+}
+#changelog .demo-url i, #changelog .youtube i, #changelog .submission i, #changelog .comment i, #changelog .setBannedStatus i, #changelog .banScore .status,
+#chamber .demo-url i, #chamber .youtube i, #chamber .submission i, #chamber .comment i {
+    color: #888;
+}
+#changelog .demo-url i, #changelog .youtube i, #changelog .comment i,
+#chamber .demo-url i, #chamber .youtube i, #chamber .demo-url i, #chamber .youtube i, #chamber .comment i {
+    cursor: pointer;
+}
+#changelog .demo-url i, #changelog .youtube i, #changelog .submission, #changelog .comment, #changelog .banScore   {
+    font-size: 12px;
+}
+#changelog .demo-url a, #changelog .youtube i  {
+    margin-top: 17px;
+}
+#changelog .banScore .banIndicator, #changelog .submission i, #changelog .setBannedStatus, #changelog .comment i {
+    margin-top: 14px;
+}
+#changelog .demo-url i:hover, #changelog .youtube i:hover, #changelog .setBannedStatus i:hover, #changelog .comment i:hover,
+#chamber .demo-url i:hover, #chamber .youtube i:hover, #chamber .comment i:hover {
+    color: #444;
+}
+
+
+#chamber .entry .demo-url, #chamber .entry .youtube, #chamber .entry .comment, #chamber .entry .submission {
+    height: 100%;
+    float: right;
+    text-align: right;
+}
+#chamber .entry .demo-url, #chamber .entry .youtube, #chamber .entry .comment {
+    width: 25px;
+}
+#chamber .demo-url i, #chamber .youtube i, #chamber .comment i, #chamber .submission i  {
+    margin-top: 15px;
     font-size: 13px;
 }
-#changelog .demo-url i, #changelog .youtube i, #changelog .setBannedStatus i, #changelog .banScore .status  {
-     color: #888;
- }
-#changelog .banScore .banIndicator  {
-    margin-top: 13px;
+#chamber .submission {
+    padding-right: 10px;
+    width: 15px;
 }
-#changelog .setBannedStatus  {
-    margin-top: 13px;
-}
-#changelog .submission  {
-    width: 33px;
-    text-align: center;
-    color: #888;
-}
-#changelog .submission i  {
-    margin-top: 13px;
-}
-#changelog .demo-url i:hover, #changelog .youtube i:hover, #changelog .setBannedStatus i:hover{
-    color: #444;
-}
-#chamber .demo-url i, #chamber .youtube i  {
-    color: #888;
-    margin-top: 15px;
-    font-size: 14px;
-}
-#chamber .demo-url i:hover, #chamber .youtube i:hover {
-    color: #444;
-}
+
+
 #profile .sp .score, #profile .coop .score  {
-    width: 59px;
+    width: 55px;
 }
 #profile .sp .wr-diff, #profile .coop .wr-diff  {
-    width: 57px;
+    width: 52px;
 }
 #profile .sp .nr-diff, #profile .coop .nr-diff  {
-    width: 57px;
+    width: 52px;
 }
 #profile .timespoints {
     width: 410px;
@@ -1469,7 +1512,7 @@ body > #youtube #ytplayer {
     width: 30px;
 }
 #profile .timespoints .score {
-    width: 60px;
+    width: 66px;
 }
 #profile .timespoints .wr-diff {
     width: 65px;
@@ -1477,7 +1520,6 @@ body > #youtube #ytplayer {
 #profile .timespoints .nr-diff  {
     width: 60px;
 }
-
 #profile .user-noexist {
     text-align: center;
     margin-top: 130px;
@@ -1503,37 +1545,6 @@ body > #youtube #ytplayer {
     background-size: contain;
     /*margin: 0 3px;*/
     vertical-align: bottom;
-}
-#chamber .not-public-chambers, #chamber .chamber-full-explanation {
-    background: #3096d1;
-}
-#chamber .not-public-chambers a, #chamber .chamber-full-explanation a {
-    color: #FFF;
-}
-#chamber .not-public-chambers .close-btn, #profile .uploadInfo span.close-btn {
-    cursor: pointer;
-    background: url("/images/cross.png");
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-    float: right;
-    position: relative;
-    top: 5px;
-}
-#profile .uploadInfo, #chamber .not-public-chambers {
-    width: 100%;
-    line-height: 35px;
-    color: #FFF;
-    display: none;
-    font-size: 11px;
-}
-#profile .uploadInfo > span, #chamber .not-public-chambers > span {
-    margin-left: 20px;
-    display: inline-block;
-    line-height: 26px;
-    margin-top: 5px;
-    margin-bottom: 5px;
-    width: calc(100% - 27px);
 }
 #profile .twitch-linked {
     background: #6441A5;
@@ -1626,6 +1637,7 @@ body > #youtube #ytplayer {
     font-family: "Aperture";
     color: #3e88b3;
     text-transform: uppercase;
+    background-size: cover;
 }
 #chamber .chamberchaptername {
     font-size: 20px;
@@ -1680,25 +1692,8 @@ body > #youtube #ytplayer {
     overflow: hidden;
     white-space: nowrap;
 }
-#chamber .entry .submission {
-    float: right;
-    width: 40px;
-    height: 100%;
-    text-align: right;
-}
-#chamber .entry .submission i {
-    margin-top: 13px;
-    font-size: 14px;
-    color: #888;
-}
-#chamber .entry .demo-url, #chamber .entry .youtube {
-    width: 40px;
-    height: 100%;
-    float: right;
-    text-align: right;
-}
 #chamber .entry .date {
-    width: 125px;
+    width: 130px;
     height: 100%;
     float:right;
     text-align: right;
@@ -1714,9 +1709,11 @@ body > #youtube #ytplayer {
     float: right;
     width: 50px;
     text-align: right;
-    padding-right: 20px;
     margin-right: 10px;
     margin-left: 22px;
+}
+#aggregated #chamber .entry .score {
+    margin-right: 15px;
 }
 #chamber .datatable {
     width: 100%;
@@ -1762,6 +1759,11 @@ body > #youtube #ytplayer {
     top: 10px;
     right: 10px;
 }
+#chamber .controls.topleft {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
 #chamber .chamberControls {
     position: absolute;
     bottom: 10px;
@@ -1772,12 +1774,6 @@ body > #youtube #ytplayer {
 }
 #aggregated .chamberchambername {
     cursor: default;
-}
-#aggregated .controls span.currentPageLabel{
-    font-size: 15px;
-    line-height: 28px;
-    height: 28px;
-    /*width: 60px;*/
 }
 #aggregated .pointsControls {
     position: absolute;
@@ -1790,7 +1786,7 @@ body > #youtube #ytplayer {
     right: 10px;
 }
 #aggregated #chamber {
-    width: 1000px;
+    width: 960px;
 }
 #aggregated #chamber .entry .boardname {
     width: 250px;
@@ -1802,7 +1798,7 @@ body > #youtube #ytplayer {
 }
 #changelog .controls {
     position: absolute;
-    margin-top: 8px;
+    margin-top: 9px;
     left: 77px;
 }
 .controls {
@@ -1814,6 +1810,7 @@ body > #youtube #ytplayer {
     background: #ededed;
     display: inline-block;
     border: 2px solid #aaa;
+    box-sizing: content-box;
 }
 .controls .button {
     cursor:pointer;
@@ -1821,10 +1818,10 @@ body > #youtube #ytplayer {
     -khtml-user-select: none;
     -webkit-user-select: none;
     vertical-align: middle;
-    font-size: 11px;
-}
-.controls .linkButton {
-    line-height: 28px;
+    font-size: 13px;
+    font-family: Segoe UI;
+    text-transform: none;
+    line-height: 24px;
 }
 .controls .linkButton a {
     display: inline-block;
@@ -1835,24 +1832,23 @@ body > #youtube #ytplayer {
 }
 .controls .button span.name {
     vertical-align: middle;
-    text-transform: uppercase;
+}
+.controls span.currentPageLabel {
+    font-size: 15px;
+    line-height: 24px;
+    height: 24px;
+    /*width: 60px;*/
 }
 #changelog .controls span.currentPageLabel {
     font-size: 13px;
-    line-height: 23px;
-    height: 25px;
+    line-height: 22px;
+    height: 24px;
     /*width: 90px;*/
-}
-#chamber .chamberControls span.currentPageLabel {
-    font-size: 15px;
-    line-height: 28px;
-    height: 28px;
-    /*width: 60px;*/
 }
 #chamber .button.standardButton {
     padding-left: 10px;
     padding-right: 10px;
-    line-height: 28px;
+    line-height: 24px;
 }
 .controls span.currentPageLabel {
     vertical-align: middle;
@@ -1877,13 +1873,54 @@ body > #youtube #ytplayer {
     text-align: center;
     vertical-align: middle;
 }
-#aggregated .controls .button span.icon i, #chamber .controls .button span.icon i {
-    line-height: 28px;
+#aggregated #chamber .controls .button span.icon i {
+    /*line-height: 23px;*/
+}
+#chamber .controls .button span.icon i {
+    /*line-height: 23px;*/
 }
 #changelog .controls .button span.icon i {
-    line-height: 25px;
+    /*line-height: 23px;*/
 }
 .seperate {
     display: inline-block;
     opacity: 0;
+}
+#chamber .not-public-chambers a, #chamber .chamber-full-explanation a, #profile .uploadInfo a, #announcement a {
+    color: #FFF;
+}
+#profile .uploadInfo, #chamber .not-public-chambers, #announcement {
+    background: #3096d1;
+    /*width: calc(100% - 10px);*/
+    width: 100%;
+    line-height: 35px;
+    color: #FFF;
+    display: none;
+    font-size: 11px;
+    line-height: 21px;
+
+    padding: 5px;
+}
+#chamber .not-public-chambers .close-btn, #profile .uploadInfo .close-btn, #announcement .close-btn {
+    cursor: pointer;
+    background: url("/images/cross.png");
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 5px;
+    float: right;
+    margin-top: 4px;
+}
+#chamber .not-public-chambers .notification, #profile .uploadInfo .notification, #announcement .notification {
+    width: calc(100% - 42px);
+    display: inline-block;
+    margin-right: 7px;
+    margin-left: 10px;
+}
+#chamber .not-public-chambers .close-btn {
+    margin-top: 4px;
+}
+#chamber .not-public-chambers  {
+    margin-top: -3px;
+    background: #3096d1;
 }

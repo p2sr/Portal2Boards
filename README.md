@@ -4,7 +4,7 @@ Originally developed and designed by Nuclear: https://github.com/ncla/Portal-2-L
 Server requirements:
 
 1. Basic LAMP/XAMPP webserver. Note that for SQL, MariaDB is known to cause issues when using query variables.
-2. Google account
+2. Google account.
 
 
 Server configuration:
@@ -12,7 +12,7 @@ Server configuration:
 1. Set the 'public' folder as the server's document root.
 2. For Apache, enable 'mod_rewrite' and 'mod_expires' for image caching and beautiful URLs.
 3. For PHP, enable the cURL extension for scraping the Steam leaderboards.
-4. Import database dump data/dumps/leaderboard.sql into phpMyAdmin.
+4. Import database dump data/leaderboard.sql into phpMyAdmin.
 5. Configure database authorization settings in secret/database.json.
 6. Set database timezone to UTC by executing data/setDatabaseTimeZoneUTC.php
 
@@ -24,7 +24,7 @@ https://console.developers.google.com
 6. Create a project and activate the Google Drive API 
 7. Create an OAuth client ID. Download and copy the client secret file associated with this ID, and paste it in secret/client_secret.json. 
 8. Execute 'php util/authorizeGoogleDrive.php' from the command line to provide the project access to Google Drive.
-9. Configure the demos folder in classes/demoManager.php
+9. Configure the demos folder in classes/demoManager.php.
 
 
 Fetching data:
