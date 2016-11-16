@@ -6,8 +6,8 @@ class Router {
     //10MB in bytes
     const maxUploadBytes = 10485760; //1024 * 1024 * 10
     
-    //3 months in seconds
-    const cookieLifetime = 7776000; //60 * 60 * 24 * 30 * 3
+    //a week in seconds
+    const cookieLifetime = 604800; //60 * 60 * 24 * 7
 
     public function __construct()
     {
