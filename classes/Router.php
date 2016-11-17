@@ -7,7 +7,7 @@ class Router {
     const maxUploadBytes = 10485760; //1024 * 1024 * 10
     
     //a week in seconds
-    const cookieLifetime = 604800; //60 * 60 * 24 * 7
+    const sessionLifetime = 604800; //60 * 60 * 24 * 7
 
     public function __construct()
     {
@@ -17,11 +17,28 @@ class Router {
         //setting timezone to UTC
         date_default_timezone_set('Etc/UTC');
 
-        //set cookie and session
-        ini_set('session.cookie_lifetime', self::cookieLifetime);
-        ini_set('session.gc_maxlifetime', self::cookieLifetime);
-        session_set_cookie_params(self::cookieLifetime);
-        session_start();
+        //configure cookies and sessions
+        ini_set('session.cookie_lifetime', self::sessionLifetime);
+        session_set_cookie_params(self::sessionLifetime);
+
+        ini_set('session.gc_maxlifetime', self::sessionLifetime);
+        ini_set('session.gc_probability', 1);
+        ini_set('session.gc_divisor', 1);
+
+        //start session if logged in
+        if (isset($_COOKIE["PHPSESSID"])) {
+            session_start();
+            setcookie(session_name(), session_id(), time() + self::sessionLifetime, '/');
+            
+            if (isset($_SESSION["user"])) {
+                $_SESSION['user'] = $_SESSION['user']; //keep session variable alive
+                SteamSignIn::$loggedInUser = new User($_SESSION["user"]);
+            }
+            else {
+                //edge case: cookie still exists while session does not exist on the server
+                $this->destroySession();
+            }
+        }
 
         //TODO: remove
         //disable memory limit.
@@ -38,13 +55,7 @@ class Router {
         Debug::$logging = false;
 
         //Disable error reporting
-        error_reporting(0);
-
-        //set user if logged in
-        if (isset($_SESSION["user"])) {
-            $_SESSION["user"] = $_SESSION["user"];
-            SteamSignIn::$loggedInUser = new User($_SESSION["user"]);
-        }
+        error_reporting(1);
 
         //prepare request URI for processing
         $request = explode('/', $_SERVER['REQUEST_URI']);
@@ -70,17 +81,20 @@ class Router {
         $GLOBALS["mapInfo"] = Cache::get("maps");
 
         //non-page request handling
+
+        //start session and set session cookie when logging in
         if ($location[1] == "login") {
             if ($user = SteamSignIn::validate()) {
+                session_start();                
                 $_SESSION["user"] = $user;
-                SteamSignIn::$loggedInUser = new User($user);
             }
             header("Location: /profile/".$user);
             exit;
         }
 
+        //destroy session and session cookie when logging out
         if ($location[1] == "logout") {
-            unset($_SESSION["user"]);
+            $this->destroySession();
             $this->routeToDefault();
             exit;
         }
@@ -583,6 +597,12 @@ class Router {
         }
 
         return $result;
+    }
+
+    private function destroySession() {
+        setcookie(session_name(), null, -1, '/');
+        session_destroy();
+        unset($_SESSION);
     }
 
 }
