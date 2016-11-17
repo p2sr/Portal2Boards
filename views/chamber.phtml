@@ -249,10 +249,10 @@
     $(".not-public-chambers .close-btn").click(function() {
         $(".not-public-chambers").slideToggle();
         var d = new Date();
-        d.setTime(d.getTime() + (<?=Router::cookieLifetime?> * 1000));
+        d.setTime(d.getTime() + (10 * 365 * 24 * 60 * 60 * 1000)); //10 years
         var expires = "expires=" + d.toGMTString();
         document.cookie = "non-official-chamber-notification-read=yes; " + expires;
-    });;;
+    });
 
     <?php if($isPublic == 0): ?>
         $(".chamberchambername").click(function() {
