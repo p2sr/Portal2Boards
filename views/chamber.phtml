@@ -97,6 +97,20 @@
         }, 1000);
 
         $(".entries.pages").css("height", Math.min(25, <?=count($mapData)?>) * 43);
+
+        $(".rank").each(function() {
+            pointsOnHover($(this), parseInt($(this).text()), { placement: 'left' });
+        });
+
+        $(".fa.fa-pencil").each(function() {
+            $(this).tooltip( { title: "Submission" });
+            $(this).hover(function() {
+                $(this).tooltip('show');
+            }, function() {
+                $(this).tooltip('hide');
+            });
+        });
+        
     });
 
     function fadeInLetters(selector) {

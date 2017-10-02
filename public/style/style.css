@@ -14,6 +14,7 @@ body {
     font-family: Segoe UI;
     font-size: 12px;
     min-width: 1115px;
+    /*min-width: 1319px;*/
 }
 label {
     display: block;
@@ -210,7 +211,7 @@ a:hover, a:focus {
 }
 #navigation .nav_dropdown > ul ul {
     position:absolute;
-    left: 150px;
+    left: 140px;
     top: 0px;
 }
 /*#navigation .nav_dropdown li:hover ul, #navigation .nav_dropdown:hover > ul {
@@ -1097,7 +1098,7 @@ body > #youtube #ytplayer {
     font-size: 12px;
 }
 #profile .noactivity .noact-wrap {
-    margin-top: 30px;
+    padding-top: 30px;
 }
 #profile .global-stats .upperth {
     position: relative;
@@ -1376,7 +1377,7 @@ body > #youtube #ytplayer {
     background: #CCC;
 }
 #profile .button:active, #editProfile .button:active {
-    background: #CCF;
+    /*background: #CCF;*/
 }
 #profile .sp .title, #profile .coop .title  {
     /*padding-left: 5px;*/
@@ -1398,7 +1399,10 @@ body > #youtube #ytplayer {
     width: 130px;
 }
 #profile .sp .chamberScoreInfo > .rank, #profile .coop .chamberScoreInfo > .rank  {
-    width: 27px;
+    /*width: 27px;*/
+    width: 21px;
+    margin-left: 6px;
+    height: 14px;
 }
 #profile .sp .chamberScoreInfo > .rank i, #profile .coop .chamberScoreInfo > .rank i, #profile .timespoints .rank i {
     font-size: 11px;
@@ -1678,7 +1682,7 @@ body > #youtube #ytplayer {
     font-size: 14px;
     line-height: 42px;
 }
-#chamber .entry .place {
+#chamber .entry .rank {
     text-align: center;
     width: 80px;
 }
@@ -1723,7 +1727,7 @@ body > #youtube #ytplayer {
     color: inherit;
 }
 #chamber .entry.you .boardname, #chamber .entry.you .boardname a,
-#chamber .entry.you .place, #chamber .entry.you .place a,
+#chamber .entry.you .rank, #chamber .entry.you .rank a,
 #chamber .entry.you .score, #chamber .entry.you .score a {
     color: #0066cc; !important;
     /*font-weight: bold;*/

@@ -4,7 +4,7 @@ class Router {
     static $location;
     
     //10MB in bytes
-    const maxUploadBytes = 10485760; //1024 * 1024 * 10
+    const maxUploadBytes = 8388608; //1024 * 1024 * 8
     
     //a week in seconds
     const sessionLifetime = 604800; //60 * 60 * 24 * 7
@@ -14,9 +14,9 @@ class Router {
         //Start timer for determining page load time
         $this->startupTimestamp = microtime(true);
 
-        //setting timezone to UTC
-        date_default_timezone_set('Etc/UTC');
-
+        //session save path
+        ini_set('session.save_path', ROOT_PATH . '/sessions');
+        
         //configure cookies and sessions
         ini_set('session.cookie_lifetime', self::sessionLifetime);
         session_set_cookie_params(self::sessionLifetime);
@@ -62,6 +62,7 @@ class Router {
         $withoutGet = explode('?', $request[count($request) - 1]);
         $request[count($request) - 1] = $withoutGet[0];
         self::$location = $request;
+
         $this->processRequest(self::$location);
     }
 
@@ -84,10 +85,12 @@ class Router {
 
         //start session and set session cookie when logging in
         if ($location[1] == "login") {
+
             if ($user = SteamSignIn::validate()) {
                 session_start();                
                 $_SESSION["user"] = $user;
             }
+
             header("Location: /profile/".$user);
             exit;
         }
@@ -266,18 +269,6 @@ class Router {
             exit;
         }
 
-        if ($location[1] == "getChangelogJSON") {
-            if (isset($_GET)) {
-                $param = $this->prepareChangelogParams($_GET);
-                $changelog = Leaderboard::getChangelog($param);
-                echo json_encode($changelog);
-            }
-            else {
-                echo "Missing get data!";
-            }
-            exit;
-        }
-
         if ($location[1] == "setScoreBanStatus") {
             if (isset($_POST["id"]) && isset($_POST["banStatus"])) {
 
@@ -371,6 +362,99 @@ class Router {
             exit;
         }
 
+        if ($location[1] == "fetchNewUserData") {
+            if (isset($_POST["profileNumber"])) {
+
+                $profileNumber = $_POST["profileNumber"];
+
+                if (!SteamSignIn::hasProfilePrivileges($profileNumber)) {
+                    exit;
+                }
+
+                if (!is_numeric($profileNumber)) {
+                    exit;
+                }
+
+                $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName FROM usersnew WHERE profile_number = '{$profileNumber}'");
+                $row = $data->fetch_assoc();
+                $oldNickname = str_replace(" ", "", $row["displayName"]);
+
+                User::updateProfileData($profileNumber);
+
+                $data2 = Database::query("SELECT IFNULL(boardname, steamname) as displayName FROM usersnew WHERE profile_number = '{$profileNumber}'");
+                $row2 = $data2->fetch_assoc();
+
+                $newNickname = str_replace(" ", "", $row2["displayName"]);
+
+                print_r("old nickname " . $oldNickname . "\n");
+                print_r("new nickname " . $newNickname . "\n");
+                
+                if (strtolower($oldNickname) != strtolower($newNickname)) {
+
+                    print_r("nickname updated\n");
+
+                    $nicknames = Cache::get("boardnames");
+                    $profileNumbers = Cache::get("profileNumbers");
+
+                    //remove old nickname
+                    $cleanedNumbers = array();
+
+                    foreach ($profileNumbers[strtolower($oldNickname)] as $index => $number) {
+                        if ($number != $profileNumber) {
+                            $cleanedNumbers[] = $number;
+                        }
+                    }
+
+                    print_r("cleaned profile numbers: ");
+                    print_r($cleanedNumbers);
+                    print_r("\n");
+
+                    $profileNumbers[strtolower($oldNickname)] = $cleanedNumbers;
+
+                    if (count($profileNumbers[strtolower($oldNickname)]) == 0) {
+                        print_r("no profiles with old nick\n");
+                        unset($profileNumbers[strtolower($oldNickname)]);
+                    }
+                    else if (count($profileNumbers[strtolower($oldNickname)]) == 1) {
+                        print_r("one profile with old nick. Removing conflict\n");
+                        $number = $profileNumbers[strtolower($oldNickname)][0];
+                        $nicknames[$number]["useInURL"] = true;
+                    }
+
+                    //add new nickname
+                    $nicknames[$profileNumber]["displayName"] = $newNickname;
+                    $profileNumbers[strtolower($newNickname)][] = $profileNumber;
+
+                    if (count($profileNumbers[strtolower($newNickname)]) > 1) {
+                        print_r("conflict with new nick\n");
+                        foreach ($profileNumbers[strtolower($newNickname)] as $number) {
+                            $nicknames[$number]["useInURL"] = false;
+                        }
+                    }
+                    else {
+                        print_r("no conflict with new nick");
+                        //if (preg_match("/^[a-zA-Z0-9".preg_quote("'\"£$*()][:;@~!><>,=_+¬-~")."]+$/", $newNickname)) {
+                        if (urlencode($newNickname) == $newNickname && !is_numeric($newNickname)) {
+                            $nicknames[$profileNumber]["useInURL"] = true;
+                        }
+                        else {
+                            $nicknames[$profileNumber]["useInURL"] = false;
+                        }
+                    }
+
+                    Cache::set("boardnames", $nicknames);
+                    Cache::set("profileNumbers", $profileNumbers);
+
+                }
+
+                //Leaderboard::cacheProfileURLData();
+            }
+            else {
+                echo "Missing post data!";
+            }
+            exit;
+        }
+
         //page request handling
         if ($location[1] == "") {
             $this->routeToDefault();
@@ -429,11 +513,18 @@ class Router {
                 $view->points = Cache::get("chapterPointBoard".$location[3]);
                 $view->times = Cache::get("chapterTimeBoard".$location[3]);
             }
-        else
-            $this->routeTo404();
+            else {
+                $this->routeTo404();
+            }
+
+            if ((isset($location[3]) && $location[3] == "json") || (isset($location[4]) && $location[4] == "json")) {
+                echo "{\"Points\":" . json_encode($view->points) . ", \"Times\":" . json_encode($view->times) . "}";
+                exit;
+            }
         }
 
         if ($location[1] == "changelog") {
+
             if (!$_GET) {
                 $changelogParams = array("maxDaysAgo" => "7");
             }
@@ -444,6 +535,11 @@ class Router {
             $param = $this->prepareChangelogParams($changelogParams);
 
             $view->changelog = Leaderboard::getChangelog($param);
+
+            if (isset($location[2]) && $location[2] == "json") {
+                echo json_encode($view->changelog);
+                exit;                
+            }
         }
 
         if ($location[1] == "profile" && isset($location[2])) {
@@ -459,12 +555,22 @@ class Router {
             $view->profile = new User($location[2]);
             $view->profile->getProfileData();
             View::$pageData["pageTitle"] = (isset($view->profile->userData->displayName)) ? $view->profile->userData->displayName : "No profile";
+
+            if (isset($location[3]) && $location[3] == "json") {
+                echo json_encode($view->profile);
+                exit;                
+            }
         }
 
         if ($location[1] == "chamber" && isset($location[2])) {
             $GLOBALS["chamberID"] = $location[2];
             View::$pageData["pageTitle"] = $GLOBALS["mapInfo"]["maps"][$location[2]]["mapName"];
             $view->chamber = Cache::get("chamberBoard" . $location[2]);
+
+            if (isset($location[3]) && $location[3] == "json") {
+                echo json_encode($view->chamber);
+                exit;
+            }
         }
 
         if ($location[1] == "lp") {
@@ -508,7 +614,7 @@ class Router {
                     }
 
                     if (strlen($_POST["youtube"]) != 0) {
-                        if (!preg_match("/^[A-Za-z0-9_\\/:.]+$/", $_POST["youtube"])) {
+                        if (!preg_match("/^[A-Za-z0-9_\\-\\/:.]+$/", $_POST["youtube"])) {
                             $view->msg = "Invalid YouTube channel id or username.";
                         }
                         else {
@@ -560,13 +666,19 @@ class Router {
 
     private function prepareChangelogParams($params)
     {
-        $result = array("chamber" => "" , "chapter" => ""
-        , "boardName" => "" , "profileNumber" => ""
+        $result = array(
+        "chamber" => ""
+        , "chapter" => ""
+        , "boardName" => "" 
+        , "profileNumber" => ""
         , "type" => "" , "sp" => "1", "coop" => "1"
         , "wr" => ""
-        , "demo" => "", "yt" => ""
+        , "demo" => ""
+        , "yt" => ""
         , "maxDaysAgo" => "0"
-        , "submission" => "");
+        , "submission" => ""
+        , "banned" => "0");
+
         $changelog_post = array();
         foreach ($params as $key => $val) {
             $changelog_post[$key] = $val;

@@ -1,12 +1,12 @@
 <?php include("util/PageGenerator.php") ?>
-<?php include("util/ChangelogView.php")?>
+<?php include("util/ChangelogView.php") ?>
 <?php $mapInfo = $GLOBALS["mapInfo"]; ?>
 
-<?php function removeUnknownDates($change) { return $change["time_gained"] != NULL; } ?>
-<?php $activity = array_filter($view->changelog, "removeUnknownDates") ?>
+<?php function filterActivity($change) { return $change["time_gained"] != NULL && $change["banned"] != 1; } ?>
+<?php $activity = array_values(array_filter($view->changelog, "filterActivity")) ?>
 
 <script>
-    $("body").css("min-width", "1333px");
+    $("body").css("min-width", "1335px");
 </script>
 
 <div id="changelog">
@@ -51,16 +51,16 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
-<!--                <div style="float: left;" class="check">
-                    <div style="position: relative; ">Singleplayer</div>
-                    <div class="checkbox <?php /*if($param['sp'] == "1"): */?>ticked<?php /*endif; */?>"></div>
-                    <input type="hidden" value="<?/*=$param['sp'];*/?>" name="sp">
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">Single Player</div>
+                    <div class="checkbox <?php if($param['sp'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?=$param['sp'];?>" name="sp">
                 </div>
                 <div style="float: left;" class="check">
                     <div style="position: relative;">Cooperative</div>
-                    <div class="checkbox <?php /*if($param['coop'] == "1"): */?>ticked<?php /*endif; */?>"></div>
-                    <input type="hidden" value="<?/*=$param['coop'];*/?>" name="coop">
-                </div>-->
+                    <div class="checkbox <?php if($param['coop'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?=$param['coop'];?>" name="coop">
+                </div>
                 <div style="float: left;" class="check">
                     <div style="position: relative;">World Record</div>
                     <div class="checkbox <?php if($param['wr'] == "1"): ?>ticked<?php endif; ?>"></div>
@@ -72,7 +72,7 @@
                     <input type="hidden" value="<?=$param['demo'];?>" name="demo">
                 </div>
                 <div style="float: left;" class="check">
-                    <div style="position: relative;">YouTube</div>
+                    <div style="position: relative;">Video</div>
                     <div class="checkbox <?php if($param['yt'] == "1"): ?>ticked<?php endif; ?>"></div>
                     <input type="hidden" value="<?=$param['yt'];?>" name="yt">
                 </div>
@@ -86,7 +86,7 @@
                 <!--					<label class="bottom" style="position: relative;">Unlimited: 0</label>-->
                 <!--                    <input type="number" value="--><?//=$param['maxDaysAgo'];?><!--" name="maxDaysAgo">-->
                 <!--                </div>-->
-                <div style="float: right; margin: 30px 20px 0px 0px">
+                <div style="float: right; margin: 24px 20px 0px 0px">
                     <input type="submit" value="Filter"></input>
                 </div>
             </form>
@@ -140,6 +140,71 @@
 <script>
 
     $(document).ready(function() {
+
+        // $(".rank").each(function() {
+        //     //pointsOnHover($(this), $(this).text());
+
+        //     if ($(this).find("i").length) {
+        //         rank = 1;
+        //     }
+        //     else {
+        //         rank = parseInt($(this).text());
+        //     }
+
+        //     var points = Math.max(1,  Math.pow(200 - (rank - 1), 2) / 200);
+        //     points = Math.round(points * 10) / 10;
+
+        //     if (!isNaN(rank)) {
+
+        //         var title;
+        //         if (points == 1)
+        //             title = points + " point";
+        //         else
+        //             title = points + " points";
+
+        //         $(this).tooltip({
+        //             trigger: 'manual',
+        //             placement: 'top',
+        //             title: title
+        //         });
+
+        //         $(this).hover(function() {
+        //             $(this).tooltip('show');
+        //         }, function() {
+        //             $(this).tooltip('hide');
+        //         });
+        //     }
+        // });
+
+        $(".entry").each(function() {
+            
+            var $entry = $(this);
+            var $preRank = $entry.find(".previousscore .rank");
+            var $postRank = $entry.find(".newscore .rank");
+            var $rankDiff = $entry.find(".rankImprovement")
+            
+            var preRank = $preRank.find("i").length == 1 ? 1 : parseInt($preRank.text());
+            var postRank = $postRank.find("i").length == 1 ? 1 : parseInt($postRank.text());
+
+            pointsOnHover($preRank, preRank);
+            pointsOnHover($postRank, postRank);
+
+            var prePoints = getPointsFromRank(preRank);
+            var postPoints = getPointsFromRank(postRank)
+            var pointDiff = (postPoints - prePoints);
+
+            if (!isNaN(pointDiff) && pointDiff != 0) {
+                pointDiff = Math.round(pointDiff * 10) / 10;
+                var title = "gained " + pointDiff + " " + (pointDiff == 1 ?  + "point" : "points");
+                $rankDiff.tooltip({trigger: 'manual', title: title });
+                $rankDiff.hover(function() {
+                    $(this).tooltip('show');
+                }, function() {
+                    $(this).tooltip('hide');
+                });
+            }
+        });
+
         $(".checkbox").click(function() {
             $(this).toggleClass("ticked");
             var v = $(this).parent().find("input:eq(0)").val();
@@ -178,7 +243,7 @@
             .text(Math.min(1, lastPage) + " / " + lastPage)
             .css("width", 20 + (2 * (Math.floor(Math.log(Math.max(2, lastPage)) / Math.LN10) + 1) * 7));
 
-        $("#otherentries").css("height", Math.min(25, <?=count($view->changelog)?>) * 42);
+        //$("#otherentries").css("height", Math.min(25, <?=count($view->changelog)?>) * 42);
 
         $(".rank").each(function() {
             drawRank($(this));

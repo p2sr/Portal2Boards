@@ -235,6 +235,7 @@ function getActivityByScore(changelog) {
             activity[change["time_gained"]][change["mapid"]][change["score"]]["changeData"] = change;
             activity[change["time_gained"]][change["mapid"]][change["score"]]["players"].push(change["player_name"]);
         }
+
         var activitySimple = {};
         for (var date in activity) {
             if (activitySimple[date] == undefined)
@@ -266,5 +267,3 @@ function localizeDateAsDay(date) {
 function formatDateAsDay(date) {
     return formatDate(date, "YYYY-MM-DD");
 }
-
-

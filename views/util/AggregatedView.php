@@ -15,7 +15,7 @@ class AggregatedView
             background: #d3d3d3
         <?php } ?>
         ">
-            <div class="place"><?=$scoreData["playerRank"]?></div>
+            <div class="rank"><?=$scoreData["playerRank"]?></div>
             <div class="profileIcon">
                 <a href="/profile/<?=$player;?>">
                     <?php if ($playerData["avatar"] != NULL && $page == 1): ?>

@@ -48,7 +48,7 @@ class View {
         ),
         "chamber" => array(
             "contentTemplate" => "chamber.phtml",
-            "js" => array(self::d3, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages, self::score, self::youtubeEmbed),
+            "js" => array(self::d3, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages, self::rank, self::score, self::youtubeEmbed),
             "css" => array(self::morrisStyle)
         ),
         "404" => array(

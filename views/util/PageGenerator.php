@@ -2,7 +2,7 @@
 
 class PageGenerator {
 
-    static function generatePages($board, $entryCallback, $maxEntriesShown = PHP_INT_MAX, $entriesPerPage = 25) {
+    static function generatePages($board, $entryCallback, $maxEntriesShown = PHP_INT_MAX, $entriesPerPage = 40) {
         $keys = array_keys($board);
         $numEntries = min($maxEntriesShown, count($keys));
         $pages = ceil($numEntries / $entriesPerPage);

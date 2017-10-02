@@ -13,6 +13,7 @@ class User {
         else {
             $profileNumbers = Cache::get("profileNumbers");
             $name = strtolower(urldecode($id));
+
             if (array_key_exists($name, $profileNumbers)){
                 $number = $profileNumbers[$name][0];
             }
@@ -65,7 +66,9 @@ class User {
     }
 
     public static function updateProfileData($user) {
+
         $content = self::fetchCurrentProfileData($user);
+
         if ($content != NULL) {
             $userinfo = json_decode($content, true);
 
@@ -82,12 +85,15 @@ class User {
     }
 
     public static function fetchCurrentProfileData($user) {
+
         $steamAPIKey = json_decode(file_get_contents(ROOT_PATH."/secret/steam_api_key.json"));
-        $ch = curl_init("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=".$steamAPIKey->key."&steamids=" . $user);
+        $ch = curl_init("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=".$steamAPIKey->key."&steamids=" . $user);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         $content = curl_exec($ch);
         curl_close($ch);
+
         return $content;
     }
 
@@ -152,6 +158,22 @@ class User {
         $this->points = $points;
     }
 
+    function sortChambersByRank($score1, $score2) {
+        if ($score1["playerRank"] == $score2["playerRank"]) {
+            return $score1["index"] < $score2["index"] ? -1 : 1;
+        }
+
+        if ($score1["score"] == NULL) {
+            return 1;
+        }
+        
+        if ($score2["score"] == NULL) {
+            return -1;
+        }
+
+        return $score1["playerRank"] < $score2["playerRank"] ? -1 : 1;
+    }
+
     public function getTimes() {
         $times = new stdClass();
 
@@ -167,13 +189,55 @@ class User {
             $times->chapters[$chapter] = $this->getScoreDataFromBoard($chapterData);
         }
 
+
         $times->SP["chambers"] = $this->getChamberData(Cache::get("SPChamberBoard"));
+       
+        $spOrdered = array();
+        $i = 0;
+        foreach ($GLOBALS["mapInfo"]["modes"]["sp"] as $chapterId) {
+            foreach ($GLOBALS["mapInfo"]["chapters"][$chapterId]["maps"] as $mapId) {
+                $spOrdered[$mapId] = $times->SP["chambers"]["chamber"][$chapterId][$mapId];
+                $spOrdered[$mapId]["index"] = $i++;
+            }
+        }
+
+        uasort($spOrdered, array("User", "sortChambersByRank"));
+        $times->SP["chambers"]["chamberOrdered"] = $spOrdered;
+
         $times->COOP["chambers"] = $this->getChamberData(Cache::get("COOPChamberBoard"));
+
+        $coopOrdered = array();
+        $i = 0;
+        foreach ($GLOBALS["mapInfo"]["modes"]["coop"] as $chapterId) {
+            foreach ($GLOBALS["mapInfo"]["chapters"][$chapterId]["maps"] as $mapId) {
+                $coopOrdered[$mapId] = $times->COOP["chambers"]["chamber"][$chapterId][$mapId];
+                $coopOrdered[$mapId]["index"] = $i++;
+            }
+        }
+        uasort($coopOrdered, array("User", "sortChambersByRank"));
+        $times->COOP["chambers"]["chamberOrdered"] = $coopOrdered;
 
         $times->numDemos = $times->SP["chambers"]["numDemos"] + $times->COOP["chambers"]["numDemos"];
         $times->numYoutubeVideos = $times->SP["chambers"]["numYoutubeVideos"] + $times->COOP["chambers"]["numYoutubeVideos"];
-        $times->bestRank = Util::uMin($times->SP["chambers"]["bestRank"], $times->COOP["chambers"]["bestRank"], array('User', 'getPlayerRankFromScore'));
-        $times->worstRank = Util::uMax($times->SP["chambers"]["worstRank"], $times->COOP["chambers"]["worstRank"], array('User', 'getPlayerRankFromScore'));
+        
+        if ($times->SP["chambers"]["bestRank"] != NULL && $times->COOP["chambers"]["bestRank"] != NULL 
+            && $times->SP["chambers"]["bestRank"]["scoreData"]["playerRank"] == $times->COOP["chambers"]["bestRank"]["scoreData"]["playerRank"]) {
+            $times->bestRank = $times->SP["chambers"]["bestRank"];
+            $times->bestRank["map"] = "several chambers";
+        }
+        else {
+            $times->bestRank = Util::uMin($times->SP["chambers"]["bestRank"], $times->COOP["chambers"]["bestRank"], array('User', 'getPlayerRankFromScore'));
+        }
+
+        if ($times->SP["chambers"]["worstRank"] != NULL && $times->COOP["chambers"]["worstRank"] != NULL 
+            && $times->SP["chambers"]["worstRank"]["scoreData"]["playerRank"] == $times->COOP["chambers"]["worstRank"]["scoreData"]["playerRank"]) {
+            $times->worstRank = $times->SP["chambers"]["worstRank"];
+            $times->worstRank["map"] = "several chambers";
+        }
+        else {
+            $times->worstRank = Util::uMax($times->SP["chambers"]["worstRank"], $times->COOP["chambers"]["worstRank"], array('User', 'getPlayerRankFromScore'));
+        }
+
         $times->oldestScore = Util::uMin($times->SP["chambers"]["oldestScore"], $times->COOP["chambers"]["oldestScore"], array('User', 'getTimeFromScore'));
         $times->newestScore = Util::uMax($times->SP["chambers"]["newestScore"], $times->COOP["chambers"]["newestScore"], array('User', 'getTimeFromScore'));
 

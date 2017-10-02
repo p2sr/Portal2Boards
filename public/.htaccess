@@ -7,10 +7,7 @@ RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
 RewriteRule ^.*$ ./index.php
-RewriteRule ^(classes/|data/|views/|drive/|vendor/|models/|util/) - [R=404,L,NC]
-
-php_value post_max_size 30M
-php_value upload_max_filesize 30M
+RewriteRule ^(classes/|data/|views/|vendor/|util/|secret/) - [R=404,L,NC]
 
 <FilesMatch "\.(|jpg|jpeg|png|ico|eot|svg|ttf|wolf)$">
   Header set Cache-Control "max-age=86400"

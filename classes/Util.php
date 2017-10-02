@@ -51,7 +51,7 @@ class Util {
      }
 
      public static function escapeQuotesHTML($str) {
-         return htmlspecialchars(htmlspecialchars($str, ENT_QUOTES));
+        return htmlspecialchars(htmlspecialchars($str, ENT_QUOTES));
      }
 
      public static function formatPoints($points) {

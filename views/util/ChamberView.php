@@ -3,7 +3,7 @@
 class ChamberView
 {
 
-    function getEntry($board, $player, $page)
+    static function getEntry($board, $player, $page)
     {
         $playerData = $board[$player]["userData"];
         $scoreData = $board[$player]["scoreData"] ?>
@@ -15,7 +15,7 @@ class ChamberView
             style="background: #d6d6d6"
         <?php } ?>
         >
-            <div class="place"><?= $scoreData["playerRank"] ?></div>
+            <div class="rank"><?= $scoreData["playerRank"] ?></div>
             <div class="profileIcon">
                 <a href="/profile/<?= $player; ?>">
                     <?php if ($playerData["avatar"] != NULL && $page == 1): ?>
@@ -30,7 +30,8 @@ class ChamberView
             <div class="boardname"><a href="/profile/<?= $player; ?>"><?= $playerData["boardname"] ?></a></div>
             <div class="submission">
                 <?php if ($scoreData["submission"] == 1): ?>
-                    <i class="fa fa-pencil" aria-hidden="true" data-toggle="tooltip" title="Submission"></i>
+                    <i class="fa fa-pencil" aria-hidden="true"></i>
+                    <!-- data-toggle="tooltip" title="Submission" -->
                 <?php endif; ?>
             </div>
             <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$GLOBALS["chamberID"]?>" class="score"><?= Leaderboard::convertToTime($scoreData["score"]) ?></a>

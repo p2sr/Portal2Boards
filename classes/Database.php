@@ -4,8 +4,10 @@ class Database {
     static $instance;
 
     public static function authorize() {
+
         $auth = json_decode(file_get_contents(ROOT_PATH."/secret/database.json"));
         $db = new mysqli($auth->host, $auth->user, $auth->password, $auth->database);
+
 
         if ($db->connect_errno) {
             trigger_error($db->connect_error);
