@@ -3,7 +3,7 @@
 <?php $chapter = $mapInfo["chapters"][$mapInfo["maps"][$GLOBALS["chamberID"]]["chapterId"]]["chapterName"]; ?>
 <?php $map = $mapInfo["maps"][$GLOBALS["chamberID"]]["mapName"]; ?>
 <?php $isPublic = $mapInfo["maps"][$GLOBALS["chamberID"]]["isPublic"]; ?>
-<?php $wrs = Leaderboard::getChangelog(array("chamber" => $GLOBALS["chamberID"], "wr" => "1", "maxDaysAgo" => 0, "banned" => 0));?>
+<?php $wrs = Leaderboard::getChangelog(array("chamber" => $GLOBALS["chamberID"], "wr" => "1", "banned" => 0));?>
 <?php $youtubeIDs = Cache::get("youtubeIDs".$GLOBALS["chamberID"])?>
 <?php include("util/PageGenerator.php") ?>
 <?php include("util/ChamberView.php")?>

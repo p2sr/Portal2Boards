@@ -92,51 +92,49 @@
             </form>
         </div>
     </div>
+
     <?php if (count($view->changelog) == 0): ?>
-            <div style="font-size: 20px; margin: auto; width: 100%; text-align: center; color: #888;">
-                <i class="fa fa-times" style="padding-right: 10px"></i>No scores found
-            </div>
+        <div style="font-size: 20px; margin: auto; width: 100%; text-align: center; color: #888;">
+            <i class="fa fa-times" style="padding-right: 10px"></i>No scores found
         </div>
-        <?php return; ?>
-    <?php endif; ?>
-    <?php if (count($activity) > 0): ?>
-    <div class = 'activity'>
+    <?php elseif (count($activity) > 0): ?>
+        <div class = 'activity'>
             <div id= 'changelogActivity' style= 'height: 175px;'>
                 <i class="fa fa-circle-o-notch fa-spin fa-fw loading"></i>
             </div>
-    </div>
+        </div>
+        <div id="entries">
+            <div class="controls">
+                <div class="button previous">
+                    <!--				<span class="name">Newer</span>-->
+                    <span class="icon"><i class="fa fa-caret-left fa-3x" aria-hidden="true"></i></span>
+                </div>
+                <span class="currentPageLabel"></span>
+                <div class="button next">
+                    <span class="icon"><i class="fa fa-caret-right fa-3x" aria-hidden="true"></i></span>
+                    <!--				<span class="name">Older</span>-->
+                </div>
+            </div>
+            <div id="firstentry">
+                <div class="date">Date</div>
+                <div class="profileIcon"></div>
+                <div class="boardname">Player</div>
+                <div class="map">Map</div>
+                <div class="chapter">Chapter</div>
+                <div class="previousscore">Previous score</div>
+                <div class="newscore">New score</div>
+                <div class="improvement">Improvement</div>
+                <div class="demo-url"></div>
+                <div class="youtube"></div>
+                <div class="submission"></div>
+                <div class="banScore"><?php if (SteamSignIn::loggedInUserIsAdmin()): ?><?php endif; ?></div>
+            </div>
+            <div id="otherentries">
+                <?php PageGenerator::generatePages($view->changelog, array("ChangelogView", "getEntry")); ?>
+            </div>
+        </div>
     <?php endif; ?>
-    <div id="entries">
-        <div class="controls">
-            <div class="button previous">
-                <!--				<span class="name">Newer</span>-->
-                <span class="icon"><i class="fa fa-caret-left fa-3x" aria-hidden="true"></i></span>
-            </div>
-            <span class="currentPageLabel"></span>
-            <div class="button next">
-                <span class="icon"><i class="fa fa-caret-right fa-3x" aria-hidden="true"></i></span>
-                <!--				<span class="name">Older</span>-->
-            </div>
-        </div>
-        <div id="firstentry">
-            <div class="date">Date</div>
-            <div class="profileIcon"></div>
-            <div class="boardname">Player</div>
-            <div class="map">Map</div>
-            <div class="chapter">Chapter</div>
-            <div class="previousscore">Previous score</div>
-            <div class="newscore">New score</div>
-            <div class="improvement">Improvement</div>
-            <div class="demo-url"></div>
-            <div class="youtube"></div>
-            <div class="submission"></div>
-            <div class="banScore"><?php if (SteamSignIn::loggedInUserIsAdmin()): ?><?php endif; ?></div>
-        </div>
-        <div id="otherentries">
-            <?php PageGenerator::generatePages($view->changelog, array("ChangelogView", "getEntry")); ?>
-        </div>
     </div>
-</div>
 <script>
 
     $(document).ready(function() {
@@ -208,7 +206,7 @@
         $(".checkbox").click(function() {
             $(this).toggleClass("ticked");
             var v = $(this).parent().find("input:eq(0)").val();
-            v = (v == 0 ? 1 : 0);
+            v = (v == 0 ? "1" : "");
             $(this).parent().find("input:eq(0)").val(v);
         });
 

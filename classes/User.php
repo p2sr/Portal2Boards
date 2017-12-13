@@ -174,6 +174,27 @@ class User {
         return $score1["playerRank"] < $score2["playerRank"] ? -1 : 1;
     }
 
+    function sortChambersByDate($score1, $score2) {
+        if ($score1["score"] == NULL && $score2["score"] == NULL
+            || ($score1["score"] != NULL && $score2["score"] != NULL && $score1["date"] == NULL && $score2["date"] == NULL)
+            || ($score1["date"] != NULL && $score2["date"] != NULL) && $score1["date"] == $score2["date"]) {
+            return $score1["index"] < $score2["index"] ? -1 : 1;
+        }
+
+        if ($score1["score"] == NULL 
+            || ($score1["score"] != NULL && $score2["score"] != NULL && $score1["date"] == NULL)) {
+            return 1;
+        }
+        
+        if ($score2["score"] == NULL
+            || ($score1["score"] != NULL && $score2["score"] != NULL && $score2["date"] == NULL)) {
+            return -1;
+        }
+
+        return strtotime($score1["date"]) < strtotime($score2["date"]) ? 1 : -1;
+    }
+
+
     public function getTimes() {
         $times = new stdClass();
 
@@ -191,31 +212,50 @@ class User {
 
 
         $times->SP["chambers"] = $this->getChamberData(Cache::get("SPChamberBoard"));
+        $times->COOP["chambers"] = $this->getChamberData(Cache::get("COOPChamberBoard"));
        
-        $spOrdered = array();
+        $spOrderedByRank = array();
+        $coopOrderedByRank = array();
+
+        $spOrderedByDate = array();
+        $coopOrderedByDate = array();
+
         $i = 0;
         foreach ($GLOBALS["mapInfo"]["modes"]["sp"] as $chapterId) {
             foreach ($GLOBALS["mapInfo"]["chapters"][$chapterId]["maps"] as $mapId) {
-                $spOrdered[$mapId] = $times->SP["chambers"]["chamber"][$chapterId][$mapId];
-                $spOrdered[$mapId]["index"] = $i++;
+                $index = $i++;
+                $spOrderedByDate[$mapId] = $times->SP["chambers"]["chamber"][$chapterId][$mapId];
+                $spOrderedByDate[$mapId]["index"] = $index;
+
+                $spOrderedByRank[$mapId] = $times->SP["chambers"]["chamber"][$chapterId][$mapId];
+                $spOrderedByRank[$mapId]["index"] = $index;
             }
         }
 
-        uasort($spOrdered, array("User", "sortChambersByRank"));
-        $times->SP["chambers"]["chamberOrdered"] = $spOrdered;
-
-        $times->COOP["chambers"] = $this->getChamberData(Cache::get("COOPChamberBoard"));
-
-        $coopOrdered = array();
+        
         $i = 0;
         foreach ($GLOBALS["mapInfo"]["modes"]["coop"] as $chapterId) {
             foreach ($GLOBALS["mapInfo"]["chapters"][$chapterId]["maps"] as $mapId) {
-                $coopOrdered[$mapId] = $times->COOP["chambers"]["chamber"][$chapterId][$mapId];
-                $coopOrdered[$mapId]["index"] = $i++;
+                $index = $i++;
+                $coopOrderedByDate[$mapId] = $times->COOP["chambers"]["chamber"][$chapterId][$mapId];
+                $coopOrderedByDate[$mapId]["index"] = $index;
+
+                $coopOrderedByRank[$mapId] = $times->COOP["chambers"]["chamber"][$chapterId][$mapId];
+                $coopOrderedByRank[$mapId]["index"] = $index;
             }
         }
-        uasort($coopOrdered, array("User", "sortChambersByRank"));
-        $times->COOP["chambers"]["chamberOrdered"] = $coopOrdered;
+
+        uasort($spOrderedByRank, array("User", "sortChambersByRank"));
+        $times->SP["chambers"]["chamberOrderedByRank"] = $spOrderedByRank;
+
+        uasort($spOrderedByDate, array("User", "sortChambersByDate"));
+        $times->SP["chambers"]["chamberOrderedByDate"] = $spOrderedByDate;
+
+        uasort($coopOrderedByRank, array("User", "sortChambersByRank"));
+        $times->COOP["chambers"]["chamberOrderedByRank"] = $coopOrderedByRank;
+
+        uasort($coopOrderedByDate, array("User", "sortChambersByDate"));
+        $times->COOP["chambers"]["chamberOrderedByDate"] = $coopOrderedByDate;
 
         $times->numDemos = $times->SP["chambers"]["numDemos"] + $times->COOP["chambers"]["numDemos"];
         $times->numYoutubeVideos = $times->SP["chambers"]["numYoutubeVideos"] + $times->COOP["chambers"]["numYoutubeVideos"];

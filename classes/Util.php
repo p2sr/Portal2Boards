@@ -1,9 +1,23 @@
 <?php
 class Util {
 
+    public static function shuffle_assoc($list) { 
+        if (!is_array($list)) 
+            return $list; 
+
+        $keys = array_keys($list); 
+        shuffle($keys); 
+        $random = array(); 
+        foreach ($keys as $key) { 
+            $random[$key] = $list[$key]; 
+        }
+        return $random; 
+    } 
+
     public static function number($num) {
         $lastNumber = substr($num, -1);
-        if($num > 20 || $num < 4) {
+
+        if($num % 100 > 20 || $num % 100 < 4) {
             if($lastNumber == 1) {
                 return $num.'<span class="upperth">st</span>';
             }

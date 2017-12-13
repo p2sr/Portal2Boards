@@ -4,7 +4,8 @@
     ignore_user_abort(true);
     set_time_limit(0);
 
-    Debug::$logging = false;
+    Debug::initializeFileLogging();
+    Debug::$loggingToOutput = true;
 
     $data = Database::query("SELECT DISTINCT profile_number FROM changelog WHERE time_gained > DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY)");
     $numRows = mysqli_num_rows($data);
@@ -61,9 +62,12 @@
     foreach (array_keys($importantProfiles) as $profileNumber) {
         User::updateProfileData($profileNumber);
 
-        if ($j % (count($importantProfiles) / 5) == 0)
+        if ($j % round(count($importantProfiles) / 10) == 0)
             print_r("Processed " . $j . "/" . count($importantProfiles) . "\n");
 
+    	$sleepSeconds = (0.5 + (rand(0, 500) / 1000));
+        usleep($sleepSeconds * 1000000);
+        
         $j++;
     }
 

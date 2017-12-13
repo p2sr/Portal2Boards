@@ -1049,7 +1049,7 @@ body > #youtube #ytplayer {
     position: relative;
     top: -6px;
     float: left;
-    /*max-width: 73px;*/
+    max-width: 73px;
     /*vertical-align: top;*/
     /*line-height:34px;*/
 }

@@ -78,6 +78,7 @@ class SteamSignIn
 
 		// Stored to send a Content-Length header
 		$data =  http_build_query($params);
+
 		$context = stream_context_create(array(
 			'http' => array(
 				'method'  => 'POST',

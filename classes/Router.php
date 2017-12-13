@@ -52,7 +52,7 @@ class Router {
         ini_set('upload_max_filesize', (self::maxUploadBytes / (1024 * 1024))."M");
 
         //disable debugging
-        Debug::$logging = false;
+        //Debug::disableAllLogging();
 
         //Disable error reporting
         error_reporting(1);
@@ -277,7 +277,7 @@ class Router {
                 }
 
                 if (SteamSignIn::loggedInUserIsAdmin()) {
-                    Leaderboard::setBanned($_POST["id"], $_POST["banStatus"]);
+                    Leaderboard::setScoreBanStatus($_POST["id"], $_POST["banStatus"]);
                 }
             }
             else {
@@ -448,6 +448,27 @@ class Router {
                 }
 
                 //Leaderboard::cacheProfileURLData();
+            }
+            else {
+                echo "Missing post data!";
+            }
+            exit;
+        }
+
+        if ($location[1] == "setProfileBanStatus") {
+            if (isset($_POST["profileNumber"]) && isset($_POST["banStatus"])) {
+
+                $profileNumber = $_POST["profileNumber"];
+
+                if (!SteamSignIn::loggedInUserIsAdmin()) {
+                    exit;
+                }
+
+                if (!is_numeric($profileNumber)) {
+                    exit;
+                }
+              
+                Leaderboard::setProfileBanStatus($_POST["profileNumber"], $_POST["banStatus"]);
             }
             else {
                 echo "Missing post data!";
@@ -675,9 +696,9 @@ class Router {
         , "wr" => ""
         , "demo" => ""
         , "yt" => ""
-        , "maxDaysAgo" => "0"
+        , "maxDaysAgo" => ""
         , "submission" => ""
-        , "banned" => "0");
+        , "banned" => "");
 
         $changelog_post = array();
         foreach ($params as $key => $val) {
@@ -693,19 +714,6 @@ class Router {
         }
         elseif ($result["sp"] != "1" && $result["coop"] == "1") {
             $result["type"] = "1";
-        }
-
-        if ($result["wr"] == "0") {
-            $result["wr"] = "";
-        }
-        if ($result["yt"] == "0") {
-            $result["yt"] = "";
-        }
-        if ($result["demo"] == "0") {
-            $result["demo"] = "";
-        }
-        if ($result["submission"] == "0") {
-            $result["submission"] = "";
         }
 
         return $result;

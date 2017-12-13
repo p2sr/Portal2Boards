@@ -16,37 +16,39 @@ class Leaderboard
         $newBoardData = self::getNewScores($rankLimits);
         Debug::log("Receiving new leaderboard data done");
 
-        $oldBoards = self::getBoard(array("chamber" => $chamber));
-        self::saveScores($newBoardData, $oldBoards);
+        if (!empty($newBoardData)) {
+            $oldBoards = self::getBoard(array("chamber" => $chamber));
+            self::saveScores($newBoardData, $oldBoards);
+        }
     }
 
     public static function cacheLeaderboard()
     {
         //TODO: don't cache maps (and other unnecessary stuff) every caching cycle
-        Debug::log("Start caching maps");
+        //Debug::log("Start caching maps");
         $maps = self::getMaps();
         Cache::set("maps", $maps);
-        Debug::log("Done caching maps");
+        //Debug::log("Done caching maps");
 
         $maps = Cache::get("maps");
 
-        Debug::log("Start caching scores");
+        //Debug::log("Start caching scores");
         $SPChamberBoard = self::getBoard(array("mode" => "0"));
         $COOPChamberBoard = self::getBoard(array("mode" => "1"));
         Cache::set("SPChamberBoard", $SPChamberBoard);
         Cache::set("COOPChamberBoard", $COOPChamberBoard);
         $fullBoard = $SPChamberBoard + $COOPChamberBoard; //TODO: may cause chapter id collisions if data would be organized by mode
         self::cacheChamberBoards($fullBoard);
-        Debug::log("Done caching scores");
+        //Debug::log("Done caching scores");
 
-        Debug::log("Start caching points");
+        //Debug::log("Start caching points");
         $SPChamberPointBoard = self::makeChamberPointBoard($SPChamberBoard);
         $COOPChamberPointBoard = self::makeChamberPointBoard($COOPChamberBoard);
         Cache::set("SPChamberPointBoard", $SPChamberPointBoard);
         Cache::set("COOPChamberPointBoard", $COOPChamberPointBoard);
-        Debug::log("Done caching points");
+        //Debug::log("Done caching points");
 
-        Debug::log("Start caching point boards");
+        //Debug::log("Start caching point boards");
         $generalSPPointBoard = self::makePointBoard($SPChamberPointBoard);
         $generalCOOPPointBoard = self::makePointBoard($COOPChamberPointBoard);
         $SPPointBoard = $generalSPPointBoard["board"];
@@ -69,9 +71,9 @@ class Leaderboard
                 Cache::set("chapterPointBoard".$chapter, array());
             }
         }
-        Debug::log("Done caching point boards");
+        //Debug::log("Done caching point boards");
 
-        Debug::log("Start caching time boards");
+        //Debug::log("Start caching time boards");
         $generalSPTimeBoard = self::makeTimeBoard($SPChamberBoard);
         $generalCOOPTimeBoard = self::makeTimeBoard($COOPChamberBoard);
         $SPTimeBoard = $generalSPTimeBoard["board"];
@@ -95,9 +97,9 @@ class Leaderboard
                 Cache::set("chapterTimeBoard".$chapter, array());
             }
         }
-        Debug::log("Done caching time boards");
+        //Debug::log("Done caching time boards");
 
-        Debug::log("Start caching Youtube IDs");
+        //Debug::log("Start caching Youtube IDs");
         $SPids = self::getYoutubeIDs(0);
         $COOPids = self::getYoutubeIDs(1);
         $allIds = $SPids + $COOPids;
@@ -113,18 +115,13 @@ class Leaderboard
                 }
             }
         }
-        Debug::log("Done caching Youtube IDs");
+        //Debug::log("Done caching Youtube IDs");
 
-//        Debug::log("Start caching changelog");
-//        $changelog = Leaderboard::getChangelog(array("maxDaysAgo" => 7));
-//        Cache::set("changelog", $changelog);
-//        Debug::log("Done caching changelog");
-
-        Debug::log("Start caching user identification data");
+        //Debug::log("Start caching user identification data");
         self::cacheProfileURLData();
-        Debug::log("Finished caching user identification data");
+        //Debug::log("Finished caching user identification data");
 
-        echo "Finished caching\n";
+        Debug::log("Finished caching");
     }
 
     //TODO: generalize map list to id's instead of steam time id's
@@ -197,7 +194,7 @@ class Leaderboard
         return $time;
     }
 
-    protected static function getNewScores($rankLimits = array())
+    protected static function getNewScoresLegacy($rankLimits = array())
     {
         $curl_master = curl_multi_init();
         $curl_handles = array();
@@ -280,7 +277,7 @@ class Leaderboard
                     }
                 }
 
-                Debug::log("Successfully fetched scores for map: " . $mapID);
+                //Debug::log("Successfully fetched scores for map: " . $mapID);
 
                 $tt = microtime(true) - $xml;
                 $xml_total = $xml_total + $tt;
@@ -291,6 +288,102 @@ class Leaderboard
         }
         curl_multi_close($curl_master);
         return $data;
+    }
+
+    protected static function getNewScores($rankLimits = array())
+    {
+        $leaderboard = array();
+        $xml_total = 0;
+        
+        $badConnection = false;
+        $mapsHandled = 0;
+
+        $rankLimits = Util::shuffle_assoc($rankLimits);
+
+        foreach ($rankLimits as $mapID => $amount) {
+
+            $handle = curl_init();
+            curl_setopt($handle, CURLOPT_URL, "http://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
+            curl_setopt($handle, CURLOPT_FRESH_CONNECT, TRUE);
+            curl_setopt($handle, CURLOPT_HEADER, 0);
+            curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($handle, CURLOPT_HTTPHEADER, array(
+                'Connection: Keep-Alive',
+                'Keep-Alive: 10',
+                "Cache-Control: no-cache"
+            ));
+            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+            curl_setopt($handle, CURLOPT_TIMEOUT, 10);
+            curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 10);
+
+            $xmlContent = curl_exec($handle);
+            $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+            if($xmlContent && $http_code == 200) {
+
+                $xml = microtime(true);
+
+                try {
+                    $mapLeaderboard = simplexml_load_string(utf8_encode($xmlContent));
+                } 
+                catch (Exception $e) {
+                    throw new Exception("SimpleXML error: " . $e);
+                }
+
+                libxml_use_internal_errors(true);
+                
+                $sxe = simplexml_load_string($mapLeaderboard);
+                if ($sxe === false) {
+                    foreach (libxml_get_errors() as $error) {
+                        throw new Exception ("SimpleXML error: " . $error->message . '\n');
+                    }
+                }
+
+                if (count($mapLeaderboard->entries) == 0) {
+                    Debug::log("No leaderboard data found for chamber: " . $mapID);
+                }
+                else {
+                    foreach ($mapLeaderboard->entries as $key2 => $val2) {
+                        
+                        //Debug::log(count($val2) . " entries fetched for chamber: " . $mapID);
+                        
+                        foreach ($val2 as $d => $b) {
+                            $steamid = $b->steamid;
+                            $score = $b->score;
+                            $leaderboard[$mapID][(string)$steamid] = (string)$score;
+                            //Debug::log("map ID: " . $mapID . " player steam id: " . $steamid . " score: " . $score);
+                        }
+                    }
+
+                    //Debug::log("Successfully fetched scores for map: " . $mapID);
+
+                    $tt = microtime(true) - $xml;
+                    $xml_total = $xml_total + $tt;
+                    $mapsHandled++;
+                }
+            }
+            else {
+                Debug::log("Can't fetch scores for map: " . $mapID . ". HTTP code: " . $http_code);
+
+                if ($http_code == 0) {
+                    $badConnection = true;
+                }
+            }
+
+            curl_close($handle);
+
+            if ($badConnection) {
+                Debug::log("Bad connection detected. Skipping all other maps.");
+                break;
+            }
+
+            $sleepSeconds = (0.5 + (rand(0, 2000) / 1000));
+            usleep($sleepSeconds * 1000000);
+        }
+
+        Debug::log("Maps handled: " . $mapsHandled);
+
+        return $leaderboard;
     }
 
     protected static function saveScores($newScores, $oldBoards)
@@ -421,7 +514,7 @@ class Leaderboard
     public static function getRankLimits($chamber = "")
     {
         $rankLimits = array();
-        $whereClause = ($chamber != "") ? "maps.steam_id = {$chamber}" : "TRUE";
+        $whereClause = ($chamber != "") ? " AND maps.steam_id = {$chamber}" : "";
 
         $data = Database::query("
             SELECT maps.steam_id, IFNULL(scorecount, 0) AS cheatedScoreAmount
@@ -434,7 +527,7 @@ class Leaderboard
               WHERE (changelog.banned = '1'  OR usersnew.banned = '1')
               GROUP BY scores.map_id) as scores1
             ON scores1.map_id = maps.steam_id
-            WHERE ". $whereClause);
+            WHERE maps.is_public = 1". $whereClause);
 
         while ($row = $data->fetch_assoc()) {
             $rankLimits[$row["steam_id"]] = $row["cheatedScoreAmount"];
@@ -550,10 +643,10 @@ class Leaderboard
         , "boardName" => "" , "profileNumber" => ""
         , "type" => "" , "sp" => "1", "coop" => "1"
         , "wr" => ""
-        , "banned" => 0
+        , "banned" => ""
         , "demo" => "", "yt" => ""
         , "submission" => ""
-        , "maxDaysAgo" => 0, "hasDate" => 0
+        , "maxDaysAgo" => "", "hasDate" => ""
         , "id" => "");
 
         foreach ($parameters as $key => $val) {
@@ -563,13 +656,20 @@ class Leaderboard
             }
         }
         $whereClause = "";
-        if ($param['maxDaysAgo'] != 0) {
+        if ($param['maxDaysAgo'] != "") {
             $whereClause = "time_gained > DATE_SUB(NOW(), INTERVAL ".$param['maxDaysAgo']." DAY) AND ";
         }
-        $whereClause1 = ($param['yt'] == "1") ?  "youtube_id IS NOT NULL AND " : "";
+        
+        if ($param['yt'] != "") {
+            if ($param['yt'] == "1")
+                $whereClause1 = "youtube_id IS NOT NULL AND";
+            if ($param['yt'] == "0")
+                $whereClause1 = "youtube_id IS NULL AND";
+        }
+
         $whereClause2 = ($param["hasDate"] == "1") ? "time_gained IS NOT NULL AND " : "";
-        $whereClause3 = ($param["wr"] == "1") ? "wr_gain = 1 AND " : "";
-        $whereClause4 = ($param["banned"] == "1") ? "banned = 1 AND " : "";
+        $whereClause3 = ($param["wr"] != "") ? "wr_gain = '{$param["wr"]}' AND " : "";
+        $whereClause4 = ($param["banned"] != "") ? "banned = '{$param["banned"]}' AND " : "";
         $whereClause5 = ($param["id"] != "") ? "id = '{$param["id"]}' AND " : "";
 
         $changelog_data = Database::query("SELECT IFNULL(usersnew.boardname, usersnew.steamname) AS player_name, usersnew.avatar, ch.profile_number,
@@ -924,7 +1024,7 @@ class Leaderboard
         }
     }
 
-    public static function setBanned($changelogId, $banned)
+    public static function setScoreBanStatus($changelogId, $banned)
     {
         Database::query("UPDATE changelog SET banned = '{$banned}'  WHERE id = '{$changelogId}'");
 
@@ -932,6 +1032,11 @@ class Leaderboard
         $row = $data->fetch_assoc();
 
         self::resolveScore($row["profile_number"], $row["map_id"]);
+    }
+
+    public static function setProfileBanStatus($profileNumber, $banned) 
+    {
+        Database::query("UPDATE usersnew SET banned = '{$banned}'  WHERE profile_number = '{$profileNumber}'");
     }
 
     //updating score with lowest non banned changelog entry

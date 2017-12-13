@@ -18,38 +18,60 @@
                   });
                   Vague.blur();
               </script>
+             <style>
+                .profileBannerButton {
+                    display: inline-block;
+                    visibility: hidden;
+                    cursor: pointer;
+                    -moz-user-select: -moz-none;
+                    -khtml-user-select: none;
+                    -webkit-user-select: none;
+                    color: #7b7b7b;
+                    border: 1px solid #AAA;
+                    border-radius: 4px;
+                    padding: 2px 5px 3px;
+                    line-height: 19px;
+                    margin: 3px 3px 3px 0px;
+                    font-weight: normal;
+                    background-color: #f9f9f9;
+                    text-shadow: none;
+                    padding-right: 8px;
+                }
+
+                .profileBannerButton:hover {
+                    background: #CCC;
+                }
+                
+                .profileBannerButtonContainer {
+                    position: absolute;
+                    <?php if(!$user->isAdmin() && $user->userData->title == NULL):; ?>
+                        top: -10px;
+                    <?php endif ?>
+                }
+                
+            </style>
             <div class="general">
                 <div class="general-wrapper">
                     <?php if(SteamSignIn::hasProfilePrivileges($user->profileNumber)): ?>
-                        <div style="position: absolute; right: 7px">
-                            <div class="refreshAvatarButton">
+                        <div class="profileBannerButtonContainer" style="right: 7px">
+                            <div class="refreshAvatarButton profileBannerButton">
                                 <i class="fa fa-fw fa-refresh" aria-hidden="true"></i>
                                 Refresh avatar
                             </div>
                         </div>
-                        <style>
-                            .refreshAvatarButton {
-                                display: inline-block;
-                                visibility: hidden;
-                                cursor: pointer;
-                                -moz-user-select: -moz-none;
-                                -khtml-user-select: none;
-                                -webkit-user-select: none;
-                                color: #7b7b7b;
-                                border: 1px solid #AAA;
-                                border-radius: 4px;
-                                padding: 2px 5px 3px;
-                                line-height: 18px;
-                                margin: 3px 3px 3px 0px;
-                                font-weight: normal;
-                                background-color: #f9f9f9;
-                                text-shadow: none;
-                            }
-
-                            .refreshAvatarButton:hover {
-                                background: #CCC;
-                            }
-                        </style>
+                    <?php endif; ?>
+                    <?php if(SteamSignIn::loggedInUserIsAdmin()): ?>
+                        <div class="profileBannerButtonContainer" style="left: 7px">
+                            <div class="banToggleButton profileBannerButton">
+                                <?php if($user->userData->banned): ?> 
+                                    <i class="fa fa-fw fa-check" aria-hidden="true"></i>
+                                    Unban 
+                                <?php else: ?> 
+                                    <i class="fa fa-fw fa-ban" aria-hidden="true"></i>
+                                    Ban 
+                                <?php endif; ?>
+                            </div>
+                        </div>
                     <?php endif; ?> 
                     <img src="<?php echo $avatar; ?>" alt=""/>
                     <div class="nickname"><?php echo $user->userData->displayName; ?></div>
@@ -331,19 +353,105 @@
                             </div>
                         <?php endforeach; ?>
                     </div>
-                    <div id="spOrdered" style="display: none">
-                        <div class="column-title">
-                            Chamber
-                            <div style="float: right">
-                                <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
-                                <div class="cell score" align="right">Time</div>
-                                <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
-                                <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                    <div id="spOrderedByRank" style="display: none">
+
+                        <?php $nonEmptyScoreEncountered = false; ?>
+                        <?php $emptyScoresEncountered = false ?>      
+                                
+                        <?php foreach($user->times->SP["chambers"]["chamberOrderedByRank"] as $mapId => $score): ?>
+
+                            <?php if (!$nonEmptyScoreEncountered && $score["score"] != NULL): ?>
+                                <div class="column-title">
+                                    Ordered by rank
+                                    <div style="float: right">
+                                        <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                        <div class="cell score" align="right">Time</div>
+                                        <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                        <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                    </div>
+                                </div>
+                                <div class="column-content">
+                                    <div class="scoretable">
+                                
+                                <?php $nonEmptyScoreEncountered = true; ?>
+
+                            <?php elseif (!$emptyScoresEncountered && $score["score"] == NULL): ?>
+
+                                <?php if ($nonEmptyScoreEncountered): ?> </div></div> <?php endif; ?>
+
+                                <div class="column-title">
+                                    No score
+                                    <div style="float: right">
+                                        <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                        <div class="cell score" align="right">Time</div>
+                                        <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                        <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                    </div>
+                                </div>
+                                <div class="column-content">
+                                    <div class="scoretable">
+
+                                <?php $emptyScoresEncountered = true; ?>
+
+                            <?php endif; ?>
+                                
+                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
+                            
+                            <?php endforeach; ?>
                             </div>
                         </div>                        
-                        <div class="column-content">
-                            <div class="scoretable">
-                                <?php foreach($user->times->SP["chambers"]["chamberOrdered"] as $mapId => $score): ?>
+                    </div>
+                    <div id="spOrderedByDate" style="display: none;">
+                                <?php $knownDatesEncountered = false; ?>
+                                <?php $unknownDateEncountered = false; ?>
+                                <?php $emptyScoresEncountered = false; ?>
+
+                                <?php foreach($user->times->SP["chambers"]["chamberOrderedByDate"] as $mapId => $score): ?>
+
+                                    <?php if (!$knownDatesEncountered && $score["score"] != NULL && $score["date"] != NULL): ?>
+                                        <div class="column-title">
+                                            Ordered by date
+                                            <div style="float: right">
+                                                <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                                <div class="cell score" align="right">Time</div>
+                                                <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                                <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                            </div>
+                                        </div>
+                                        <div class="column-content">
+                                            <div class="scoretable">
+                                        <?php $knownDatesEncountered = true; ?>
+
+                                    <?php elseif (!$unknownDateEncountered && $score["score"] != NULL && $score["date"] == NULL): ?>
+                                        <?php if ($knownDatesEncountered): ?> </div></div> <?php endif; ?>
+                                        <div class="column-title">
+                                            Unknown date
+                                            <div style="float: right">
+                                                <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                                <div class="cell score" align="right">Time</div>
+                                                <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                                <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                            </div>
+                                        </div>
+                                        <div class="column-content">
+                                            <div class="scoretable">
+                                        <?php $unknownDateEncountered = true; ?>
+
+                                    <?php elseif (!$emptyScoresEncountered && $score["score"] == NULL): ?>
+                                            <?php if ($knownDatesEncountered || $unknownDateEncountered): ?> </div></div> <?php endif; ?>
+                                            <div class="column-title">
+                                                No score
+                                                <div style="float: right">
+                                                    <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                                    <div class="cell score" align="right">Time</div>
+                                                    <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                                    <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                                </div>
+                                            </div>
+                                            <div class="column-content">
+                                                <div class="scoretable">
+                                        <?php $emptyScoresEncountered = true; ?>
+                                    <?php endif; ?>
                                     <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
                                 <?php endforeach; ?>
                             </div>
@@ -386,19 +494,102 @@
                       </div>
                     <?php endforeach; ?>
                   </div>
-                  <div id="coopOrdered" style="display: none">
-                        <div class="column-title">
-                            Chamber
-                            <div style="float: right">
-                                <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
-                                <div class="cell score" align="right">Time</div>
-                                <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
-                                <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                  <div id="coopOrderedByRank" style="display: none">
+
+                        <?php $nonEmptyScoreEncountered = false; ?>
+                        <?php $emptyScoresEncountered = false ?>     
+                                
+                        <?php foreach($user->times->COOP["chambers"]["chamberOrderedByRank"] as $mapId => $score): ?>
+
+                            <?php if (!$nonEmptyScoreEncountered && $score["score"] != NULL): ?>
+                                <div class="column-title">
+                                    Ordered by rank
+                                    <div style="float: right">
+                                        <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                        <div class="cell score" align="right">Time</div>
+                                        <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                        <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                    </div>
+                                </div>
+                                <div class="column-content">
+                                    <div class="scoretable">
+
+                                <?php $nonEmptyScoreEncountered = true ?>
+
+                            <?php elseif (!$emptyScoresEncountered && $score["score"] == NULL): ?>
+                                <?php if ($nonEmptyScoreEncountered): ?> </div></div> <?php endif; ?>
+                                    <div class="column-title">
+                                        No score
+                                        <div style="float: right">
+                                            <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                            <div class="cell score" align="right">Time</div>
+                                            <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                            <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                        </div>
+                                    </div>
+                                    <div class="column-content">
+                                        <div class="scoretable">
+                                    <?php $emptyScoresEncountered = true; ?>
+                            <?php endif; ?>
+                                
+                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
+                            
+                            <?php endforeach; ?>
                             </div>
                         </div>                        
-                        <div class="column-content">
-                            <div class="scoretable">
-                                <?php foreach($user->times->COOP["chambers"]["chamberOrdered"] as $mapId => $score): ?>
+                    </div>
+                    <div id="coopOrderedByDate" style="display: none;">
+                                <?php $knownDatesEncountered = false; ?>
+                                <?php $unknownDateEncountered = false; ?>
+                                <?php $emptyScoresEncountered = false; ?>
+
+                                
+                                <?php foreach($user->times->COOP["chambers"]["chamberOrderedByDate"] as $mapId => $score): ?>
+
+                                    <?php if (!$knownDatesEncountered && $score["score"] != NULL && $score["date"] != NULL): ?>
+                                        <div class="column-title">
+                                            Ordered by date
+                                            <div style="float: right">
+                                                <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                                <div class="cell score" align="right">Time</div>
+                                                <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                                <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                            </div>
+                                        </div>
+                                        <div class="column-content">
+                                            <div class="scoretable">
+                                        <?php $knownDatesEncountered = true; ?>
+                                    
+                                    <?php elseif (!$unknownDateEncountered && $score["score"] != NULL && $score["date"] == NULL): ?>
+                                        <?php if ($knownDatesEncountered): ?> </div></div> <?php endif; ?>
+                                        <div class="column-title">
+                                            Unknown date
+                                            <div style="float: right">
+                                                <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                                <div class="cell score" align="right">Time</div>
+                                                <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                                <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                            </div>
+                                        </div>
+                                        <div class="column-content">
+                                            <div class="scoretable">
+                                        <?php $unknownDateEncountered = true; ?>
+                                    
+                                    <?php elseif (!$emptyScoresEncountered && $score["score"] == NULL): ?>
+                                            <?php if ($knownDatesEncountered || $unknownDateEncountered): ?> </div></div> <?php endif; ?>
+                                            <div class="column-title">
+                                                No score
+                                                <div style="float: right">
+                                                    <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
+                                                    <div class="cell score" align="right">Time</div>
+                                                    <div class="cell nr-diff" align="right" data-toggle="tooltip" title="Time difference to next rank">&#916;Next</div>
+                                                    <div class="cell wr-diff" align="right" data-toggle="tooltip"title="Time difference to world record">&#916;WR</div>
+                                                </div>
+                                            </div>
+                                            <div class="column-content">
+                                                <div class="scoretable">
+                                        <?php $emptyScoresEncountered = true; ?>
+                                    <?php endif; ?>
                                     <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
                                 <?php endforeach; ?>
                             </div>
@@ -508,29 +699,62 @@
         <?php endif; ?>
     }, 2000);
 
-    var refreshingAvatar = false;
-    $(".refreshAvatarButton").click(function() {
-        if (!refreshingAvatar) {
-            refreshingAvatar = true;
-            $refreshIcon = $(".refreshAvatarButton .fa-refresh");
-            $refreshIcon.addClass("fa-spin");
+    <?php if(SteamSignIn::hasProfilePrivileges($user->profileNumber)): ?>
+        var refreshingAvatar = false;
+        $(".refreshAvatarButton").click(function() {
+            if (!refreshingAvatar) {
+                refreshingAvatar = true;
+                $refreshIcon = $(".refreshAvatarButton .fa-refresh");
+                $refreshIcon.addClass("fa-spin");
 
-            $.ajax({
-                url: '/fetchNewUserData',
-                type: 'POST',
-                data: {profileNumber: '<?=$user->profileNumber?>'},
-                success: function (data) {
-                    console.log(data);
-                    // $refreshIcon.removeClass("fa-spin");
-                    document.location.href = "/profile/<?=$user->profileNumber?>";
-                },
-                error: function(e){
-                    console.log(e.message);
-                },
-                cache: false
-            });
-        }
-    });
+                $.ajax({
+                    url: '/fetchNewUserData',
+                    type: 'POST',
+                    data: {profileNumber: '<?=$user->profileNumber?>'},
+                    success: function (data) {
+                        console.log(data);
+                        // $refreshIcon.removeClass("fa-spin");
+                        document.location.href = "/profile/<?=$user->profileNumber?>";
+                    },
+                    error: function(e){
+                        console.log(e.message);
+                    },
+                    cache: false
+                });
+            }
+        });
+    <?php endif; ?>
+
+    <?php if(SteamSignIn::loggedInUserIsAdmin()): ?>
+        var changingBannedState = false;
+        $(".banToggleButton").click(function() {
+            if (!changingBannedState) {
+                changingBannedState = true;
+                
+                $refreshIcon = $(".banToggleButton i");
+                $refreshIcon.removeClass("fa-check");
+                $refreshIcon.removeClass("fa-ban");
+                $refreshIcon.addClass("fa-refresh");
+                $refreshIcon.addClass("fa-spin");
+
+                $.ajax({
+                    url: '/setProfileBanStatus',
+                    type: 'POST',
+                    data: {profileNumber: '<?=$user->profileNumber?>', banStatus: <?=$user->userData->banned == 1 ? 0 : 1?> },
+                    success: function (data) {
+                        console.log(data);
+                        // $refreshIcon.removeClass("fa-spin");
+                        document.location.href = "/profile/<?=$user->profileNumber?>";
+                    },
+                    error: function(e){
+                        console.log(e.message);
+                    },
+                    cache: false
+                });
+            }
+        });
+    <?php endif; ?>
+
 
     $(".sp .rank, .coop .rank").each(function() {
         var rank = $(this).find("i").length == 1 ? 1 : parseInt($(this).text());
@@ -538,33 +762,53 @@
     });
 
     $(".userinformation").hover(function() {
-        $(".refreshAvatarButton").css("visibility", "visible");
+        $(".profileBannerButton").css("visibility", "visible");
     }, function() {
-        $(".refreshAvatarButton").css("visibility", "hidden");
+        $(".profileBannerButton").css("visibility", "hidden");
     });
 
+    var animationDelay = 120;
     $(".spChangeOrderingButton").click(function() {
         if ($(this).text() == "Default") {
+            $("#spUnordered").fadeOut(animationDelay, function() {
+                $("#spOrderedByRank").fadeIn(animationDelay);    
+            });
+            
             $(this).text("Rank");
         }
+        else if ($(this).text() == "Rank") {
+            $("#spOrderedByRank").fadeOut(animationDelay, function() {
+                $("#spOrderedByDate").fadeIn(animationDelay);
+            });
+            $(this).text("Date");
+        }
         else {
+            $("#spOrderedByDate").fadeOut(animationDelay, function() {
+                $("#spUnordered").fadeIn(animationDelay);
+            });
             $(this).text("Default");
         }
-
-        $("#spOrdered").toggle();
-        $("#spUnordered").toggle();
     });
 
     $(".coopChangeOrderingButton").click(function() {
         if ($(this).text() == "Default") {
+            $("#coopUnordered").fadeOut(animationDelay, function() {
+                $("#coopOrderedByRank").fadeIn(animationDelay);
+            });
             $(this).text("Rank");
         }
+        else if ($(this).text() == "Rank") {
+            $("#coopOrderedByRank").fadeOut(animationDelay, function() {
+                $("#coopOrderedByDate").fadeIn(animationDelay);
+            });
+            $(this).text("Date");
+        }
         else {
+            $("#coopOrderedByDate").fadeOut(animationDelay, function() {
+                $("#coopUnordered").fadeIn(animationDelay);
+            });
             $(this).text("Default");
         }
-
-        $("#coopOrdered").toggle();
-        $("#coopUnordered").toggle();
     });
 
     $(".global-stats .block-container").each(function() {
