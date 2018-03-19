@@ -566,7 +566,7 @@ class Router {
         if ($location[1] == "profile" && isset($location[2])) {
             $displayNames = Cache::get("boardnames");
             $id = $location[2];
-            if (is_numeric($id) && strlen($id) == 17) {
+            if (is_numeric($id) && strlen($id) == 17 && !(isset($location[3]) && $location[3] == "json")) {
                 if ($displayNames[$location[2]]["useInURL"]) {
                     header("Location: /profile/" . $displayNames[$location[2]]["displayName"]);
                     exit;
