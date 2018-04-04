@@ -67,6 +67,10 @@ class View {
         "about" => array(
             "contentTemplate" => "about.phtml",
             "pageTitle" => "About"
+        ),
+        "wallofshame" => array(
+            "contentTemplate" => "wallofshame.phtml",
+            "pageTitle" => "Wall of Shame"
         )
     );
 

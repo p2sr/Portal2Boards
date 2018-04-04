@@ -1,0 +1,68 @@
+<?php
+    $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE banned = 1");
+    $users = array();
+
+    while ($row = $data->fetch_assoc()) {
+        $users[] = $row;
+    }
+?>
+
+<style>
+    .profileIcon img {
+        border-radius: 20px;
+        max-height: 35px;
+    }
+
+    .profileIcon, .boardname {
+        display: inline-block;
+        vertical-align: top;
+    }
+
+    .profileIcon {
+        margin-right: 15px;
+    }
+
+    .boardname {
+        width: 200px;
+        font-family: Aperture;
+        font-size: 16px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        line-height: 35px;
+    }
+
+    @media only screen and (min-width: 300px) {
+        .badUser { 
+            -webkit-box-sizing: border-box;
+               -moz-box-sizing: border-box;
+                    box-sizing: border-box;
+            float: left;
+            width: 300px; 
+            margin: 8 8 8 0;
+        }
+    }W
+</style>
+
+<div id="about">
+    <h1 class="largeTitle">Wall of Shame</h1>
+    <h1 class="title">Banned Players</h1>
+    <div style="margin-left: 20px; margin-top: 20px">
+
+        <?php $entry = 0 ?>
+        <?php foreach($users as $user): ?>
+            
+            <div class="badUser">
+                <div class="profileIcon">
+                        <a href="/profile/<?=$user["profile_number"]; ?>">
+                            <img src="<?=$user["avatar"]; ?>" alt=""/>
+                        </a>
+                    </div>
+                <div class="boardname"><a href="/profile/<?= $user["profile_number"]; ?>"><?= $user["playername"] ?></a></div>
+                <br>
+            </div>
+            
+        <?php $entry++; endforeach ?>
+    </div>
+</div>
+
