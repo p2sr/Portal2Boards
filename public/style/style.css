@@ -1928,3 +1928,6 @@ body > #youtube #ytplayer {
     margin-top: -3px;
     background: #3096d1;
 }
+.popover-content {
+    word-wrap: break-word;
+}
