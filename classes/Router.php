@@ -237,7 +237,7 @@ class Router {
                 }
             }
 
-            $data = Database::query("SELECT score, map_id, IFNULL(boardname, steamname) as displayName
+            $data = Database::query("SELECT changelog.profile_number, score, map_id, IFNULL(boardname, steamname) as displayName
               FROM changelog INNER JOIN usersnew ON (changelog.profile_number = usersnew.profile_number)
               WHERE changelog.id = '" . $_GET["id"] . "'");
             $row = $data->fetch_assoc();
@@ -246,6 +246,7 @@ class Router {
             $score = str_replace(":", "", Leaderboard::convertToTime($row["score"]));
             $score = str_replace(".", "", $score);
             $displayName = preg_replace("/[^A-Za-z0-9]/", '', $row["displayName"]);
+            if (!$displayName) $displayName = $row["profile_number"];
 
             $demoManager = new DemoManager();
             $demoURL = $demoManager->getDemoURL($_GET["id"]);
