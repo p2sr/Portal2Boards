@@ -505,7 +505,6 @@ class Leaderboard
                     'score' => Util::formatScoreTime($change["score"]),
                     'wr_diff' => Util::formatScoreTime($diff)
                 ];
-                Discord::init();
                 Discord::sendWebhook($data);
             }
             $updates++;
@@ -1171,7 +1170,6 @@ class Leaderboard
                 'comment' => $comment,
                 'yt' => $youtubeID
             ];
-            Discord::init();
             Discord::sendWebhook($data);
         }
 

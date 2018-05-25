@@ -11,7 +11,7 @@ class Discord {
     private static $embed_icon;
 
     public static function init() {
-        $secret = json_decode(file_get_contents(ROOT_PATH."/secret/discord.json"));
+        $secret = json_decode(file_get_contents(ROOT_PATH.'/secret/discord.json'));
         self::$id = $secret->id;
         self::$token = $secret->token;
         self::$username = 'Portal2Boards';
@@ -65,7 +65,7 @@ class Discord {
                 ],
                 [
                     'name' => 'Player',
-                    'value' => $data['player'],
+                    'value' => self::sanitiseText($data['player']),
                     'inline' => true
                 ],
                 [
@@ -80,21 +80,21 @@ class Discord {
                 ]
             ]
         ];
-        if ($data['yt'] != NULL && $data['yt'] != "") {
+        if ($data['yt'] != NULL && $data['yt'] != '') {
             array_push($embed['fields'], [
                 'name' => 'Video Link',
                 'value' => '[Watch](https://youtu.be/'.$data['yt'].')',
                 'inline' => true
             ]);
         }
-        if ($data['comment'] != NULL && $data['comment'] != "") {
+        if ($data['comment'] != NULL && $data['comment'] != '') {
             array_push($embed['fields'], [
                 'name' => 'Comment',
-                'value' => '*'.$data['comment'].'*',
+                'value' => '*'.self::sanitiseText($data['comment']).'*',
                 'inline' => false
             ]);
         }
-        Debug::log(json_encode((object)$embed));
+        //Debug::log(json_encode((object)$embed));
         return (object)$embed;
     }
     public static function getTestData() {
@@ -111,7 +111,12 @@ class Discord {
             'comment' => 'xD',
             'yt' => ''
         ];
-        Debug::log(json_encode($data));
+        //Debug::log(json_encode($data));
         return $data;
     }
+    public static function sanitiseText($text) {
+        return preg_replace('/(\\*|_|`|~)/miu', '\\\\$1', $text);
+    }
 }
+
+Discord::init();
