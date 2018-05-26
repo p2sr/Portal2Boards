@@ -29,6 +29,7 @@ class Discord {
             'payload_json' => json_encode($payload)
         ];
         $ch = curl_init(Discord::API.'/webhooks/'.self::$id.'/'.self::$token);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'board.iverb.me (https://github.com/iVerb1/Portal2Boards)');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         curl_exec($ch);
