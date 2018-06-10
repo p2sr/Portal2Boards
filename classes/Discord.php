@@ -19,7 +19,7 @@ class Discord {
         self::$embed_icon = 'https://raw.githubusercontent.com/iVerb1/Portal2Boards/master/public/images/portal2boards_icon.png';
     }
     public static function sendWebhook($data) {
-        $embed = self::buildEmbed(($data) ? $data : self::getTestData());
+        $embed = self::buildEmbed($data);
         $payload = [
             'username' => self::$username,
             'avatar_url' => self::$avatar,
@@ -95,25 +95,7 @@ class Discord {
                 'inline' => false
             ]);
         }
-        //Debug::log(json_encode((object)$embed));
         return (object)$embed;
-    }
-    public static function getTestData() {
-        $data = [
-            'id' => 1337,
-            'timestamp' => new DateTime(),
-            'map_id' => 52671,
-            'player_id' => 76561198039230536,
-            'player' => 'Zypeh',
-            'player_avatar' => 'https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars/41/41ddd6e41e3dcab668e5d8a3b74737879dcc65ca_full.jpg',
-            'map' => 'Cooperative Polarity',
-            'score' => '8.14',
-            'wr_diff' => '0.02',
-            'comment' => 'xD',
-            'yt' => ''
-        ];
-        //Debug::log(json_encode($data));
-        return $data;
     }
     public static function sanitiseText($text) {
         return preg_replace('/(\\*|_|`|~)/miu', '\\\\$1', $text);
