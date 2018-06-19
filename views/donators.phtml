@@ -1,12 +1,3 @@
-<?php
-    $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE title = 'Donator'");
-    $users = array();
-
-    while ($row = $data->fetch_assoc()) {
-        $users[] = $row;
-    }
-?>
-
 <style>
     .profileIcon img {
         border-radius: 20px;
@@ -50,7 +41,7 @@
     <div style="margin-left: 20px; margin-top: 20px">
 
         <?php $entry = 0 ?>
-        <?php foreach($users as $user): ?>
+        <?php foreach($view->donators as $user): ?>
             
             <div class="goodUser">
                 <div class="profileIcon">

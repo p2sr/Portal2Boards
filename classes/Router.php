@@ -606,6 +606,20 @@ class Router {
             }
         }
 
+        if ($location[1] == "donators") {
+            $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE title LIKE 'Donator'");
+            $view->donators = array();
+
+            while ($row = $data->fetch_assoc()) {
+                $view->donators[] = $row;
+            }
+
+            if (isset($location[2]) && $location[2] == "json") {
+                echo json_encode($view->donators);
+                exit;
+            }
+        }
+
         if ($location[1] == "editprofile") {
             if (isset(SteamSignIn::$loggedInUser)) {
                 if ($_POST) {
