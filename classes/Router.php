@@ -606,6 +606,20 @@ class Router {
             }
         }
 
+        if ($location[1] == "wallofshame") {
+            $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE banned = 1");
+            $view->wallofshame = array();
+
+            while ($row = $data->fetch_assoc()) {
+                $view->wallofshame[] = $row;
+            }
+
+            if (isset($location[2]) && $location[2] == "json") {
+                echo json_encode($view->wallofshame);
+                exit;
+            }
+        }
+
         if ($location[1] == "editprofile") {
             if (isset(SteamSignIn::$loggedInUser)) {
                 if ($_POST) {
