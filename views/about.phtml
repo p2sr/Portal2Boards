@@ -3,9 +3,9 @@
 
     <h1 class="title">Rules</h1>
     <div class="container">
-        Any and all modifications of the game that change the physics or controls in any way is strictly banned, with the exception of console commands "sv_player_funnel_into_portals" and "developer".
+        Any and all modifications of the game that change the physics or controls in any way is strictly banned, with the exception of some console commands, see below.
         <br>
-        In particular, note that this means that changing the server tickrate is forbidden.
+        In particular, note that this means that changing the server tickrate is forbidden, as well as any usage of the 'give' command.
         <br><br>
         Futhermore, all top 5 scores obtained after May 11th, 2017 require proof in the form of a demo or a video. If no sufficient proof can be provided, the score will be removed.
     </div>
@@ -22,10 +22,10 @@
                 <td>developer</td>
                 <td>Allows you to move as soon as the chamber loads instead of being stuck for ~0.5 seconds.<br>
                     We allow this command because the same effect can be achieved by loading the chamber
-                    from the main menu instead of restarting it. </td>
+                    from the main menu instead of restarting it.</td>
             </tr>
             <tr>
-                <td  style="max-width: 260px">"mat_ambient_light_b 0.1; mat_ambient_light_r 0.1; mat_ambient_light_g 0.1;"</td>
+                <td style="max-width: 260px">"mat_ambient_light_b 0.1; mat_ambient_light_r 0.1; mat_ambient_light_g 0.1;"</td>
                 <td>Turns off the game's lighting and allows you to see in the dark. This is useful in Turret Factory. <br>
                     We allow this command because it levels the playing field for players having displays with limited brightness.
                 </td>
@@ -73,10 +73,9 @@
 
     <h1 class="title">Videos</h1>
     <div class="container">
-        A popular tool used to convert demo files to nicely looking smooth videos is  <a href="http://forums.steampowered.com/forums/showthread.php?p=25171193">SrcDemo<sup>2</sup></a>
+        A popular tool used to convert demo files to nicely looking smooth videos is  <a href="https://code.google.com/archive/p/srcdemo2">SrcDemo<sup>2</sup></a>.
     </div>
 
-<!--    TODO: link to numTrackedPlayerRanks including table with example points -->
     <h1 class="title">Point calculation</h1>
     <div class="container">
         Currently, the top <?=Leaderboard::numTrackedPlayerRanks?> times are tracked for each map.
@@ -102,7 +101,7 @@
                     max[1,&nbsp;
                 </td>
                 <td nowrap="nowrap" style="font-size: 14px;">
-                    (200 - (rank - 1))<sup>2</sup>
+                    (<?=Leaderboard::numTrackedPlayerRanks?> - (rank - 1))<sup>2</sup>
                 </td>
                 <td rowspan="2" nowrap="nowrap">
                     <!-- &nbsp;× (1 + (0.025 × bonus)  -->]
@@ -110,7 +109,7 @@
             </tr>
             <tr>
                 <td class="upper_line" style="font-size: 14px;">
-                    200
+                    <?=Leaderboard::numTrackedPlayerRanks?>
                 </td>
             </tr>
         </table>
@@ -134,90 +133,67 @@
                 <th>Rank</th>
                 <th>Points</th>
             </tr>
-            <tr>
-                <td>1</td>
-                <td>200.00</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>192.08</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>182.40</td>
-            </tr>
-            <tr>
-                <td>20</td>
-                <td>163.80</td>
-            </tr>
-            <tr>
-                <td>50</td>
-                <td>114.00</td>
-            </tr>
-            <tr>
-                <td>100</td>
-                <td>51.00</td>
-            </tr>
-            <tr>
-                <td>150</td>
-                <td>13.00</td>
-            </tr>
-            <tr>
-                <td>200</td>
-                <td>1.00</td>
-            </tr>
+            <?php foreach(array(1, 5, 10, 20, 50, 100, 150, 200) as $rank): ?>
+                <tr>
+                    <td><?=$rank ?></td>
+                    <td><?=ceil(Leaderboard::getPoints($rank))?></td>
+                </tr>
+            <?php endforeach; ?>
         </table>
 
         Note that points are displayed as whole numbers everywhere on the site by means of simple rounding.
 
     </div>
 
-
     <h1 class="title">Team</h1>
     <div class="container">
         <ul>
-            <li><a href="/profile/76561198047900528">iVerb</a>: Lead developer, admin</li>
-            <li><a href="/profile/76561198095730281">Portal Rex</a>: Admin</li>
-            <li><a href="/profile/76561198043899549">Jetwash_787</a>: Admin</li>
-            <li><a href="/profile/76561198039230536">Zypeh</a>: Admin</li>
-            <li><a href="/profile/76561198015678746">Klooger</a>: Admin</li>
+            <?php
+                $data = Database::query("SELECT profile_number, IFNULL(boardname, steamname) as playername, title FROM usersnew WHERE admin = 1 ORDER BY playername");
+                $admins = array();
+
+                while ($row = $data->fetch_assoc()) {
+                    $admins[] = $row;
+                }
+            ?>
+            <?php foreach($admins as $admin): ?>
+                <li><a href="/profile/<?=$admin["profile_number"]; ?>"><?=$admin["playername"]; ?></a>: <?=($admin["title"] == 'Developer') ? $admin["title"].', Admin' : 'Admin'; ?></li>
+            <?php endforeach; ?>
         </ul>
     </div>
-
-    <!-- <h1 class="title">Miscellaneous features</h1>
-    <div class="container">
-        <ul> -->
-<!--            <li>Instead of using a steam ID, you can bookmark and navigate to profiles by using a boardname. Example: <a href="/profile/iVerb" class="unnamedURL"></a>.</li>-->
-            <!-- <li>Your boardname is by default the same as your steam nickname (updated daily), but can be changed under <a href="/editprofile">Edit profile</a>.</li> -->
-        <!-- </ul>
-    </div> -->
 
     <h1 class="title">API</h1>
     <div class="container">
         A JSON representation of the current leaderboard status can be retrieved by appending '/json' to any page URL, i.e. <a href="/chamber/47458/json" class="unnamedURL"></a> or <a href="/profile/iVerb/json" class="unnamedURL"></a>.
     </div>
 
-<!--     <h1 class="title">Feature suggestions</h1>
-    <div class="container">Forward any feature suggestions you may have to <a href="/profile/76561198047900528">iVerb</a></div> -->
+    <h2 class="subtitle">Libraries</h2>
+    <div class="container">
+        <table class="pointTable table table-condensed" style='margin-top: 20px; width: 160px'>
+             <tr>
+                <th>Name</th>
+                <th>Language</th>
+            </tr>
+            <tr>
+                <td><a href="https://github.com/NeKzor/Portal2Boards.Net">Portal2Boards.Net</a></td>
+                <td>C#</td>
+            </tr>
+        </table>
+    </div>
 
     <h1 class="title">Hosting</h1>
     <div class="container">
-        <!-- <p> -->
-        <!-- Source code: coming soon -->
-        <!-- The source code can be found <a href="https://github.com/iVerb1/Portal2Boards">here</a>. -->
-        <!-- </p> -->
         <p>
         This site is currently hosted on <a href="https://www.fastcomet.com/">FastComet</a>.
         </p>
         <p>
         Demos are stored using <a href="https://www.google.com/drive/">Google Drive</a>. 
-        The folder containg all demos can be found <a href="https://drive.google.com/folderview?id=0B3FgAePoQ2khX3gzc2dlNDdVZm8&usp=sharing">here</a>.
+        The folder containg all demos can be found <a href="https://drive.google.com/folderview?id=<?=DemoManager::demoFolderId?>&usp=sharing">here</a>.
         </p>
     </div>
 
     <h1 class="title">Feature suggestions</h1>
-    <div class="container">Forward any feature suggestions you may have to <a href="/profile/76561198047900528">iVerb</a></div>
-
+    <div class="container">Forward any feature suggestions you may have to <a href="/profile/76561198047900528">iVerb</a>.</div>
 </div>
 
 <script>
