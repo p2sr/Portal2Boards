@@ -5,6 +5,7 @@ define('ROOT_PATH', str_replace('\\', '/', __DIR__));
 include(ROOT_PATH . "/vendor/autoload.php");
 
 require_once(ROOT_PATH."/classes/DemoManager.php");
+require_once(ROOT_PATH."/classes/Discord.php");
 require_once(ROOT_PATH."/classes/Cache.php");
 require_once(ROOT_PATH."/classes/Leaderboard.php");
 require_once(ROOT_PATH."/classes/SteamSignIn.php");
