@@ -1,12 +1,3 @@
-<?php
-    $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE banned = 1");
-    $users = array();
-
-    while ($row = $data->fetch_assoc()) {
-        $users[] = $row;
-    }
-?>
-
 <style>
     .profileIcon img {
         border-radius: 20px;
@@ -41,7 +32,7 @@
             width: 300px; 
             margin: 8 8 8 0;
         }
-    }W
+    }
 </style>
 
 <div id="about">
@@ -50,8 +41,8 @@
     <div style="margin-left: 20px; margin-top: 20px">
 
         <?php $entry = 0 ?>
-        <?php foreach($users as $user): ?>
-            
+        <?php foreach($view->wallofshame as $user): ?>
+
             <div class="badUser">
                 <div class="profileIcon">
                         <a href="/profile/<?=$user["profile_number"]; ?>">
@@ -61,8 +52,7 @@
                 <div class="boardname"><a href="/profile/<?= $user["profile_number"]; ?>"><?= $user["playername"] ?></a></div>
                 <br>
             </div>
-            
+
         <?php $entry++; endforeach ?>
     </div>
 </div>
-
