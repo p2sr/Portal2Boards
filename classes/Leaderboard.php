@@ -462,9 +462,11 @@ class Leaderboard
             $mapData = $oldBoards[$chapter][$change["mapId"]];
 
             $wr = 0;
+            $diff = 0;
             $keys = array_keys($mapData);
             if ($change["score"] <= $mapData[$keys[0]]["scoreData"]["score"]) {
                 $wr = 1;
+                $diff = abs($change["score"] - $mapData[$keys[0]]["scoreData"]["score"]);
             }
 
             $previousId = isset($oldBoards[$chapter][$change["mapId"]][$change["profileNumber"]])
@@ -490,6 +492,21 @@ class Leaderboard
               SET changelog_id = ".$id."
               WHERE profile_number = ". $change["profileNumber"] . " AND map_id = " . $change["mapId"]);
 
+            if ($wr) {
+                $user = new User($change["profileNumber"]);
+                $data = [
+                    'id' => $id,
+                    'timestamp' => new DateTime(),
+                    'map_id' => $change["mapId"],
+                    'player_id' => $user->profileNumber,
+                    'player' => $user->userData->displayName,
+                    'player_avatar' => $user->userData->avatar,
+                    'map' => $maps["maps"][$change["mapId"]]["mapName"],
+                    'score' => Util::formatScoreTime($change["score"]),
+                    'wr_diff' => Util::formatScoreTime($diff)
+                ];
+                Discord::sendWebhook($data);
+            }
             $updates++;
         }
 
@@ -1096,9 +1113,11 @@ class Leaderboard
         $oldChamberBoard = $oldBoards[$chapter][$chamber];
 
         $wr = 0;
+        $diff = 0;
         $keys = array_keys($oldChamberBoard);
         if ($score <= $oldChamberBoard[$keys[0]]["scoreData"]["score"]) {
             $wr = 1;
+            $diff = abs($score - $oldChamberBoard[$keys[0]]["scoreData"]["score"]);
         }
 
         $comment = Database::getMysqli()->real_escape_string($comment);
@@ -1135,6 +1154,25 @@ class Leaderboard
             WHERE id = ". $id);
 
         self::setYoutubeID($id, $youtubeID);
+
+        if ($wr) {
+            $user = new User($profileNumber);
+            $data = [
+                'id' => $id,
+                'timestamp' => new DateTime(),
+                'map_id' => $chamber,
+                'player_id' => $profileNumber,
+                'player' => $user->userData->displayName,
+                'player_avatar' => $user->userData->avatar,
+                'map' => $maps["maps"][$chamber]["mapName"],
+                'score' => Util::formatScoreTime($score),
+                'wr_diff' => Util::formatScoreTime($diff),
+                'comment' => $comment,
+                'yt' => $youtubeID
+            ];
+            Discord::sendWebhook($data);
+        }
+
         return $id;
     }
 

@@ -80,4 +80,22 @@ class Util {
 
      }
 
+     public static function formatScoreTime($time) {
+        $time = abs($time);
+        $time = round($time);
+        $hundreds = ($time % 100);
+        $totalSeconds = floor($time / 100);
+        $minutes = floor($totalSeconds / 60);
+        $seconds = $totalSeconds % 60 ;
+    
+        if ($seconds < 10 && $minutes > 0)
+            $seconds = "0".$seconds;
+        if ($hundreds < 10)
+            $hundreds = "0".$hundreds;
+    
+        if ($minutes > 0)
+            return $minutes.":".$seconds.".".$hundreds;
+        else
+            return $seconds.".".$hundreds;
+    }
 }
