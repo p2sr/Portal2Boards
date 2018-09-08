@@ -13,7 +13,7 @@
         margin-right: 15px;
     }
 
-    .boardname {
+    .boardname, .donationAmount {
         width: 200px;
         font-family: Aperture;
         font-size: 16px;
@@ -23,36 +23,30 @@
         line-height: 35px;
     }
 
-    @media only screen and (min-width: 300px) {
-        .goodUser { 
-            -webkit-box-sizing: border-box;
-               -moz-box-sizing: border-box;
-                    box-sizing: border-box;
-            float: left;
-            width: 300px; 
-            margin: 8 8 8 0;
-        }
+    .goodUser > td {
+        padding-bottom: 9px;
     }
 </style>
 
 <div id="about">
     <h1 class="largeTitle">Donators</h1>
-    <h1 class="title">2017/18</h1>
     <div style="margin-left: 20px; margin-top: 20px">
-
-        <?php $entry = 0 ?>
+        <table>
         <?php foreach($view->donators as $user): ?>
-            
-            <div class="goodUser">
-                <div class="profileIcon">
-                        <a href="/profile/<?=$user["profile_number"]; ?>">
-                            <img src="<?=$user["avatar"]; ?>" alt=""/>
-                        </a>
-                    </div>
-                <div class="boardname"><a href="/profile/<?= $user["profile_number"]; ?>"><?= $user["playername"] ?></a></div>
-                <br>
-            </div>
-            
-        <?php $entry++; endforeach ?>
+            <tr class="goodUser">
+                <td class="profileIcon">
+                    <a href="/profile/<?=$user["profile_number"]; ?>">
+                        <img src="<?=$user["avatar"]; ?>" alt=""/>
+                    </a>
+                </td>
+                <td class="boardname">
+                    <a href="/profile/<?= $user["profile_number"]; ?>"><?= $user["playername"] ?></a>
+                </td>
+                <td class="donationAmount">
+                    € <?= $user["donation_amount"] ?>
+                </td>
+            </tr>            
+        <?php endforeach ?>
+        </table>
     </div>
 </div>
