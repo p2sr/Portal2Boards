@@ -3,7 +3,7 @@ Originally developed and designed by Nuclear: https://github.com/ncla/Portal-2-L
 
 Server requirements:
 
-1. Basic LAMP/XAMPP webserver. Note that for SQL, MariaDB is known to cause issues when using query variables.
+1. Basic LAMP/XAMPP webserver. Note that for MySQL, MariaDB is known to cause issues when using query variables.
 2. Google account.
 
 
