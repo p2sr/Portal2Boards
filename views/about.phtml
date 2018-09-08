@@ -149,15 +149,29 @@
     <div class="container">
         <ul>
             <?php
-                $data = Database::query("SELECT profile_number, IFNULL(boardname, steamname) as playername, title FROM usersnew WHERE admin = 1 ORDER BY playername");
-                $admins = array();
+                $data = Database::query("SELECT profile_number, IFNULL(boardname, steamname) as playername, title, admin FROM usersnew WHERE admin = 1 OR title = 'Developer' ORDER BY (title IS NOT NULL AND title LIKE 'Developer') DESC, playername ASC");
+                $teamMembers = array();
 
                 while ($row = $data->fetch_assoc()) {
-                    $admins[] = $row;
+                    $teamMembers[] = $row;
                 }
             ?>
-            <?php foreach($admins as $admin): ?>
-                <li><a href="/profile/<?=$admin["profile_number"]; ?>"><?=$admin["playername"]; ?></a>: <?=($admin["title"] == 'Developer') ? $admin["title"].', Admin' : 'Admin'; ?></li>
+            <?php foreach($teamMembers as $teamMember): ?>
+                <li>
+                <a href="/profile/<?=$teamMember["profile_number"]; ?>"><?=$teamMember["playername"]; ?></a>: 
+                <?php 
+                    $labels = array();
+                    if ($teamMember["title"] == 'Developer') {
+                        $labels[] = 'Developer';
+                    }
+
+                    if ($teamMember["admin"]) {
+                        $labels[] = 'Admin';
+                    }
+
+                    echo implode(", ", $labels);
+                ?>
+                </li>
             <?php endforeach; ?>
         </ul>
     </div>
