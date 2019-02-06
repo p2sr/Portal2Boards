@@ -2,12 +2,64 @@
     <h1 class="largeTitle">About</h1>
 
     <h1 class="title">Rules</h1>
+
+    <h2 class="subtitle">General</h2>
     <div class="container">
         Any and all modifications of the game that change the physics or controls in any way is strictly banned, with the exception of some console commands, see below.
         <br>
-        In particular, note that this means that changing the server tickrate is forbidden, as well as any usage of the 'give' command.
+        In particular, note that this means that changing the server tickrate is forbidden, as well as any usage of the 'give' command. 
         <br><br>
         Futhermore, all top 5 scores obtained after May 11th, 2017 require proof in the form of a demo or a video. If no sufficient proof can be provided, the score will be removed.
+	    <br><br>
+	    As of January 6th, 2019 scripting and binding multiple command buttons to a key is banned, value of cl_fov is only valid between 50 to 140 and taunt manipulation is now allowed.
+    </div>
+
+    <h2 class="subtitle">Modifications</h2>
+    <div class="container smallContainer">
+        Texture changes of doors, weapon models and challenge mode node flags are allowed as long as they do not provide any significant advantage.
+        <br>
+        Plugins are only allowed to read game states.
+    </div>
+
+    <h2 class="subtitle">Bindings</h2>
+    <div class="container smallContainer">
+        Abusing the use of bind or alias commands to achieve more than one action with the same key is not allowed.
+        <br>
+        An action is any command that sends a key down or key up event denoted with a plus or minus sign.
+    </div>
+
+    <h2 class="subtitle">Scripting</h2>
+    <div class="container smallContainer">
+        Scripts and macros which automate your inputs are banned.
+    </div>
+
+    <h2 class="subtitle">Banned exploits</h2>
+    <div class="container smallContainer">
+        Any form of abusing pause, unpause, setpause or toggleconsole etc. is forbidden. It is known that pausing affects the engine in a way that makes timing inconsistent and inaccurate.
+        <br>
+        Using a special build version or any platform exclusive glitch is also forbidden. Use the latest available version of the game.
+        <br>
+        <br>
+        <ul>
+            <li><a href="https://youtu.be/CLzVfyYZhQA">Pause Clipping</a> - cannot be timed</li>
+            <li><a href="https://youtu.be/tWjyVopD5Eo">Fullscreen Pause Abuse</a> - cannot be timed and OS specific</li>
+            <li><a href="https://youtu.be/QdRcAm0rvGQ?t=41">OoB Velocity Reset</a> - cannot be timed</li>
+            <li><a href="https://youtu.be/V0u5r3g-DVs">Pause Manipulation</a> - cannot be timed</li>
+        </ul>
+    </div>
+
+    <h2 class="subtitle">Demo uploading</h2>
+    <div class="container smallContainer">
+        Uploading the wrong demo to a run is strictly forbidden. This also means that uploading your partner's pov file twice is not allowed as every entry has to be unique.
+    </div>
+
+    <h2 class="subtitle">Proof</h2>
+    <div class="container smallContainer">
+        Proof has to be recorded as soon as possible and cannot end before a run finishes.
+        <br>
+        Admins are allowed to question any runner for proof all the time in case cheating is highly suspected.
+        <br>
+        Demo recording is currently the easiest way to determine if someone cheating or not.
     </div>
 
     <h1 class="title">Console commands</h1>
@@ -19,7 +71,7 @@
                 <td>Disabling this will stop the player from curving into nearby portals when falling.</td>
             </tr>
             <tr>
-                <td>developer</td>
+                <td>"developer 1; contimes 0"</td>
                 <td>Allows you to move as soon as the chamber loads instead of being stuck for ~0.5 seconds.<br>
                     We allow this command because the same effect can be achieved by loading the chamber
                     from the main menu instead of restarting it.</td>
@@ -33,6 +85,14 @@
             <tr>
                 <td>bind [KEY] taunt</td>
                 <td>Binds a key to taunt while midair in cooperative. Used to skip forced animations of new gestures.</td>
+            </tr>
+            <tr>
+                <td>r_portal_use_pvs_optimization</td>
+                <td>Disabling this allows the engine to render level structures in out of bounds space.</td>
+            </tr>
+            <tr>
+                <td>cl_fov [50-140]</td>
+                <td>Changes player's field-of-view.</td>
             </tr>
         </table>
     </div>
@@ -59,8 +119,8 @@
                 </td>
             </tr>
             <tr>
-                <td>bind W "+forward; +remote_view"</td>
-                <td>Binds your W key to permanently show your partner view while playing cooperative.
+                <td>bind [KEY] "+forward; +remote_view"</td>
+                <td>Binds a key to permanently show your partner view while playing cooperative.
                 This way you don't need to toggle the partner view manually every time the chamber is restarted.
                 </td>
             </tr>
