@@ -1735,7 +1735,13 @@
                     seconds = timestamp.split("s")[0];
                 }
 
-                timestampSeconds = parseInt(seconds) + (parseInt(minutes) * 60) + (parseInt(hours) * 60 * 60);
+                if (hours === 0 && minutes === 0 && seconds === 0) {
+                    timestamp = ytURL.split("#t=")[1];
+                    timestampSeconds = parseInt(timestamp);
+                }
+                else {
+                    timestampSeconds = parseInt(seconds) + (parseInt(minutes) * 60) + (parseInt(hours) * 60 * 60);
+                }
             }
             else if (ytURL.indexOf("#start=") != -1) {
                 timestamp = ytURL.split("#start=")[1];
