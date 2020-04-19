@@ -4,6 +4,7 @@
 
 <?php function filterActivity($change) { return $change["time_gained"] != NULL && $change["banned"] != 1; } ?>
 <?php $activity = array_values(array_filter($view->changelog, "filterActivity")) ?>
+<?php //$activity = array_values($view->changelog) ?>
 
 <script>
     $("body").css("min-width", "1335px");
@@ -93,16 +94,19 @@
         </div>
     </div>
 
-    <?php if (count($view->changelog) == 0): ?>
-        <div style="font-size: 20px; margin: auto; width: 100%; text-align: center; color: #888;">
-            <i class="fa fa-times" style="padding-right: 10px"></i>No scores found
-        </div>
-    <?php elseif (count($activity) > 0): ?>
+    <?php if (count($activity) > 0): ?>
         <div class = 'activity'>
             <div id= 'changelogActivity' style= 'height: 175px;'>
                 <i class="fa fa-circle-o-notch fa-spin fa-fw loading"></i>
             </div>
         </div>
+    <?php endif; ?>
+
+    <?php if (count($view->changelog) == 0): ?>
+        <div style="font-size: 20px; margin: auto; width: 100%; text-align: center; color: #888;">
+            <i class="fa fa-times" style="padding-right: 10px"></i>No scores found
+        </div>
+    <?php else: ?>
         <div id="entries">
             <div class="controls">
                 <div class="button previous">

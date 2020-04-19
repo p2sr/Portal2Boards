@@ -202,7 +202,7 @@ class Leaderboard
         foreach ($rankLimits as $mapID => $amount) {
             $curl_handles[$mapID] = curl_init();
             curl_setopt($curl_handles[$mapID], CURLOPT_URL,
-                "http://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
+                "https://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
 
             curl_setopt($curl_handles[$mapID], CURLOPT_FRESH_CONNECT, TRUE);
             curl_setopt($curl_handles[$mapID], CURLOPT_HEADER, 0);

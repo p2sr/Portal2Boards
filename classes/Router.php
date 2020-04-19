@@ -548,7 +548,7 @@ class Router {
         if ($location[1] == "changelog") {
 
             if (!$_GET) {
-                $changelogParams = array("maxDaysAgo" => "7");
+                $changelogParams = array("maxDaysAgo" => "5");
             }
             else {
                 $changelogParams = $_GET;
@@ -620,7 +620,7 @@ class Router {
         }
 
         if ($location[1] == "wallofshame") {
-            $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE banned = 1");
+            $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername FROM usersnew WHERE banned = 1 ORDER BY playername");
             $view->wallofshame = array();
 
             while ($row = $data->fetch_assoc()) {
