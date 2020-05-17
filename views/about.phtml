@@ -1,190 +1,9 @@
 <div id="about">
     <h1 class="largeTitle">About</h1>
 
-    <h1 class="title">Rules</h1>
-
-    <h2 class="subtitle">General</h2>
+    <h1 class="title">Rules & console commands</h1>
     <div class="container">
-        Any and all modifications of the game that change the physics or controls in any way is strictly banned, with the exception of some console commands, see below.
-        <br>
-        In particular, note that this means that changing the server tickrate is forbidden, as well as any usage of the 'give' command.
-        <br><br>
-        Futhermore, all top 5 scores obtained after May 11th, 2017 require proof in the form of a demo or a video. If no sufficient proof can be provided, the score will be removed.
-        <br><br>
-        As of January 6th, 2019 scripting and binding multiple command buttons to a key is banned, value of cl_fov is only valid between 50 to 140 and taunt manipulation is now allowed.
-    </div>
-
-    <h2 class="subtitle">Modifications</h2>
-    <div class="container smallContainer">
-        Texture changes of doors, weapon models, challenge mode flags etc. are allowed as long as they do not provide any significant advantage.
-        <br>
-        Plugins are only allowed to read game states.
-    </div>
-
-    <h2 class="subtitle">Bindings</h2>
-    <div class="container smallContainer">
-        Abusing the use of bind or alias commands to achieve more than one action with the same key is not allowed.
-        <br>
-        An action is any command that sends a key down or key up event denoted with a plus or minus sign.
-        <br>
-        <br>
-        Note: Binding +remote_view with another action is the only exception.
-    </div>
-
-    <h2 class="subtitle">Scripting</h2>
-    <div class="container smallContainer">
-        Scripts and macros which automate your inputs are banned.
-    </div>
-
-    <h2 class="subtitle">Banned exploits</h2>
-    <div class="container smallContainer">
-        Any form of abusing pause, unpause, setpause or toggleconsole etc. is forbidden. It is known that pausing affects the engine in a way that makes timing inconsistent and inaccurate.
-        <br>
-        Using a special build version or any platform exclusive glitch is also forbidden. Use the latest available version of the game.
-        <br>
-        <br>
-        <ul>
-            <li>
-                <a title="Timer does not count paused time." href="https://youtu.be/CLzVfyYZhQA" target="_blank">Pause Clipping</a>
-            </li>
-            <li>
-                <a title="Timer freezes while simulation is still happening in the background. Also happens to work for specific operating systems only." href="https://youtu.be/tWjyVopD5Eo">Fullscreen Pause Abuse</a>
-            </li>
-            <li>
-                <a title="Timer does not count paused time." href="https://youtu.be/QdRcAm0rvGQ?t=41">OoB Velocity Reset</a>
-            </li>
-            <li>
-                <a title="Timer does not count paused time." href="https://youtu.be/V0u5r3g-DVs">Pause Manipulation</a>
-            </li>
-            <li>
-                <a style="cursor: help" title="Very high ping is required to make the partner spawn faster.">Fast Spawn</a>
-            </li>
-            <li>
-                <a style="cursor: help" title="Timer does not start while partner is able to move around freely.">Timer Freeze</a>
-            </li>
-            <li>
-                <a title="Server connection gets modified indirectly." href="https://youtu.be/1C6XVOuf_Q8">Lag Super Reportal</a>
-            </li>
-            <li>
-                <a title="Timer does not count paused time." href="https://youtu.be/GYSXHXJqJu4" target="_blank">Pause Boosting</a>
-            </li>
-        </ul>
-    </div>
-
-    <h2 class="subtitle">Demo uploading</h2>
-    <div class="container smallContainer">
-        Uploading the wrong demo to a run is strictly forbidden. This also means that uploading your partner's pov file twice is not allowed as every entry has to be unique.
-    </div>
-
-    <h2 class="subtitle">Proof</h2>
-    <div class="container smallContainer">
-        Proof has to be recorded as soon as possible and cannot end before a run finishes.
-        <br>
-        Admins are allowed to question any runner for proof at any time in case cheating is suspected.
-        <br>
-        Demo recording is currently the easiest way to determine if someone is cheating or not.
-    </div>
-
-    <h2 class="subtitle">Changes</h2>
-    <div class="container smallContainer">
-        <table class="table table-condensed">
-            <tr>
-                <td style="min-width: 100px">2017-05-11</td>
-                <td>All top 5 scores require proof in the form of a demo or a video. If no sufficient proof can be provided, the score will be removed.</td>
-            </tr>
-            <tr>
-                <td>2019-01-06</td>
-                <td>Scripting and binding multiple command buttons to a key is banned, value of cl_fov is only valid between 50 to 140 and taunt manipulation is now allowed.</td>
-            </tr>
-            <tr>
-                <td>2019-08-23</td>
-                <td>Changing console variable m_yaw to effectively stop mouse movement in either the horizontal or vertical direction is banned.</td>
-            </tr>
-            <tr>
-                <td>2019-09-14</td>
-                <td>Console variable fps_max may only be set to values between 30 and 999. Uncapped value of 0 will not get your run banned if it is determined to not have given an advantage.</td>
-            </tr>
-            <tr>
-                <td>2019-11-03</td>
-                <td>All top 10 scores require complete proof in the form of a demo or video. All top 5 scores require complete demos as proof, videos will not be accepted. All previous scores will be grandfathered in.</td>
-            </tr>
-        </table>
-    </div>
-
-    <h1 class="title">Console commands</h1>
-
-    <h2 class="subtitle">Gameplay</h2>
-    <div class="container smallContainer">
-        <table class="table table-condensed">
-            <tr>
-                <td>sv_player_funnel_into_portals</td>
-                <td>Disabling this will stop the player from curving into nearby portals when falling.</td>
-            </tr>
-            <tr>
-                <td>"developer 1; contimes 0"</td>
-                <td>Allows you to move as soon as the chamber loads instead of being stuck for ~0.5 seconds.<br>
-                    We allow this command because the same effect can be achieved by loading the chamber
-                    from the main menu instead of restarting it.</td>
-            </tr>
-            <tr>
-                <td style="max-width: 260px">"mat_ambient_light_b 0.1; mat_ambient_light_r 0.1; mat_ambient_light_g 0.1;"</td>
-                <td>Turns off the game's lighting and allows you to see in the dark. This is useful in Turret Factory.<br>
-                    We allow this command because it levels the playing field for players having displays with limited brightness.
-                </td>
-            </tr>
-            <tr>
-                <td>bind [KEY] taunt</td>
-                <td>Binds a key to taunt while midair in cooperative. Used to skip forced animations of new gestures.</td>
-            </tr>
-            <tr>
-                <td>r_portal_use_pvs_optimization</td>
-                <td>Disabling this allows the engine to render level structures in out of bounds space.</td>
-            </tr>
-            <tr>
-                <td>bind [KEY] "incrementvar cl_fov 50 90 40"</td>
-                <td>Binds a key to zoom faster. Useful when playing as P-body.</td>
-            </tr>
-        </table>
-    </div>
-
-    <h2 class="subtitle">Recording demos</h2>
-    <div class="container">
-        <table class="table table-condensed">
-            <tr>
-                <td style="min-width: 260px">record [name]</td>
-                <td>Starts recording the player's inputs generating a demo (.dem) file.</td>
-            </tr>
-            <tr>
-                <td>stop</td>
-                <td>Stops the current demo recording.</td>
-            </tr>
-            <tr>
-                <td>playdemo [name]</td>
-                <td>Replays a recorded demo.</td>
-            </tr>
-            <tr>
-            <td>bind [KEY] "stop; restart_level"</td>
-                <td> Binds a key to stop the current demo and restart the chamber to start a new run. This is useful, because
-                restarting a chamber while recording to a demo called "demo" will create a new demo called "demo_2".
-                A side effect of this is that the chamber loads slightly slower, and because of this you lose about 0.40 seconds. This is prevented by stopping the demo before restarting.
-                </td>
-            </tr>
-            <tr>
-                <td>bind [KEY] "+forward; +remote_view"</td>
-                <td>Binds a key to permanently show your partner view while playing cooperative.
-                This way you don't need to toggle the partner view manually every time the chamber is restarted.
-                </td>
-            </tr>
-            <tr>
-                <td>cl_enable_remote_splitscreen</td>
-                <td>Shows the partner view while replaying a cooperative demo.</td>
-            </tr>
-        </table>
-    </div>
-
-    <h1 class="title">Videos</h1>
-    <div class="container">
-        A popular tool used to convert demo files to nicely looking smooth videos is <a href="https://code.google.com/archive/p/srcdemo2">SrcDemo<sup>2</sup></a>.
+    For rules and console commands, go <a href="https://docs.google.com/document/d/1xzN3vX4en2UCDeB3HPd_3D2zLaVkNsVtiNFyM0qlEXs" target="_blank">here</a>.
     </div>
 
     <h1 class="title">Point calculation</h1>
@@ -300,7 +119,7 @@
                 <th>Language</th>
             </tr>
             <tr>
-                <td><a href="https://github.com/NeKzor/Portal2Boards.Net">Portal2Boards.Net</a></td>
+                <td><a href="https://github.com/NeKzor/Portal2Boards.Net" target="_blank">Portal2Boards.Net</a></td>
                 <td>C#</td>
             </tr>
         </table>
@@ -309,16 +128,16 @@
     <h1 class="title">Hosting</h1>
     <div class="container">
         <p>
-        This site is currently hosted on <a href="https://www.fastcomet.com/">FastComet</a>.
+        This site is currently hosted on <a href="https://www.fastcomet.com/" target="_blank">FastComet</a>.
         </p>
         <p>
-        Demos are stored using <a href="https://www.google.com/drive/">Google Drive</a>.
-        The folder containg all demos can be found <a href="https://drive.google.com/folderview?id=<?=DemoManager::demoFolderId?>&usp=sharing">here</a>.
+        Demos are stored using <a href="https://www.google.com/drive/" target="_blank">Google Drive</a>.
+        The folder containg all demos can be found <a href="https://drive.google.com/folderview?id=<?=DemoManager::demoFolderId?>&usp=sharing" target="_blank">here</a>.
         </p>
     </div>
 
     <h1 class="title">Feature suggestions</h1>
-    <div class="container">Forward any feature suggestions you may have to <a href="/profile/76561198047900528">iVerb</a>.</div>
+    <div class="container">Forward any feature suggestions you may have to <a href="/profile/76561198049848090">NeKz</a> or <a href="/profile/76561198047900528">iVerb</a>.</div>
 </div>
 
 <script>
