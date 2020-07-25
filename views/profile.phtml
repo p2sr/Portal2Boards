@@ -1335,7 +1335,7 @@
                         "</div>" +
                         "<div class='uploadDemoContainer'" + ((entry.hasDemo == 1) ? " style='display:none'" : "") + ">" +
                             "<label class='button browseDemo'>" +
-                                "<input type='file' name='demoFile'/>" +
+                                "<input type='file' name='demoFile' accept='.dem'/>" +
                                 "<span>Browse for demo</span>" +
                             "</label>" +
                             "<div class='fileName'></div>" +
@@ -1380,33 +1380,35 @@
             $changeMenuToggleIcon.attr("class", "fa fa-caret-down");
 
             $changeMenu .find(".button.deleteSubmission").click(function() {
-                var $form = $(this).closest(".changeForm");
-                var $changeRow = $form.closest(".changeEntry");
-                var entry = $changeRow.data();
+                if (confirm("Are you sure you want to delete this submission?")) {
+                    var $form = $(this).closest(".changeForm");
+                    var $changeRow = $form.closest(".changeEntry");
+                    var entry = $changeRow.data();
 
-                var formData = new FormData($form[0]);
-                setStatusProcessing();
-                $.ajax({
-                    url: '/deleteSubmission',
-                    data: formData,
-                    type: 'POST',
-                    success: function (data) {
-                        $changeRow.slideUp("slow", function() {
-                            $changeRow.remove();
-                            setStatusSuccess("Submission deleted.");
-                        });
+                    var formData = new FormData($form[0]);
+                    setStatusProcessing();
+                    $.ajax({
+                        url: '/deleteSubmission',
+                        data: formData,
+                        type: 'POST',
+                        success: function (data) {
+                            $changeRow.slideUp("slow", function() {
+                                $changeRow.remove();
+                                setStatusSuccess("Submission deleted.");
+                            });
 
-                        var index = entries.map(function(e) { return e.id }).indexOf(entry.id);
-                        if (index > -1) {
-                            entries.splice(index, 1);
-                            updateBestScore();
-                        }
+                            var index = entries.map(function(e) { return e.id }).indexOf(entry.id);
+                            if (index > -1) {
+                                entries.splice(index, 1);
+                                updateBestScore();
+                            }
 
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                }, 'json');
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }, 'json');
+                }
             });
 
             $changeMenu.find(".button.setComment").click(function(){
@@ -1620,34 +1622,36 @@
             });
 
             $changeMenu.find(".button.deleteDemo").click(function(){
-                var $deleteButton = $(this);
-                var $form = $(this).closest(".changeForm");
-                var $uploadDemoContainer = $form.find(".uploadDemoContainer");
-                var $demoURL = $form.parent().parent().find(".demo-url a");
-                var $demoURLScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .demo-url a");
+                if (confirm("Are you sure you want to delete this demo?")) {
+                    var $deleteButton = $(this);
+                    var $form = $(this).closest(".changeForm");
+                    var $uploadDemoContainer = $form.find(".uploadDemoContainer");
+                    var $demoURL = $form.parent().parent().find(".demo-url a");
+                    var $demoURLScore = $form.closest(".scoreTableEntry").find(".chamberScoreInfo .demo-url a");
 
-                setStatusProcessing();
-                var formData = new FormData($form[0]);
+                    setStatusProcessing();
+                    var formData = new FormData($form[0]);
 
-                $.ajax({
-                    url: '/deleteDemo',
-                    data: formData,
-                    type: 'POST',
-                    success: function(data) {
-                        $deleteButton.hide();
-                        $uploadDemoContainer.show();
+                    $.ajax({
+                        url: '/deleteDemo',
+                        data: formData,
+                        type: 'POST',
+                        success: function(data) {
+                            $deleteButton.hide();
+                            $uploadDemoContainer.show();
 
-                        if (currentScoreID == entryId) {
-                            $demoURLScore.hide();
-                        }
+                            if (currentScoreID == entryId) {
+                                $demoURLScore.hide();
+                            }
 
-                        $demoURL.hide();
-                        setStatusSuccess("Demo deleted.");
-                    },
-                    cache: false,
-                    contentType: false,
-                    processData: false
-                }, 'json');
+                            $demoURL.hide();
+                            setStatusSuccess("Demo deleted.");
+                        },
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    }, 'json');  
+                }
             });
         }
     }
