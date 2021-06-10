@@ -6,7 +6,7 @@ class Database {
     public static function authorize() {
 
         $auth = json_decode(file_get_contents(ROOT_PATH."/secret/database.json"));
-        $db = new mysqli($auth->host, $auth->user, $auth->password, $auth->database);
+        $db = new mysqli($auth->host, $auth->user, $auth->password, $auth->database, 3306);
 
 
         if ($db->connect_errno) {
@@ -21,7 +21,6 @@ class Database {
     public static function query($query, $resultmode = MYSQLI_STORE_RESULT) {
         if (!isset(self::$instance))
             self::authorize();
-
         $bob = self::$instance->query($query, $resultmode);
         if(!$bob) {
             trigger_error(self::$instance->error);

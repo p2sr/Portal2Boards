@@ -237,31 +237,34 @@ class Router {
                 }
             }
 
-            $data = Database::query("SELECT changelog.profile_number, score, map_id, IFNULL(boardname, steamname) as displayName
-              FROM changelog INNER JOIN usersnew ON (changelog.profile_number = usersnew.profile_number)
-              WHERE changelog.id = '" . $_GET["id"] . "'");
-            $row = $data->fetch_assoc();
-
-            $map = str_replace(" ", "" , $GLOBALS["mapInfo"]["maps"][$row["map_id"]]["mapName"]);
-            $score = str_replace(":", "", Leaderboard::convertToTime($row["score"]));
-            $score = str_replace(".", "", $score);
-            $displayName = preg_replace("/[^A-Za-z0-9]/", '', $row["displayName"]);
-            if (!$displayName) $displayName = $row["profile_number"];
+            // $data = Database::query("SELECT changelog.profile_number, score, map_id, IFNULL(boardname, steamname) as displayName
+            //   FROM changelog INNER JOIN usersnew ON (changelog.profile_number = usersnew.profile_number)
+            //   WHERE changelog.id = '" . $_GET["id"] . "'");
+            // $row = $data->fetch_assoc();
+            
+            // $map = str_replace(" ", "" , $GLOBALS["mapInfo"]["maps"][$row["map_id"]]["mapName"]);
+            // $score = str_replace(":", "", Leaderboard::convertToTime($row["score"]));
+            // $score = str_replace(".", "", $score);
+            // $displayName = preg_replace("/[^A-Za-z0-9]/", '', $row["displayName"]);
+            // if (!$displayName) $displayName = $row["profile_number"];
 
             $demoManager = new DemoManager();
             $demoURL = $demoManager->getDemoURL($_GET["id"]);
 
             if ($demoURL != NULL) {
-                $data = file_get_contents($demoURL);
-                header('Content-Description: File Transfer');
-                header('Content-Type: application/octet-stream');
-                header('Content-Disposition: attachment; filename='.$map."_".$score."_".$displayName.".dem");
-                header('Content-Transfer-Encoding: binary');
-                header('Expires: 0');
-                header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-                header('Pragma: public');
-                header("Content-length: " . strlen($data));
-                echo $data;
+                // $data = file_get_contents($demoURL);
+                // header('Content-Description: File Transfer');
+                // header('Content-Type: application/octet-stream');
+                // header('Content-Disposition: attachment; filename='.$map."_".$score."_".$displayName.".dem");
+                // header('Content-Transfer-Encoding: binary');
+                // header('Expires: 0');
+                // header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+                // header('Pragma: public');
+                // header("Content-length: " . strlen($data));
+                // echo $data;
+                
+                header('Location: ' . $demoURL, true, 303);
+                die();
             } 
             else {
                 echo "Demo URL cannot be resolved";
@@ -548,7 +551,7 @@ class Router {
         if ($location[1] == "changelog") {
 
             if (!$_GET) {
-                $changelogParams = array("maxDaysAgo" => "5");
+                $changelogParams = array("maxDaysAgo" => "7");
             }
             else {
                 $changelogParams = $_GET;
@@ -609,7 +612,6 @@ class Router {
         if ($location[1] == "donators") {
             $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername, donation_amount FROM usersnew WHERE title LIKE 'Donator' ORDER BY CAST(donation_amount AS DECIMAL(9, 2)) DESC");
             $view->donators = array();
-            
             while ($row = $data->fetch_assoc()) {
                 $view->donators[] = $row;
             }

@@ -3,7 +3,8 @@
 class DemoManager {
 
     private $driveService;
-    const demoFolderId = "0B3FgAePoQ2khX3gzc2dlNDdVZm8";
+    // const demoFolderId = "0B3FgAePoQ2khX3gzc2dlNDdVZm8";
+    const demoFolderId = "1CJCPtRpcLV-7wrs-_9pNGqNOtORvqXnC";
 
     public function __construct() {
         $client = new Google_Client();
@@ -15,8 +16,11 @@ class DemoManager {
 
     function getDemoFile($id) {
         $demoName = $this->getDemoName($id);
+
+        //echo $demoName;
+
         $files_list = $this->driveService->files->listFiles(array(
-            "q" => "title='".$demoName."' and mimeType='text/plain' and '".DemoManager::demoFolderId."' in parents"
+            "q" => "title='".$demoName."' and '".DemoManager::demoFolderId."' in parents"
         ))->getItems();
 
         if (count($files_list) > 0) {
@@ -28,7 +32,14 @@ class DemoManager {
     }
 
     function getDemoName($id) {
-        return $id.".dem";
+        // return $id . ".dem"
+
+        $data = Database::query("SELECT changelog.profile_number, score, map_id
+              FROM changelog INNER JOIN usersnew ON (changelog.profile_number = usersnew.profile_number)
+              WHERE changelog.id = '" . $id . "'");
+        $row = $data->fetch_assoc();
+        $map = str_replace(" ", "" , $GLOBALS["mapInfo"]["maps"][$row["map_id"]]["mapName"]);
+        return $map."_".$row["score"]."_".$row["profile_number"].".dem";
     }
 
     function uploadDemo($data, $id) {
@@ -48,7 +59,7 @@ class DemoManager {
         $file->setParents(array($parent));
         $this->driveService->files->insert($file, array(
             'data' => $data,
-            'mimeType' => 'text/plain',
+            'mimeType' => 'application/octet-stream',
             'uploadType' => 'media'
         ));
     }

@@ -42,7 +42,7 @@
 
         <?php $entry = 0 ?>
         <?php foreach($view->wallofshame as $user): ?>
-
+            
             <div class="badUser">
                 <div class="profileIcon">
                         <a href="/profile/<?=$user["profile_number"]; ?>">
@@ -52,7 +52,8 @@
                 <div class="boardname"><a href="/profile/<?= $user["profile_number"]; ?>"><?= $user["playername"] ?></a></div>
                 <br>
             </div>
-
+            
         <?php $entry++; endforeach ?>
     </div>
 </div>
+

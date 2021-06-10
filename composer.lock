@@ -1,23 +1,22 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "4b9b023af3b3139866bedf5ecb95e24a",
-    "content-hash": "9b818cdc9565f7649500bfef6c7b3c2a",
+    "content-hash": "8af06975ad1a60668e639925df575b2f",
     "packages": [
         {
             "name": "google/apiclient",
             "version": "1.0.6-beta",
             "source": {
                 "type": "git",
-                "url": "https://github.com/google/google-api-php-client.git",
+                "url": "https://github.com/googleapis/google-api-php-client.git",
                 "reference": "a41a9dc0662e36420030eaab802dbb1f85459479"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/a41a9dc0662e36420030eaab802dbb1f85459479",
+                "url": "https://api.github.com/repos/googleapis/google-api-php-client/zipball/a41a9dc0662e36420030eaab802dbb1f85459479",
                 "reference": "a41a9dc0662e36420030eaab802dbb1f85459479",
                 "shasum": ""
             },
@@ -50,7 +49,11 @@
             "keywords": [
                 "google"
             ],
-            "time": "2014-09-30 19:33:59"
+            "support": {
+                "issues": "https://github.com/googleapis/google-api-php-client/issues",
+                "source": "https://github.com/googleapis/google-api-php-client/tree/1.0.6-beta"
+            },
+            "time": "2014-09-30T19:33:59+00:00"
         },
         {
             "name": "tedivm/stash",
@@ -104,7 +107,11 @@
                 "redis",
                 "sessions"
             ],
-            "time": "2015-01-17 07:51:57"
+            "support": {
+                "issues": "https://github.com/tedious/Stash/issues",
+                "source": "https://github.com/tedious/Stash/tree/master"
+            },
+            "time": "2015-01-17T07:51:57+00:00"
         }
     ],
     "packages-dev": [],
@@ -115,6 +122,13 @@
     },
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
-    "platform-dev": []
+    "platform": {
+        "ext-mysqli": "*",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-simplexml": "*",
+        "ext-libxml": "*"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }

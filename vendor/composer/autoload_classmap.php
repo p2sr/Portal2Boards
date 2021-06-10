@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
     'Google_Auth_Abstract' => $vendorDir . '/google/apiclient/src/Google/Auth/Abstract.php',
     'Google_Auth_AppIdentity' => $vendorDir . '/google/apiclient/src/Google/Auth/AppIdentity.php',
     'Google_Auth_AssertionCredentials' => $vendorDir . '/google/apiclient/src/Google/Auth/AssertionCredentials.php',

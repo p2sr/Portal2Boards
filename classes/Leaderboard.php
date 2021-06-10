@@ -35,6 +35,9 @@ class Leaderboard
         //Debug::log("Start caching scores");
         $SPChamberBoard = self::getBoard(array("mode" => "0"));
         $COOPChamberBoard = self::getBoard(array("mode" => "1"));
+
+        echo json_encode($SPChamberBoard);
+
         Cache::set("SPChamberBoard", $SPChamberBoard);
         Cache::set("COOPChamberBoard", $COOPChamberBoard);
         $fullBoard = $SPChamberBoard + $COOPChamberBoard; //TODO: may cause chapter id collisions if data would be organized by mode
@@ -194,7 +197,7 @@ class Leaderboard
         return $time;
     }
 
-    protected static function getNewScoresLegacy($rankLimits = array())
+    public static function getNewScoresLegacy($rankLimits = array())
     {
         $curl_master = curl_multi_init();
         $curl_handles = array();
@@ -290,7 +293,7 @@ class Leaderboard
         return $data;
     }
 
-    protected static function getNewScores($rankLimits = array())
+    public static function getNewScores($rankLimits = array())
     {
         $leaderboard = array();
         $xml_total = 0;
@@ -303,7 +306,7 @@ class Leaderboard
         foreach ($rankLimits as $mapID => $amount) {
 
             $handle = curl_init();
-            curl_setopt($handle, CURLOPT_URL, "http://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
+            curl_setopt($handle, CURLOPT_URL, "https://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
             curl_setopt($handle, CURLOPT_FRESH_CONNECT, TRUE);
             curl_setopt($handle, CURLOPT_HEADER, 0);
             curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
@@ -386,7 +389,7 @@ class Leaderboard
         return $leaderboard;
     }
 
-    protected static function saveScores($newScores, $oldBoards)
+    public static function saveScores($newScores, $oldBoards)
     {
         $maps = self::getMaps();
         $changes = array();
@@ -507,6 +510,7 @@ class Leaderboard
                 ];
                 Discord::sendWebhook($data);
             }
+
             $updates++;
         }
 
@@ -516,6 +520,7 @@ class Leaderboard
             $postRank = isset($newBoards[$chapter][$change["mapId"]][$change["profileNumber"]])
                 ? $newBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["playerRank"]
                 : "NULL";
+            $requires_verification = $postRank <= 25;
 
             Debug::log("Updating rank of new changelog entry. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]." Rank: ".$postRank);
             Database::query("UPDATE changelog SET post_rank = ".$postRank." WHERE id = ". $id);
@@ -674,7 +679,7 @@ class Leaderboard
         }
         $whereClause = "";
         if ($param['maxDaysAgo'] != "") {
-            $whereClause = "time_gained > DATE_SUB(NOW(), INTERVAL ".$param['maxDaysAgo']." DAY) AND ";
+            $whereClause = "time_gained > DATE_SUB(CONCAT(CURDATE(), ' ', '00:00:00'), INTERVAL ".$param['maxDaysAgo']." DAY) AND ";
         }
         
         if ($param['yt'] != "") {
@@ -718,7 +723,6 @@ class Leaderboard
 
         $changelog = array();
         while ($row = $changelog_data->fetch_assoc()) {
-
             $row["player_name"] = htmlspecialchars($row["player_name"]);
             $row["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
 
@@ -1158,17 +1162,17 @@ class Leaderboard
         if ($wr) {
             $user = new User($profileNumber);
             $data = [
-                'id' => $id,
-                'timestamp' => new DateTime(),
-                'map_id' => $chamber,
-                'player_id' => $profileNumber,
-                'player' => $user->userData->displayName,
-                'player_avatar' => $user->userData->avatar,
-                'map' => $maps["maps"][$chamber]["mapName"],
-                'score' => Util::formatScoreTime($score),
-                'wr_diff' => Util::formatScoreTime($diff),
-                'comment' => $comment,
-                'yt' => $youtubeID
+               'id' => $id,
+               'timestamp' => new DateTime(),
+               'map_id' => $chamber,
+               'player_id' => $profileNumber,
+               'player' => $user->userData->displayName,
+               'player_avatar' => $user->userData->avatar,
+               'map' => $maps["maps"][$chamber]["mapName"],
+               'score' => Util::formatScoreTime($score),
+               'wr_diff' => Util::formatScoreTime($diff),
+               'comment' => $comment,
+               'yt' => $youtubeID
             ];
             Discord::sendWebhook($data);
         }

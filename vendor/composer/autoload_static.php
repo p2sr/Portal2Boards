@@ -21,6 +21,7 @@ class ComposerStaticInitf97b5364de0ff918f61d032bbd95b08c
     );
 
     public static $classMap = array (
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Google_Auth_Abstract' => __DIR__ . '/..' . '/google/apiclient/src/Google/Auth/Abstract.php',
         'Google_Auth_AppIdentity' => __DIR__ . '/..' . '/google/apiclient/src/Google/Auth/AppIdentity.php',
         'Google_Auth_AssertionCredentials' => __DIR__ . '/..' . '/google/apiclient/src/Google/Auth/AssertionCredentials.php',

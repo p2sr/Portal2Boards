@@ -1,2 +1,14 @@
 .idea/
 secret/
+sessions/
+vendor/
+secret/client_secret.json
+secret/credentials.json
+secret/database.json
+secret/discord.json
+secret/steam_api_key.json
+secret/client_secret.json
+secret/credentials.json
+secret/database.json
+secret/discord.json
+secret/steam_api_key.json

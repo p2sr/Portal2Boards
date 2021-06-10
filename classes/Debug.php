@@ -5,7 +5,7 @@ DEFINE('DEBUG_FILENAME', ROOT_PATH . '/debug.txt');
 class Debug
 {
     static $loggingToOutput = false;
-    static $loggingToFile = false;
+    static $loggingToFile = true;
 
     public static function initializeFileLogging() {
         self::$loggingToFile = true;

@@ -1,9 +1,6 @@
 <?php
-
 class Discord {
-
     const API = 'https://discordapp.com/api/v6';
-
     private static $id;
     private static $token;
     private static $username;
@@ -18,6 +15,7 @@ class Discord {
         self::$avatar = 'https://raw.githubusercontent.com/iVerb1/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
         self::$embed_icon = 'https://raw.githubusercontent.com/iVerb1/Portal2Boards/master/public/images/portal2boards_icon.png';
     }
+
     public static function sendWebhook($data) {
         $embed = self::buildEmbed($data);
         $payload = [
@@ -35,10 +33,11 @@ class Discord {
         curl_exec($ch);
         curl_close($ch);
     }
+
     public static function buildEmbed($data) {
         $embed = [
             'title' => 'New Portal 2 World Record',
-            'url' => 'https://board.iverb.me',
+            'url' => 'https://board.portal2.sr',
             'color' => 295077,
             'timestamp' => $data['timestamp']->format('Y-m-d\TH:i:s.u\Z'),
             'footer' => [
@@ -46,11 +45,11 @@ class Discord {
                 'text' => 'board.iverb.me'
             ],
             'image' => [
-                'url' => 'https://board.iverb.me/images/chambers_full/'.$data['map_id'].'.jpg'
+                'url' => 'https://board.portal2.sr/images/chambers_full/'.$data['map_id'].'.jpg'
             ],
             'author' => [
                 'name' => $data['player'],
-                'url' => 'https://board.iverb.me/profile/'.$data['player_id'],
+                'url' => 'https://board.portal2.sr/profile/'.$data['player_id'],
                 'icon_url' => $data['player_avatar']
             ],
             'fields' => [
@@ -76,7 +75,7 @@ class Discord {
                 ],
                 [
                     'name' => 'Demo File',
-                    'value' => '[Download](https://board.iverb.me/getDemo?id='.$data['id'].')',
+                    'value' => '[Download](https://board.portal2.sr/getDemo?id='.$data['id'].')',
                     'inline' => true
                 ]
             ]
@@ -95,11 +94,12 @@ class Discord {
                 'inline' => false
             ]);
         }
+        
         return (object)$embed;
     }
+
     public static function sanitiseText($text) {
         return preg_replace('/(\\*|_|`|~)/miu', '\\\\$1', $text);
     }
 }
-
 Discord::init();

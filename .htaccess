@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+
+RewriteEngine On
+RewriteBase /
+
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^.*$ ./index.php
+RewriteRule ^(classes/|data/|views/|vendor/|util/|sessions/|secret/|sessions/) - [R=404,L,NC]
+RewriteRule ^(api|api/)$ - [R=404,L,NC]
+
+<FilesMatch "\.(|jpg|jpeg|png|ico|eot|svg|ttf|wolf)$">
+  Header set Cache-Control "max-age=86400"
+</FilesMatch>
