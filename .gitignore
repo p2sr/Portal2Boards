@@ -12,3 +12,4 @@ secret/credentials.json
 secret/database.json
 secret/discord.json
 secret/steam_api_key.json
+debug.txt

@@ -105,6 +105,7 @@ class Router {
         //TODO: don't flush connection but rather give a more refined status update to client which can then follow up by polling the back end for successful upload
         //TODO: You could also just don't flush and hope the backend finishes in an acceptable time
         if ($location[1] == "uploadDemo") {
+            echo "Uploading Demo";
 
             header('Connection: close');
             header('Content-Length: 0');
@@ -117,7 +118,7 @@ class Router {
                 }
 
                 $change = Leaderboard::getChange($_POST["id"]);
-
+                echo "Uploading Demo to id: ".$_POST["id"];
                 if (SteamSignIn::hasProfilePrivileges($change["profile_number"])) {
                     if (array_key_exists("demoFile", $_FILES)) {
                         $file = $_FILES["demoFile"];
@@ -220,7 +221,7 @@ class Router {
                 if (SteamSignIn::hasProfilePrivileges($change["profile_number"])) {
                     $demoManager = new DemoManager();
                     $demoManager->deleteDemo($_POST["id"]);
-                    Leaderboard::setDemo($_POST["id"], false);
+                    Leaderboard::setDemo($_POST["id"], 0);
                 }
             }
             else {
@@ -551,7 +552,7 @@ class Router {
         if ($location[1] == "changelog") {
 
             if (!$_GET) {
-                $changelogParams = array("maxDaysAgo" => "7");
+                $changelogParams = array("maxDaysAgo" => "7", "pending" => "1");
             }
             else {
                 $changelogParams = $_GET;
@@ -707,7 +708,7 @@ class Router {
         if ($file["size"] < self::maxUploadBytes) {
             $data = file_get_contents($file["tmp_name"]);
             $demoManager->uploadDemo($data, $id);
-            Leaderboard::setDemo($id, true);
+            Leaderboard::setDemo($id, 1);
             return true;
         }
         else {
@@ -728,7 +729,8 @@ class Router {
         , "yt" => ""
         , "maxDaysAgo" => ""
         , "submission" => ""
-        , "banned" => "");
+        , "banned" => ""
+        , "pending" => "1");
 
         $changelog_post = array();
         foreach ($params as $key => $val) {

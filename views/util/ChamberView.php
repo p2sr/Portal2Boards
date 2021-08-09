@@ -61,6 +61,12 @@ class ChamberView
                     </i>
                 <?php endif; ?>
             </div>
+            <div class="pending">
+                <?php if ($scoreData["pending"] == 1): ?>
+                    <i class="fa fa-hourglass-end" aria-hidden="true">
+                    </i>
+                <?php endif; ?>
+            </div>
         </div>
         <?php
     }

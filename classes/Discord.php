@@ -94,7 +94,6 @@ class Discord {
                 'inline' => false
             ]);
         }
-        
         return (object)$embed;
     }
 
