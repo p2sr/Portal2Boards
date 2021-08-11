@@ -95,11 +95,11 @@ class ChangelogView
                     <i class="fa fa-pencil" aria-hidden="true" data-toggle="tooltip" title="Submission"></i>
                 <?php endif; ?>
             </div>
+            <?php if ($val["pending"] == 1): ?>
             <div class="submission">
-                <?php if ($val["pending"] == 1): ?>
-                    <i class="fa fa-hourglass" aria-hidden="true" data-toggle="tooltip" title="Pending - evidence required"></i>
-                <?php endif; ?>
+                <i class="fa fa-hourglass" aria-hidden="true" data-toggle="tooltip" title="Pending - evidence required"></i>
             </div>
+            <?php endif; ?>
             <div class="banScore" >
                 <?php if (SteamSignIn::loggedInUserIsAdmin()): ?>
                     <div class="setBannedStatus unban" style="<?php if ($val["banned"] == 0): ?> display: none <?php endif; ?>">
@@ -115,11 +115,6 @@ class ChangelogView
                             <i class="fa fa-exclamation-triangle" aria-hidden="true" data-toggle="tooltip" title="Banned"></i>
                         </div>
                     <?php endif; ?>
-                <?php endif; ?>
-            </div>
-            <div class="banScore" >
-                <?php if (SteamSignIn::loggedInUserIsAdmin()): ?>
-                    <div class="rank"><?=$val["id"]?></div>
                 <?php endif; ?>
             </div>
         </div>
