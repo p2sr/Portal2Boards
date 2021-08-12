@@ -674,7 +674,7 @@ class Leaderboard
         , "submission" => ""
         , "maxDaysAgo" => "", "hasDate" => ""
         , "id" => ""
-        , "pending" => "1");
+        , "pending" => "2");
 
         foreach ($parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
@@ -698,7 +698,17 @@ class Leaderboard
         $whereClause3 = ($param["wr"] != "") ? "wr_gain = '{$param["wr"]}' AND " : "";
         $whereClause4 = ($param["banned"] != "") ? "banned = '{$param["banned"]}' AND " : "";
         $whereClause5 = ($param["id"] != "") ? "id = '{$param["id"]}' AND " : "";
-        $whereClause6 = ($param["pending"] != "") ? "pending >= 0 AND " : "pending = 0 AND ";
+
+        if($param["pending"] != ""){
+            if ($param['pending'] == "0") // None Pending
+                $whereClause6 = "pending = 0 AND ";
+            if ($param['pending'] == "1") // Just Pending
+                $whereClause6 = "pending = 1 AND ";
+            if ($param['pending'] == "2") // Both Pending and none Pending
+                $whereClause6 = "pending >= 0 AND ";
+        }else{
+            $whereClause6 = "pending >= 0 AND ";
+        }
 
         $changelog_data = Database::query("SELECT IFNULL(usersnew.boardname, usersnew.steamname) AS player_name, usersnew.avatar, ch.profile_number,
                                             ch.score, ch.id, ch.pre_rank, ch.post_rank, ch.wr_gain, ch.time_gained, ch.has_demo as hasDemo, ch.youtube_id as youtubeID, ch.note,

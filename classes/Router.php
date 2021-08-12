@@ -552,7 +552,7 @@ class Router {
         if ($location[1] == "changelog") {
 
             if (!$_GET) {
-                $changelogParams = array("maxDaysAgo" => "7", "pending" => "1");
+                $changelogParams = array("maxDaysAgo" => "7", "pending" => "2");
             }
             else {
                 $changelogParams = $_GET;
@@ -730,7 +730,7 @@ class Router {
         , "maxDaysAgo" => ""
         , "submission" => ""
         , "banned" => ""
-        , "pending" => "1");
+        , "pending" => "");
 
         $changelog_post = array();
         foreach ($params as $key => $val) {
