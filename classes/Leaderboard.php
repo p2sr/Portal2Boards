@@ -1032,7 +1032,7 @@ class Leaderboard
     public static function setDemo($changelogId, $hasDemo) {
         Debug::log("Setting Demo for changelog id: ".$changelogId);
         $change = self::getChange($changelogId);
-        $pending = $hasDemo ? 0 : self::isPendingRequired($changelogId);
+        $pending = $hasDemo ? 0 : self::isPendingRequired($changelogId, isset($change['youtubeID']) ? 1 : 0);
         $profile_number = $change['profile_number'];
         $map_id = $change['mapid'];
 
@@ -1301,6 +1301,11 @@ class Leaderboard
         Debug::log($video);
         // if video or demo required
         if($video == 1){
+            // Check if demo is there
+            if($result['hasDemo']){
+                return 0;
+            }
+
             $videoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
                 return ($var['video'] == true && $var['timestamp'] < $dateTime && isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true);
             });
