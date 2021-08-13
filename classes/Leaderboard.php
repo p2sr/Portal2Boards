@@ -1069,7 +1069,7 @@ class Leaderboard
 
     public static function deleteYoutubeID($changelogId) {
         $change = self::getChange($changelogId);
-        $pending = self::isPendingRequired($changelogId, 1);
+        $pending = self::isPendingRequired($changelogId, 1, 1);
         $profile_number = $change['profile_number'];
         $map_id = $change['mapid'];
 
@@ -1098,7 +1098,7 @@ class Leaderboard
                         WHERE changelog.id = '{$changelogId}'");
         }
 
-        if(self::isLatest($profile_number, $map_id, $changelogId)){
+        if(self::isLatest($profile_number, $map_id, $changelogId) && $pending != 1){
             // TODO - Check on removed if we need to go back to old value and sent as pending
             self::setScoreTable($profile_number, $map_id, $changelogId);
         }
@@ -1169,16 +1169,19 @@ class Leaderboard
 
     public static function submitChange($profileNumber, $chamber, $score, $youtubeID, $comment)
     {
+        Debug::log("Starting Submit Change");
         $maps = Cache::get("maps");
         $chapter = $maps["maps"][$chamber]["chapterId"];
 
         $oldBoards = self::getBoard(array("chamber" => $chamber));
         $oldChamberBoard = $oldBoards[$chapter][$chamber];
 
+        Debug::log("Checking if WR");
         $wr = 0;
         $diff = 0;
         $keys = array_keys($oldChamberBoard);
         if ($score <= $oldChamberBoard[$keys[0]]["scoreData"]["score"]) {
+            Debug::log("WR = TRUE");
             $wr = 1;
             $diff = abs($score - $oldChamberBoard[$keys[0]]["scoreData"]["score"]);
         }
@@ -1191,12 +1194,13 @@ class Leaderboard
             ? $oldChamberBoard[$profileNumber]["scoreData"]["changelogId"]
             : "NULL";
 
-        Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission, note)
-              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1, '".$comment."')
+        Debug::log("Submissting change to Change LOG");
+        Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission, note, pending)
+              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1,'".$comment."', 1)
             ");
 
         $id = Database::getMysqli()->insert_id;
-        self::setScoreTable($profileNumber, $chamber, $id);
+        //self::setScoreTable($profileNumber, $chamber, $id);
 
         $newBoards = self::getBoard(array("chamber" => $chamber));
         $newChamberBoard = $newBoards[$chapter][$chamber];
@@ -1205,32 +1209,12 @@ class Leaderboard
             ? $newChamberBoard[$profileNumber]["scoreData"]["playerRank"]
             : "NULL";
 
-        // TODO - PENDING shit
-
+        Debug::log("Updating post rank");
         Database::query("UPDATE changelog
             SET post_rank = ".$postRank."
             WHERE id = ". $id);
 
-        self::setYoutubeID($id, $youtubeID, $profileNumber, $chamber, $id, false);
-
-        if ($wr) {
-            $user = new User($profileNumber);
-            $data = [
-               'id' => $id,
-               'timestamp' => new DateTime(),
-               'map_id' => $chamber,
-               'player_id' => $profileNumber,
-               'player' => $user->userData->displayName,
-               'player_avatar' => $user->userData->avatar,
-               'map' => $maps["maps"][$chamber]["mapName"],
-               'score' => Util::formatScoreTime($score),
-               'wr_diff' => Util::formatScoreTime($diff),
-               'comment' => $comment,
-               'yt' => $youtubeID
-            ];
-            Discord::sendWebhook($data);
-        }
-
+        self::setYoutubeID($id, $youtubeID);
         return $id;
     }
 
@@ -1300,38 +1284,81 @@ class Leaderboard
         return $evidenceRequirments;
     }
 
-    private static function isPendingRequired($changeLogId, $video = 0){
+    private static function isPendingRequired($changeLogId, $video = 0, $removed = 0){
         // Getting change log data
         $result = self::getChange($changeLogId);
-
         // Getting requirements (Old/inactive as well)
         $requirements = self::getEvidenceRequirments(false);
         $dateTime = $result['time_gained'];
-        Debug::log($dateTime);
-        Debug::log($video);
+
         // if video or demo required
         if($video == 1){
-            // Check if demo is there
+            // Check if demo exists for changelog
             if($result['hasDemo']){
+                // Demo exists therefore pending = false
                 return 0;
             }
 
+            // Check if video is inbetween demo and video
+            // If below demo requirement then pending = true
+            // If below video requirement then pending = false
+            // If below video requirement and video has been removed then pending = true
+            // If above video requirement then pending = false
+
+            // Getting Highest video requirement
             $videoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
-                return ($var['video'] == true && $var['timestamp'] < $dateTime && isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true);
+                if($var['video'] == 1){
+                    if($var['timestamp'] < $dateTime & isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true){
+                        return true;
+                    }
+                }
+                return false;
             });
-            $oldestTS = max(array_column($videoBeforeDate, 'rank'));
-            Debug::log($oldestTS." > ".$result['post_rank']);
-            return $oldestTS >= $result['post_rank'] ? 1 : 0;
+
+            $videoRequirement = max(array_column($videoBeforeDate, 'rank'));
+            Debug::log("Video Requirement: ".$videoRequirement." > ".$result['post_rank']);
+
+            // Getting Highest Demo Requirement
+            $demoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
+                if($var['demo'] == 1 && $var['video'] == 0){
+                    Debug::log("Demo Only");
+                    if($var['timestamp'] < $dateTime & isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true){
+                        return true;
+                    }
+                }
+                return false;
+            });
+            $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
+            Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
+
+            if($videoRequirement >= $result['post_rank']){
+                // Rank under video requirement
+                if($demoRequirement >= $result['post_rank']){
+                    // Rank under Demo Requirement
+                    return 1;
+                }
+                if($removed == 1){
+                    // Video Removed
+                    return 1;
+                }
+            }
+            return 0;
         }
 
-        // if demo required
+        // Getting Highest Demo Requirement
         $demoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
-            Debug::log($var['timestamp'] .' < '. $dateTime.' > '.(isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true));
-            return ($var['demo'] == true && $var['timestamp'] < $dateTime && isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true);
+            if($var['demo'] == 1 && $var['video'] == 0){
+                Debug::log("Demo Only");
+                if($var['timestamp'] < $dateTime & isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true){
+                    return true;
+                }
+            }
+            return false;
         });
-        $oldestTS = max(array_column($demoBeforeDate, 'rank'));
-        Debug::log($oldestTS." > ".$result['post_rank']);
-        return $oldestTS >= $result['post_rank'] ? 1 : 0;
+        $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
+        Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
+
+        return $demoRequirement >= $result['post_rank'] ? 1 : 0;
     }
 
     private static function setScoreTable($profileNumber, $chamber, $id){
