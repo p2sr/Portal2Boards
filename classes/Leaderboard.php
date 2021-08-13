@@ -1057,8 +1057,8 @@ class Leaderboard
         if(self::isLatest($profile_number, $map_id, $changelogId) && $hasDemo == 1){
             // TODO - Check on removed if we need to go back to old value and sent as pending
             Debug::log("Is latest");
-            self::setScoreTable($profile_number, $map_id, $changelogId);
             self::wrCheck($changelogId);
+            self::setScoreTable($profile_number, $map_id, $changelogId);
         }
         if($hasDemo == 0){
             // setting back to last non pending score
