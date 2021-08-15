@@ -1200,7 +1200,7 @@ class Leaderboard
             ");
 
         $id = Database::getMysqli()->insert_id;
-        //self::setScoreTable($profileNumber, $chamber, $id);
+        self::setScoreTable($profileNumber, $chamber, $id);
 
         $newBoards = self::getBoard(array("chamber" => $chamber));
         $newChamberBoard = $newBoards[$chapter][$chamber];
@@ -1211,9 +1211,11 @@ class Leaderboard
 
         Debug::log("Updating post rank");
         Database::query("UPDATE changelog
-            SET post_rank = ".$postRank."
+            SET post_rank = ".$postRank.",
+            pending = 1
             WHERE id = ". $id);
 
+        self::resolveScore($profileNumber, $chamber);
         self::setYoutubeID($id, $youtubeID);
         return $id;
     }
