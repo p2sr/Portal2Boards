@@ -1,6 +1,6 @@
 <?php
 class Discord {
-    const API = 'https://discordapp.com/api/v6';
+    const API = 'https://discordapp.com/api';
     private static $id;
     private static $token;
     private static $username;
@@ -12,11 +12,12 @@ class Discord {
         self::$id = $secret->id;
         self::$token = $secret->token;
         self::$username = 'Portal2Boards';
-        self::$avatar = 'https://raw.githubusercontent.com/iVerb1/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
-        self::$embed_icon = 'https://raw.githubusercontent.com/iVerb1/Portal2Boards/master/public/images/portal2boards_icon.png';
+        self::$avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
+        self::$embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
     }
 
     public static function sendWebhook($data) {
+        Debug::log("Sending Webhook - Building embed");
         $embed = self::buildEmbed($data);
         $payload = [
             'username' => self::$username,
@@ -26,12 +27,15 @@ class Discord {
         $post = [
             'payload_json' => json_encode($payload)
         ];
+        Debug::log(json_encode($payload));
         $ch = curl_init(Discord::API.'/webhooks/'.self::$id.'/'.self::$token);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'board.iverb.me (https://github.com/iVerb1/Portal2Boards)');
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // DEV TESTING
+        curl_setopt($ch, CURLOPT_USERAGENT, 'board.portal2.sr (https://github.com/p2sr/Portal2Boards)');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
         curl_exec($ch);
         curl_close($ch);
+        Debug::log("Sending Webhook - Finished");
     }
 
     public static function buildEmbed($data) {
@@ -42,7 +46,7 @@ class Discord {
             'timestamp' => $data['timestamp']->format('Y-m-d\TH:i:s.u\Z'),
             'footer' => [
                 'icon_url' => self::$embed_icon,
-                'text' => 'board.iverb.me'
+                'text' => 'board.portal2.sr'
             ],
             'image' => [
                 'url' => 'https://board.portal2.sr/images/chambers_full/'.$data['map_id'].'.jpg'
@@ -55,7 +59,7 @@ class Discord {
             'fields' => [
                 [
                     'name' => 'Map',
-                    'value' => $data['map'],
+                    'value' => '['.$data['map'].'](https://board.portal2.sr/chamber/'.$data['map_id'].')',
                     'inline' => true
                 ],
                 [
@@ -65,7 +69,7 @@ class Discord {
                 ],
                 [
                     'name' => 'Player',
-                    'value' => self::sanitiseText($data['player']),
+                    'value' => '['.self::sanitiseText($data['player']).'](https://board.portal2.sr/profile/'.$data['player_id'].')',
                     'inline' => true
                 ],
                 [
@@ -94,7 +98,6 @@ class Discord {
                 'inline' => false
             ]);
         }
-        
         return (object)$embed;
     }
 

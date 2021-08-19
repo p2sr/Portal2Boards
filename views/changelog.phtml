@@ -82,6 +82,11 @@
                     <div class="checkbox <?php if($param['submission'] == "1"): ?>ticked<?php endif; ?>"></div>
                     <input type="hidden" value="<?=$param['submission'];?>" name="submission">
                 </div>
+                <div style="float: left;" class="check">
+                    <div style="position: relative;">Pending</div>
+                    <div class="checkbox <?php if($param['pending'] == "1"): ?>ticked<?php endif; ?>"></div>
+                    <input type="hidden" value="<?php if($param['pending'] == "1"): ?>2<?php endif; ?>" name="pending">
+                </div>
                 <!--                <div style="float: left; display: none" class="number">-->
                 <!--                    <label class="top" style="position: relative;">Max days ago</label>-->
                 <!--					<label class="bottom" style="position: relative;">Unlimited: 0</label>-->
@@ -130,6 +135,7 @@
                 <div class="improvement">Improvement</div>
                 <div class="demo-url"></div>
                 <div class="youtube"></div>
+                <div class="submission"></div>
                 <div class="submission"></div>
                 <div class="banScore"><?php if (SteamSignIn::loggedInUserIsAdmin()): ?><?php endif; ?></div>
             </div>

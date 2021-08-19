@@ -10,7 +10,13 @@ class Leaderboard
     {
         Debug::log("Start retrieving rank limits per chamber");
         $rankLimits = self::getRankLimits($chamber);
+        Debug::log($rankLimits);
         Debug::log("Finished retrieving rank limits per chamber");
+
+        Debug::log("Start retrieving evidence requirements");
+        $evidenceRequirments = self::getEvidenceRequirments();
+        Debug::log($evidenceRequirments);
+        Debug::log("Finished retrieving evidence requirements");
 
         Debug::log("Receiving new leaderboard data");
         $newBoardData = self::getNewScores($rankLimits);
@@ -18,7 +24,7 @@ class Leaderboard
 
         if (!empty($newBoardData)) {
             $oldBoards = self::getBoard(array("chamber" => $chamber));
-            self::saveScores($newBoardData, $oldBoards);
+            self::saveScores($newBoardData, $oldBoards, $evidenceRequirments);
         }
     }
 
@@ -33,8 +39,8 @@ class Leaderboard
         $maps = Cache::get("maps");
 
         //Debug::log("Start caching scores");
-        $SPChamberBoard = self::getBoard(array("mode" => "0"));
-        $COOPChamberBoard = self::getBoard(array("mode" => "1"));
+        $SPChamberBoard = self::getBoard(array("mode" => "0", "pending" => "0"));
+        $COOPChamberBoard = self::getBoard(array("mode" => "1", "pending" => "0"));
 
         echo json_encode($SPChamberBoard);
 
@@ -389,10 +395,11 @@ class Leaderboard
         return $leaderboard;
     }
 
-    public static function saveScores($newScores, $oldBoards)
+    public static function saveScores($newScores, $oldBoards, $evidenceRequirments)
     {
         $maps = self::getMaps();
         $changes = array();
+        $highestEvidenceRank = max(array_column($evidenceRequirments, 'rank'));
 
         Debug::log("Saving new leaderboard data");
         $db_data = Database::query("SELECT id, profile_number, score, map_id FROM changelog");
@@ -484,46 +491,42 @@ class Leaderboard
               VALUES (NULL, '" . $change["profileNumber"] . "','" . $change["score"] . "','" . $change["mapId"] . "','" . $wr . "', ". $previousId .", ".$preRank.")
             ");
 
+
             $id = Database::getMysqli()->insert_id;
             $changes[$id] = $change;
 
             Database::query("INSERT IGNORE INTO scores(profile_number, map_id, changelog_id)
-              VALUES ('" . $change["profileNumber"] . "','" . $change["mapId"] . "', ".$id.")
-            ");
+                  VALUES ('" . $change["profileNumber"] . "','" . $change["mapId"] . "', ".$id.")
+                ");
 
             Database::query("UPDATE scores
-              SET changelog_id = ".$id."
-              WHERE profile_number = ". $change["profileNumber"] . " AND map_id = " . $change["mapId"]);
-
-            if ($wr) {
-                $user = new User($change["profileNumber"]);
-                $data = [
-                    'id' => $id,
-                    'timestamp' => new DateTime(),
-                    'map_id' => $change["mapId"],
-                    'player_id' => $user->profileNumber,
-                    'player' => $user->userData->displayName,
-                    'player_avatar' => $user->userData->avatar,
-                    'map' => $maps["maps"][$change["mapId"]]["mapName"],
-                    'score' => Util::formatScoreTime($change["score"]),
-                    'wr_diff' => Util::formatScoreTime($diff)
-                ];
-                Discord::sendWebhook($data);
-            }
-
+                    SET changelog_id = ".$id."
+                    WHERE profile_number = ". $change["profileNumber"] . " AND map_id = " . $change["mapId"]);
             $updates++;
         }
 
         $newBoards = self::getBoard();
+        Debug::log("Highest Evidence Rank: ".$highestEvidenceRank);
         foreach ($changes as $id => $change) {
+            Debug::log("Updating change for id: ".$id);
             $chapter = $maps["maps"][$change["mapId"]]["chapterId"];
             $postRank = isset($newBoards[$chapter][$change["mapId"]][$change["profileNumber"]])
                 ? $newBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["playerRank"]
                 : "NULL";
-            $requires_verification = $postRank <= 25;
 
-            Debug::log("Updating rank of new changelog entry. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]." Rank: ".$postRank);
-            Database::query("UPDATE changelog SET post_rank = ".$postRank." WHERE id = ". $id);
+            $pending = 0;
+            if($postRank != "NULL" && $postRank <= $highestEvidenceRank){
+                $pending = 1;
+            }
+
+            Debug::log("Pending: ".$pending);
+            Debug::log("Updating rank of new changelog entry. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]." Rank: ".$postRank." Pending: ".$pending);
+            Database::query("UPDATE changelog SET post_rank = ".$postRank.", pending = ".$pending." WHERE id = ". $id);
+
+            if($pending){
+                Debug::log("Reseting resolved score back to previous value");
+                self::resolveScore($change["profileNumber"], $change["mapId"]);
+            }
         }
 
         Debug::log("Finished saving changelog entries");
@@ -586,7 +589,7 @@ class Leaderboard
     //TODO: remove indexing by chapter id. Chamber id is sufficient.
     public static function getBoard($parameters = array())
     {
-        $param = array("chamber" => "" , "mode" => "");
+        $param = array("chamber" => "" , "mode" => "", "pending" => "1");
 
         foreach ($parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
@@ -598,25 +601,25 @@ class Leaderboard
         $query = Database::query("SELECT ranks.profile_number, u.avatar, IFNULL(u.boardname, u.steamname) as boardname,
                 chapters.id as chapterid, maps.steam_id as mapid,
                 ranks.profile_number, ranks.changelog_id, ranks.score, ranks.player_rank, ranks.score_rank, ranks.time_gained as date, has_demo, youtube_id, ranks.note,
-                ranks.submission
+                ranks.submission, ranks.pending
             FROM usersnew as u
             JOIN (
-                SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note,
+                SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note, sc.pending,
                 IF( @prevMap <> sc.map_id, @rownum := 1,  @rownum := @rownum + 1 ) as rowNum,
                 IF( @prevMap <> sc.map_id, @displayRank := 1,  IF( @prevScore <> sc.score, @displayRank := @rownum,  @displayRank ) ) AS player_rank,
                 IF( @prevMap <> sc.map_id, @rank := 1,  IF( @prevScore <> sc.score, @rank := @rank + 1,  @rank ) ) AS score_rank,
                 @prevMap := sc.map_id, @prevScore := sc.score
                 FROM (
-                    SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note
+                    SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note, changelog.pending 
                     FROM scores
                     INNER JOIN changelog ON (scores.changelog_id = changelog.id)
                     WHERE scores.profile_number IN (SELECT profile_number FROM usersnew WHERE banned = 0)
-                    AND scores.map_id IN (
-                      SELECT steam_id
-                      FROM maps
-                      WHERE is_coop LIKE '%{$param["mode"]}%' AND steam_id LIKE '%{$param["chamber"]}'
-                    )
-                    AND changelog.banned = '0'
+                        AND scores.map_id IN (
+                          SELECT steam_id
+                          FROM maps
+                          WHERE is_coop LIKE '%{$param["mode"]}%' AND steam_id LIKE '%{$param["chamber"]}'
+                        )
+                        AND changelog.banned = '0'
                 ) as sc
                 JOIN (SELECT @rownum := NULL, @prevMap := 0, @prevScore := 0) AS r
                 ORDER BY sc.map_id, sc.score, sc.time_gained, sc.profile_number ASC
@@ -640,6 +643,7 @@ class Leaderboard
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["date"] = $row["date"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["hasDemo"] = $row["has_demo"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["youtubeID"] = $row["youtube_id"];
+            $board[$chapterId][$mapId][$profileNumber]["scoreData"]["pending"] = $row["pending"];
             $board[$chapterId][$mapId][$profileNumber]["userData"]["boardname"] = htmlspecialchars($row["boardname"]);
             $board[$chapterId][$mapId][$profileNumber]["userData"]["avatar"] = $row["avatar"];
         }
@@ -669,7 +673,8 @@ class Leaderboard
         , "demo" => "", "yt" => ""
         , "submission" => ""
         , "maxDaysAgo" => "", "hasDate" => ""
-        , "id" => "");
+        , "id" => ""
+        , "pending" => "2");
 
         foreach ($parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
@@ -694,17 +699,27 @@ class Leaderboard
         $whereClause4 = ($param["banned"] != "") ? "banned = '{$param["banned"]}' AND " : "";
         $whereClause5 = ($param["id"] != "") ? "id = '{$param["id"]}' AND " : "";
 
+        if($param["pending"] != ""){
+            if ($param['pending'] == "0") // None Pending
+                $whereClause6 = "pending = 0 AND ";
+            if ($param['pending'] == "1") // Just Pending
+                $whereClause6 = "pending = 1 AND ";
+            if ($param['pending'] == "2") // Both Pending and none Pending
+                $whereClause6 = "pending >= 0 AND ";
+        }else{
+            $whereClause6 = "pending >= 0 AND ";
+        }
+
         $changelog_data = Database::query("SELECT IFNULL(usersnew.boardname, usersnew.steamname) AS player_name, usersnew.avatar, ch.profile_number,
                                             ch.score, ch.id, ch.pre_rank, ch.post_rank, ch.wr_gain, ch.time_gained, ch.has_demo as hasDemo, ch.youtube_id as youtubeID, ch.note,
-                                            ch.banned, ch.submission,
+                                            ch.banned, ch.submission, ch.pending,
                                             ch_previous.score as previous_score,
                                             maps.name as chamberName, chapters.id as chapterId, maps.steam_id AS mapid
 												FROM (
                                                     SELECT *
                                                     FROM changelog
-                                                    WHERE " . $whereClause . " " . $whereClause1 . " " . $whereClause2 . " " . $whereClause3 . " " . $whereClause4 . " " . $whereClause5 . "
+                                                    WHERE " . $whereClause . " " . $whereClause1 . " " . $whereClause2 . " " . $whereClause3 . " " . $whereClause4 . " " . $whereClause5 . " " . $whereClause6 . "
                                                     map_id LIKE '%{$param['chamber']}%' 
-                                                    AND id != 69015
                                                     AND profile_number LIKE '%{$param['profileNumber']}%'
                                                     AND submission LIKE '%{$param['submission']}%'
                                                     AND has_demo LIKE '%{$param['demo']}%'
@@ -1025,23 +1040,67 @@ class Leaderboard
     }
 
     public static function setDemo($changelogId, $hasDemo) {
+        Debug::log("Setting Demo for changelog id: ".$changelogId);
+        $change = self::getChange($changelogId);
+        $pending = $hasDemo ? 0 : self::isPendingRequired($changelogId, isset($change['youtubeID']) ? 1 : 0);
+        $profile_number = $change['profile_number'];
+        $map_id = $change['mapid'];
+
+        Debug::log("HadDemo: ".$hasDemo." Pending: ".$pending." profile_number: ".$profile_number." map_id: ".$map_id);
+
+
         Database::query("UPDATE changelog
-                        SET has_demo = '{$hasDemo}'
+                        SET has_demo = '{$hasDemo}',
+                            pending = {$pending}
                         WHERE changelog.id = '{$changelogId}'");
+
+        if(self::isLatest($profile_number, $map_id, $changelogId) && $hasDemo == 1){
+            // TODO - Check on removed if we need to go back to old value and sent as pending
+            Debug::log("Is latest");
+            self::wrCheck($changelogId);
+            self::setScoreTable($profile_number, $map_id, $changelogId);
+        }
+        if($hasDemo == 0){
+            // setting back to last non pending score
+            // TODO - Worry about pending if inside ranks
+            self::resolveScore($profile_number, $map_id);
+        }
     }
 
     public static function deleteYoutubeID($changelogId) {
+        $change = self::getChange($changelogId);
+        $pending = self::isPendingRequired($changelogId, 1, 1);
+        $profile_number = $change['profile_number'];
+        $map_id = $change['mapid'];
+
         Database::query("UPDATE changelog
-                        SET youtube_id = NULL
+                        SET youtube_id = NULL,
+                            pending = {$pending}
                         WHERE changelog.id = '{$changelogId}'");
+
+        if($pending){
+            self::resolveScore($profile_number, $map_id);
+        }
     }
 
     public static function setYoutubeID($changelogId, $youtubeID)
     {
+        Debug::log("Setting Demo for changelog id: ".$changelogId);
+        $change = self::getChange($changelogId);
+        $pending = self::isPendingRequired($changelogId, 1);
+        $profile_number = $change['profile_number'];
+        $map_id = $change['mapid'];
+
         if ($youtubeID != null && $youtubeID != "") {
             Database::query("UPDATE changelog
-                        SET youtube_id = '{$youtubeID}'
+                        SET youtube_id = '{$youtubeID}',
+                            pending = '{$pending}'
                         WHERE changelog.id = '{$changelogId}'");
+        }
+
+        if(self::isLatest($profile_number, $map_id, $changelogId) && $pending != 1){
+            // TODO - Check on removed if we need to go back to old value and sent as pending
+            self::setScoreTable($profile_number, $map_id, $changelogId);
         }
     }
 
@@ -1071,7 +1130,7 @@ class Leaderboard
             INNER JOIN (
                 SELECT map_id, profile_number, min(score) as score
                 FROM changelog
-                WHERE banned = 0 AND changelog.profile_number = '{$profileNumber}' AND changelog.map_id = '{$mapId}'
+                WHERE banned = 0 AND pending = 0 AND changelog.profile_number = '{$profileNumber}' AND changelog.map_id = '{$mapId}'
                 GROUP BY map_id, profile_number
             ) as minScoreId ON (changelog.profile_number = minScoreId.profile_number AND changelog.map_id = minScoreId.map_id AND changelog.score = minScoreId.score)
             WHERE changelog.score = minScoreId.score
@@ -1110,16 +1169,19 @@ class Leaderboard
 
     public static function submitChange($profileNumber, $chamber, $score, $youtubeID, $comment)
     {
+        Debug::log("Starting Submit Change");
         $maps = Cache::get("maps");
         $chapter = $maps["maps"][$chamber]["chapterId"];
 
         $oldBoards = self::getBoard(array("chamber" => $chamber));
         $oldChamberBoard = $oldBoards[$chapter][$chamber];
 
+        Debug::log("Checking if WR");
         $wr = 0;
         $diff = 0;
         $keys = array_keys($oldChamberBoard);
         if ($score <= $oldChamberBoard[$keys[0]]["scoreData"]["score"]) {
+            Debug::log("WR = TRUE");
             $wr = 1;
             $diff = abs($score - $oldChamberBoard[$keys[0]]["scoreData"]["score"]);
         }
@@ -1132,19 +1194,13 @@ class Leaderboard
             ? $oldChamberBoard[$profileNumber]["scoreData"]["changelogId"]
             : "NULL";
 
-        Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission, note)
-              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1, '".$comment."')
+        Debug::log("Submissting change to Change LOG");
+        Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission, note, pending)
+              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1,'".$comment."', 1)
             ");
 
         $id = Database::getMysqli()->insert_id;
-
-        Database::query("INSERT IGNORE INTO scores(profile_number, map_id, changelog_id)
-              VALUES ('" . $profileNumber . "','" . $chamber . "', ".$id.")
-            ");
-
-        Database::query("UPDATE scores
-              SET changelog_id = ".$id."
-              WHERE profile_number = ". $profileNumber . " AND map_id = " . $chamber);
+        self::setScoreTable($profileNumber, $chamber, $id);
 
         $newBoards = self::getBoard(array("chamber" => $chamber));
         $newChamberBoard = $newBoards[$chapter][$chamber];
@@ -1153,30 +1209,14 @@ class Leaderboard
             ? $newChamberBoard[$profileNumber]["scoreData"]["playerRank"]
             : "NULL";
 
+        Debug::log("Updating post rank");
         Database::query("UPDATE changelog
-            SET post_rank = ".$postRank."
+            SET post_rank = ".$postRank.",
+            pending = 1
             WHERE id = ". $id);
 
+        self::resolveScore($profileNumber, $chamber);
         self::setYoutubeID($id, $youtubeID);
-
-        if ($wr) {
-            $user = new User($profileNumber);
-            $data = [
-               'id' => $id,
-               'timestamp' => new DateTime(),
-               'map_id' => $chamber,
-               'player_id' => $profileNumber,
-               'player' => $user->userData->displayName,
-               'player_avatar' => $user->userData->avatar,
-               'map' => $maps["maps"][$chamber]["mapName"],
-               'score' => Util::formatScoreTime($score),
-               'wr_diff' => Util::formatScoreTime($diff),
-               'comment' => $comment,
-               'yt' => $youtubeID
-            ];
-            Discord::sendWebhook($data);
-        }
-
         return $id;
     }
 
@@ -1228,6 +1268,178 @@ class Leaderboard
             $board[$row["chapterId"]][$row["steam_id"]]["youtubeId"] = $row["youtube_id"];
         }
         return $board;
+    }
+
+    public static function getEvidenceRequirments($active = true){
+        $evidenceRequirments = array();
+        $data = Database::query("
+            SELECT `id`, `rank`, `demo`, `video`, `active`, `timestamp`
+            FROM evidence_requirements");
+        while ($row = $data->fetch_assoc()) {
+            $evidenceRequirments[$row["id"]] = $row;
+        }
+        if($active){
+            return array_filter($evidenceRequirments, function ($var) {
+                return ($var['active'] == true);
+            });
+        }
+        return $evidenceRequirments;
+    }
+
+    private static function isPendingRequired($changeLogId, $video = 0, $removed = 0){
+        // Getting change log data
+        $result = self::getChange($changeLogId);
+        // Getting requirements (Old/inactive as well)
+        $requirements = self::getEvidenceRequirments(false);
+        $dateTime = $result['time_gained'];
+
+        // if video or demo required
+        if($video == 1){
+            // Check if demo exists for changelog
+            if($result['hasDemo']){
+                // Demo exists therefore pending = false
+                return 0;
+            }
+
+            // Check if video is inbetween demo and video
+            // If below demo requirement then pending = true
+            // If below video requirement then pending = false
+            // If below video requirement and video has been removed then pending = true
+            // If above video requirement then pending = false
+
+            // Getting Highest video requirement
+            $videoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
+                if($var['video'] == 1){
+                    if($var['timestamp'] < $dateTime & isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true){
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+            $videoRequirement = max(array_column($videoBeforeDate, 'rank'));
+            Debug::log("Video Requirement: ".$videoRequirement." > ".$result['post_rank']);
+
+            // Getting Highest Demo Requirement
+            $demoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
+                if($var['demo'] == 1 && $var['video'] == 0){
+                    Debug::log("Demo Only");
+                    if($var['timestamp'] < $dateTime & isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true){
+                        return true;
+                    }
+                }
+                return false;
+            });
+            $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
+            Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
+
+            if($videoRequirement >= $result['post_rank']){
+                // Rank under video requirement
+                if($demoRequirement >= $result['post_rank']){
+                    // Rank under Demo Requirement
+                    return 1;
+                }
+                if($removed == 1){
+                    // Video Removed
+                    return 1;
+                }
+            }
+            return 0;
+        }
+
+        // Getting Highest Demo Requirement
+        $demoBeforeDate = array_filter($requirements, function ($var) use ($dateTime){
+            if($var['demo'] == 1 && $var['video'] == 0){
+                Debug::log("Demo Only");
+                if($var['timestamp'] < $dateTime & isset($var['closed_timestamp']) ? $var['closed_timestamp'] > $dateTime : true){
+                    return true;
+                }
+            }
+            return false;
+        });
+        $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
+        Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
+
+        return $demoRequirement >= $result['post_rank'] ? 1 : 0;
+    }
+
+    private static function setScoreTable($profileNumber, $chamber, $id){
+        Database::query("INSERT IGNORE INTO scores(profile_number, map_id, changelog_id)
+              VALUES ('" . $profileNumber . "','" . $chamber . "', ".$id.")
+            ");
+
+        Database::query("UPDATE scores
+              SET changelog_id = ".$id."
+              WHERE profile_number = ". $profileNumber . " AND map_id = " . $chamber);
+    }
+
+    private static function getSingleChangeLog($id){
+        $data = Database::query("
+            SELECT *
+            FROM changelog
+            WHERE id = '{$id}'
+            limit 1");
+        $result;
+        while ($row = $data->fetch_assoc()) {
+            $result = row[0];
+        }
+        return $result;
+    }
+
+    private static function wrCheck($changeLogId){
+        Debug::log("Starting WR check");
+        $result = self::getChange($changeLogId);
+        $chamber = $result['mapid'];
+        $profileNumber = $result['profile_number'];
+        $score = $result['score'];
+
+        $maps = Cache::get("maps");
+        $chapter = $maps["maps"][$chamber]["chapterId"];
+        $oldBoards = self::getBoard(array("chamber" => $chamber));
+        $oldChamberBoard = $oldBoards[$chapter][$chamber];
+
+        $wr = 0;
+        $diff = 0;
+        $keys = array_keys($oldChamberBoard);
+        Debug::log( $oldChamberBoard[$keys[0]]["scoreData"]["score"]);
+        if ($score <= $oldChamberBoard[$keys[0]]["scoreData"]["score"]) {
+            $wr = 1;
+            $diff = abs($score - $oldChamberBoard[$keys[0]]["scoreData"]["score"]);
+        }
+
+        Debug::log("diff: ".$diff." WR: ".$wr);
+
+        if ($wr == 1) {
+            $user = new User($profileNumber);
+            $data = [
+                'id' => $id,
+                'timestamp' => new DateTime(),
+                'map_id' => $chamber,
+                'player_id' => $profileNumber,
+                'player' => $user->userData->displayName,
+                'player_avatar' => $user->userData->avatar,
+                'map' => $maps["maps"][$chamber]["mapName"],
+                'score' => Util::formatScoreTime($score),
+                'wr_diff' => Util::formatScoreTime($diff)
+            ];
+            Debug::log("SEND WEBHOOK FOR WR");
+            Discord::sendWebhook($data);
+        }
+    }
+
+    private static function isLatest($profile_number, $map_id, $changelogId){
+        Debug::log("Profile Number: ".$profile_number." Map Id: ".$map_id." Changelog Id:".$changelogId);
+        $data = Database::query("SELECT *
+            FROM changelog
+            where `profile_number` = '{$profile_number}' AND `map_id` = '{$map_id}'
+            ORDER BY id DESC ");
+        $changelog = array();
+        while ($row = $data->fetch_assoc()) {
+            $changelog[] = $row;
+        }
+        $topRow = $changelog[0];
+        Debug::log($topRow["id"]);
+        return $changelogId == $topRow["id"];
     }
 
 }

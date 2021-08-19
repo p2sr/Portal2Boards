@@ -985,6 +985,7 @@
                         "Time ago" +
                     "</div>" +
                     "<div class='banned'></div>" +
+                    "<div class='pending'></div>" +
                     "<div class='submission'></div>" +
                     "<div class='comment'></div>" +
                     "<div class='demo-url'></div>" +
@@ -1099,7 +1100,12 @@
         closeAllChangeMenus();
         openSubmissionForm();
 
-        $submissionForm.find(".addScoreButton").click(function() {
+        $submissionForm.find(".addScoreButton").on('click', function(event) {
+            event.preventDefault();
+            var el = $(this);
+            el.prop('disabled', true);
+            setTimeout(function(){el.prop('disabled', false); }, 1000);
+
             var $youtubeField = $submissionForm.find(".setYoutubeContainer input");
             var $scoreField = $submissionForm.find(".scoreInputContainer input");
             var $commentField = $submissionForm.find(".setCommentContainer input");
@@ -1229,8 +1235,10 @@
                     $dateDifference.prop('outerHTML') +
                 "</div>" +
                 "<div class='banned'>" +
-                ((entry.banned == 1)
-                    ? "<i class='fa fa-exclamation-triangle' aria-hidden='true' data-toggle='tooltip' title='Banned'></i>"
+                ((entry.banned == 1) ?
+                    "<i class='fa fa-exclamation-triangle' aria-hidden='true' data-toggle='tooltip' title='Banned'></i>" : "") +
+                ((entry.pending == 1)
+                    ? "<div class='pending'><i class='fa fa-hourglass' aria-hidden='true' data-toggle='tooltip' title='Pending - evidence required'></i></div> "
                     : "") +
                 "</div>" +
                 "<div class='submission'>" +
@@ -1379,7 +1387,12 @@
             $changeMenu.addClass("open");
             $changeMenuToggleIcon.attr("class", "fa fa-caret-down");
 
-            $changeMenu .find(".button.deleteSubmission").click(function() {
+            $changeMenu .find(".button.deleteSubmission").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
+                setTimeout(function(){el.prop('disabled', false); }, 1000);
+
                 if (confirm("Are you sure you want to delete this submission?")) {
                     var $form = $(this).closest(".changeForm");
                     var $changeRow = $form.closest(".changeEntry");
@@ -1411,7 +1424,10 @@
                 }
             });
 
-            $changeMenu.find(".button.setComment").click(function(){
+            $changeMenu.find(".button.setComment").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
                 var $setYoutubeContainer = $(this).parent();
                 var $form = $(this).closest(".changeForm");
                 var $deleteCommentButton = $form.find(".button.deleteComment");
@@ -1456,7 +1472,10 @@
                 }
             });
 
-            $changeMenu.find(".button.deleteComment").click(function(){
+            $changeMenu.find(".button.deleteComment").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
                 var $deleteCommentButton = $(this);
                 var $form = $(this).closest(".changeForm");
                 var $setCommentContainer = $form.find(".setCommentContainer");
@@ -1489,7 +1508,10 @@
                 }, 'json');
             });
 
-            $changeMenu.find(".button.setYoutube").click(function(){
+            $changeMenu.find(".button.setYoutube").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
                 var $setYoutubeContainer = $(this).parent();
                 var $form = $(this).closest(".changeForm");
                 var $deleteYoutubeButton = $form.find(".button.deleteYoutube");
@@ -1537,7 +1559,11 @@
                 }
             });
 
-            $changeMenu.find(".button.deleteYoutube").click(function(){
+            $changeMenu.find(".button.deleteYoutube").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
+                setTimeout(function(){el.prop('disabled', false); }, 1000);
                 var $deleteYoutubeButton = $(this);
                 var $form = $(this).closest(".changeForm");
                 var $setYoutubeContainer = $form.find(".setYoutubeContainer");
@@ -1577,7 +1603,12 @@
                 $(this).parent().parent().find(".filename").html(fileName);
             });
 
-            $changeMenu.find(".button.uploadDemo").click(function(){
+            $changeMenu.find(".button.uploadDemo").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
+                setTimeout(function(){el.prop('disabled', false); }, 1000);
+
                 var $uploadDemoContainer = $(this).parent();
                 var $form = $(this).closest(".changeForm");
                 var $deleteDemoButton = $form.find(".button.deleteDemo");
@@ -1621,7 +1652,11 @@
                 }
             });
 
-            $changeMenu.find(".button.deleteDemo").click(function(){
+            $changeMenu.find(".button.deleteDemo").on('click', function(event) {
+                event.preventDefault();
+                var el = $(this);
+                el.prop('disabled', true);
+                setTimeout(function(){el.prop('disabled', false); }, 1000);
                 if (confirm("Are you sure you want to delete this demo?")) {
                     var $deleteButton = $(this);
                     var $form = $(this).closest(".changeForm");
