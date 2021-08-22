@@ -1236,10 +1236,10 @@
                 "</div>" +
                 "<div class='banned'>" +
                 ((entry.banned == 1) ?
-                    "<i class='fa fa-exclamation-triangle' aria-hidden='true' data-toggle='tooltip' title='Banned'></i>" : "") +
-                ((entry.pending == 1)
-                    ? "<div class='pending'><i class='fa fa-hourglass' aria-hidden='true' data-toggle='tooltip' title='Pending - evidence required'></i></div> "
-                    : "") +
+                    "<i class='fa fa-exclamation-triangle' aria-hidden='true' data-toggle='tooltip' title='Banned'></i>" :
+                    ((entry.pending == 1)
+                        ? "<div class='pending'><i class='fa fa-hourglass' aria-hidden='true' data-toggle='tooltip' title='Pending - evidence required'></i></div> "
+                        : "")) +
                 "</div>" +
                 "<div class='submission'>" +
                     ((entry.submission == 1)
