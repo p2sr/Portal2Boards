@@ -1412,7 +1412,7 @@ class Leaderboard
         if ($wr == 1) {
             $user = new User($profileNumber);
             $data = [
-                'id' => $id,
+                'id' => $changeLogId,
                 'timestamp' => new DateTime(),
                 'map_id' => $chamber,
                 'player_id' => $profileNumber,
