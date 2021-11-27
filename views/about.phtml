@@ -10,6 +10,7 @@
     <div class="container">
         Currently, the top <?=Leaderboard::numTrackedPlayerRanks?> times are tracked for each map.
         A player's points for a specific chamber is calculated as follows:
+        Only the top <?=Leaderboard::rankForPoints?> get points.
         <style>
             table.fraction {
                 font-size: 15px;
@@ -31,7 +32,7 @@
                     max[1,&nbsp;
                 </td>
                 <td nowrap="nowrap" style="font-size: 14px;">
-                    (<?=Leaderboard::numTrackedPlayerRanks?> - (rank - 1))<sup>2</sup>
+                    (<?=Leaderboard::rankForPoints?> - (rank - 1))<sup>2</sup>
                 </td>
                 <td rowspan="2" nowrap="nowrap">
                     <!-- &nbsp;× (1 + (0.025 × bonus)  -->]
@@ -39,7 +40,7 @@
             </tr>
             <tr>
                 <td class="upper_line" style="font-size: 14px;">
-                    <?=Leaderboard::numTrackedPlayerRanks?>
+                    <?=Leaderboard::rankForPoints?>
                 </td>
             </tr>
         </table>

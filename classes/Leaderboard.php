@@ -2,7 +2,8 @@
 class Leaderboard
 {
 
-    const numTrackedPlayerRanks = 200;
+    const numTrackedPlayerRanks = 500;
+    const rankForPoints = 200;
     const proofBonusPointsPercentage = 0;
 
 
@@ -807,7 +808,10 @@ class Leaderboard
     }
 
     public static function getPoints($rank) {
-        return pow(Leaderboard::numTrackedPlayerRanks - ($rank - 1), 2) / Leaderboard::numTrackedPlayerRanks;
+        if($rank > Leaderboard::rankForPoints){
+            return 0;
+        }
+        return pow(Leaderboard::rankForPoints - ($rank - 1), 2) / Leaderboard::rankForPoints;
     }
 
     //TODO: combine sorting functions
