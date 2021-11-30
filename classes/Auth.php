@@ -2,7 +2,7 @@
 
 class Auth {
 
-    public static function gen_auth_hash($userId): string
+    public static function gen_auth_hash($userId)
     {
         if (!ctype_alnum($userId)) return null;
 

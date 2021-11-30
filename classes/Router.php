@@ -111,7 +111,7 @@ class Router {
         // TODO - NEW API SHIT
 
         if($location[1] == "api-v2"){
-            if (!$_POST || !isset($_POST["auth_hash"]) {
+            if (!$_POST || !isset($_POST["auth_hash"])) {
                 echo "Missing paramters";
                 http_response_code(400);
                 exit;
@@ -137,16 +137,19 @@ class Router {
                     if (!isset($_POST["mapId"]) or !is_numeric($_POST["mapId"])) {
                         echo "No valid Map Id Provided";
                         http_response_code(400);
+                        exit;
                     }
 
                     if (!isset($_POST["score"]) or !is_numeric($_POST["score"])) {
                         echo "No valid score provided";
                         http_response_code(400);
+                        exit;
                     }
 
                     if (!isset($_FILES["demoFile"])) {
                         echo "No demo provided";
                         http_response_code(400);
+                        exit;
                     }
 
                     $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
@@ -162,7 +165,6 @@ class Router {
 
                     $change = Leaderboard::getChange($id);
                     echo json_encode($change);
-
                     exit;
                 }
 
