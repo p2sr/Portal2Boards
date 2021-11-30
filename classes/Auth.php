@@ -19,8 +19,9 @@ class Auth {
 
     public static function test_auth_hash($auth_hash){
         if (!ctype_alnum($auth_hash)) return null;
+
         $data = Database::query("SELECT usersnew.profile_number FROM usersnew
-                                WHERE usersnew.auth_hash = ".$auth_hash);
+                                WHERE usersnew.auth_hash = '{$auth_hash}'");
 
         $userId = null;
         while ($row = $data->fetch_assoc()) {
