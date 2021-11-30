@@ -153,17 +153,20 @@ class Router {
                                 http_response_code(400);
                             }
 
-                            $id = Leaderboard::submitChange($_POST["userId"], $_POST["mapId"], $_POST["score"], null, null);
+                            $newUser = new User($_POST["userId"]);
+                            if($newUser->isAdmin()){
+                                $id = Leaderboard::submitChange($_POST["userId"], $_POST["mapId"], $_POST["score"], null, null);
 
-                            if (array_key_exists("demoFile", $_FILES)) {
-                                $file = $_FILES["demoFile"];
-                                if ($file["name"] != "") {
-                                    $this->uploadDemo($file, $id);
+                                if (array_key_exists("demoFile", $_FILES)) {
+                                    $file = $_FILES["demoFile"];
+                                    if ($file["name"] != "") {
+                                        $this->uploadDemo($file, $id);
+                                    }
                                 }
-                            }
 
-                            $change = Leaderboard::getChange($id);
-                            echo json_encode($change);
+                                $change = Leaderboard::getChange($id);
+                                echo json_encode($change);
+                            }
                         }
                         else{
                             echo "User Validation Failed";
