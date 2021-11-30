@@ -153,7 +153,9 @@ class Router {
                                     http_response_code(400);
                                 }
 
-                                $id = Leaderboard::submitChange($_POST["userId"], $_POST["mapId"], $_POST["score"], null, null);
+                                $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+
+                                $id = Leaderboard::submitChange($_POST["userId"], $_POST["mapId"], $_POST["score"], null, $comment);
 
                                 if (array_key_exists("demoFile", $_FILES)) {
                                     $file = $_FILES["demoFile"];
