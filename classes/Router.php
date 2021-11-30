@@ -111,96 +111,70 @@ class Router {
         // TODO - NEW API SHIT
 
         if($location[1] == "api-v2"){
-            $newUser = new User($_POST["userId"]);
+            if (!$_POST || !isset($_POST["auth_hash"]) {
+                echo "Missing paramters";
+                http_response_code(400);
+                exit;
+            }
+
+            $userId = Auth::test_auth_hash($_POST["auth_hash"]);
+            if ($userId == null) {
+                echo "User validation failed";
+                http_response_code(400);
+                exit;
+            }
+
+            $newUser = new User($userId);
+
             if($newUser->isAdmin()) {
                 if ($location[2] == "validate-user") {
-                    // Validate hash
-                    if ($_POST) {
-                        if (isset($_POST["userId"]) && isset($_POST["auth_hash"])) {
-                            $current_hash = Auth::get_auth_hash($_POST["userId"]);
-                            if ($current_hash == $_POST["auth_hash"]) {
-                                // Return True
-                                echo "True";
-                            } else {
-                                // Return False
-                                echo "False";
-                            }
-                        } else {
-                            echo "Missing Post params";
-                            http_response_code(400);
-                        }
-                        exit;
-                    }
+                    // If we got here, the hash is definitely valid
+                    echo "{\"userId\": \"{$userId}\"}";
+                    exit;
                 }
 
                 if ($location[2] == "auto-submit") {
-                    if ($_POST) {
-                        if (isset($_POST["userId"]) && isset($_POST["auth_hash"])) {
-                            $current_hash = Auth::get_auth_hash($_POST["userId"]);
-                            if ($current_hash == $_POST["auth_hash"]) {
-                                if (!isset($_POST["mapId"]) or !is_numeric($_POST["mapId"])) {
-                                    echo "No valid Map Id Provided";
-                                    http_response_code(400);
-                                }
-
-                                if (!isset($_POST["score"]) or !is_numeric($_POST["score"])) {
-                                    echo "No valid score provided";
-                                    http_response_code(400);
-                                }
-
-                                if (!isset($_FILES["demoFile"])) {
-                                    echo "No demo provided";
-                                    http_response_code(400);
-                                }
-
-                                $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
-
-                                $id = Leaderboard::submitChange($_POST["userId"], $_POST["mapId"], $_POST["score"], null, $comment);
-
-                                if (array_key_exists("demoFile", $_FILES)) {
-                                    $file = $_FILES["demoFile"];
-                                    if ($file["name"] != "") {
-                                        $this->uploadDemo($file, $id);
-                                    }
-                                }
-
-                                $change = Leaderboard::getChange($id);
-                                echo json_encode($change);
-
-                            } else {
-                                echo "User Validation Failed";
-                                http_response_code(400);
-                            }
-                        } else {
-                            echo "Missing Post params";
-                            http_response_code(400);
-                        }
-                        exit;
+                    if (!isset($_POST["mapId"]) or !is_numeric($_POST["mapId"])) {
+                        echo "No valid Map Id Provided";
+                        http_response_code(400);
                     }
+
+                    if (!isset($_POST["score"]) or !is_numeric($_POST["score"])) {
+                        echo "No valid score provided";
+                        http_response_code(400);
+                    }
+
+                    if (!isset($_FILES["demoFile"])) {
+                        echo "No demo provided";
+                        http_response_code(400);
+                    }
+
+                    $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
+
+                    $id = Leaderboard::submitChange($userId, $_POST["mapId"], $_POST["score"], null, $comment);
+
+                    if (array_key_exists("demoFile", $_FILES)) {
+                        $file = $_FILES["demoFile"];
+                        if ($file["name"] != "") {
+                            $this->uploadDemo($file, $id);
+                        }
+                    }
+
+                    $change = Leaderboard::getChange($id);
+                    echo json_encode($change);
+
+                    exit;
                 }
+
                 if ($location[2] == "current-pb") {
-                    if ($_POST) {
-                        if (isset($_POST["userId"]) && isset($_POST["auth_hash"]) && isset($_POST["mapId"])) {
-                            $current_hash = Auth::get_auth_hash($_POST["userId"]);
-                            if ($current_hash == $_POST["auth_hash"]) {
-                                // Get current valid PB
-                                $pb_row = Leaderboard::getLatestPb($_POST["userId"], $_POST["mapId"]);
-                                if (isset($pb_row)) {
-                                    echo json_encode($pb_row);
-                                } else {
-                                    echo "Failed to get PB";
-                                    http_response_code(400);
-                                }
-                            } else {
-                                echo "User Validation Failed";
-                                http_response_code(400);
-                            }
-                        } else {
-                            echo "Missing Post params";
-                            http_response_code(400);
-                        }
-                        exit;
+                    // Get current valid PB
+                    $pb_row = Leaderboard::getLatestPb($userId, $_POST["mapId"]);
+                    if (isset($pb_row)) {
+                        echo json_encode($pb_row);
+                    } else {
+                        echo "{}"; // No PB
                     }
+                    exit;
                 }
             }
         }
