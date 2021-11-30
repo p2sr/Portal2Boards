@@ -89,6 +89,12 @@ class Router {
             if ($user = SteamSignIn::validate()) {
                 session_start();                
                 $_SESSION["user"] = $user;
+                if($auth_hash = Auth::get_auth_hash($user)){
+                    if($auth_hash == null){
+                        $auth_hash = Auth::gen_auth_hash($user);
+                    }
+                    $_SESSION["user_auth_hash"] = $auth_hash;
+                }
             }
 
             header("Location: /profile/".$user);
@@ -100,6 +106,77 @@ class Router {
             $this->destroySession();
             $this->routeToDefault();
             exit;
+        }
+
+        // TODO - NEW API SHIT
+
+        if($location[1] == "api-v2"){
+            if($location[2] == "validate-user"){
+                // Validate hash
+                if($_POST){
+                    if (isset($_POST["userId"]) && isset($_POST["auth_hash"])){
+                        $current_hash = Auth::get_auth_hash($_POST["userId"]);
+                        if($current_hash == $_POST["auth_hash"]){
+                            // Return True
+                            echo "True";
+                        }
+                        else{
+                            // Return False
+                            echo "False";
+                        }
+                    }
+                    else {
+                        echo "Missing Post params";
+                        http_response_code(400);
+                    }
+                    exit;
+                }
+            }
+
+            if($location[2] == "auto-submit"){
+                if($_POST){
+                    if (isset($_POST["userId"]) && isset($_POST["auth_hash"])){
+                        $current_hash = Auth::get_auth_hash($_POST["userId"]);
+                        if($current_hash == $_POST["auth_hash"]){
+                            if(!isset($_POST["mapId"]) or !is_numeric($_POST["mapId"])){
+                                echo "No valid Map Id Provided";
+                                http_response_code(400);
+                            }
+
+                            if(!isset($_POST["score"]) or !is_numeric($_POST["score"])){
+                                echo "No valid score provided";
+                                http_response_code(400);
+                            }
+
+                            if(!isset($_FILES["demoFile"])){
+                                echo "No demo provided";
+                                http_response_code(400);
+                            }
+
+                            $id = Leaderboard::submitChange($_POST["userId"], $_POST["mapId"], $_POST["score"], null, null);
+
+                            if (array_key_exists("demoFile", $_FILES)) {
+                                $file = $_FILES["demoFile"];
+                                if ($file["name"] != "") {
+                                    $this->uploadDemo($file, $id);
+                                }
+                            }
+
+                            $change = Leaderboard::getChange($id);
+                            echo json_encode($change);
+                        }
+                        else{
+                            echo "User Validation Failed";
+                            http_response_code(400);
+                        }
+                    }
+                    else {
+                        echo "Missing Post params";
+                        http_response_code(400);
+                    }
+                    exit;
+                }
+            }
         }
 
         //TODO: don't flush connection but rather give a more refined status update to client which can then follow up by polling the back end for successful upload
@@ -693,6 +770,18 @@ class Router {
                         $view->msg = "Profile updated. Wait a minute for the changes to take effect.";
                     }
                 }
+            }
+            else {
+                $this->routeToDefault();
+            }
+        }
+
+        if ($location[1] == "regenerateAuthHash"){
+            if (isset(SteamSignIn::$loggedInUser)){
+                if ($_POST) {
+                    Auth::gen_auth_hash(SteamSignIn::$loggedInUser->profileNumber);
+                }
+                exit;
             }
             else {
                 $this->routeToDefault();

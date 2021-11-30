@@ -273,7 +273,7 @@ a:hover, a:focus {
 }
 #edition {
     float: left;
-    margin: 5px 0px 0px 15px;
+    margin: 0.5rem 0px 0px 1rem;
     background: url("/images/cakeicon.png") no-repeat;
     background-size: cover;
     width: 40px;
