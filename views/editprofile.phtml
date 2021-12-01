@@ -18,13 +18,11 @@
         <div><?=$view->msg?></div>
     <?php endif; ?>
 
-    <?php if($loggedInUser->isAdmin()): ?>
-        <div class="auth_hash" style="display: flex; gap: 1rem;">
-            <p>Auth Hash: <?=$loggedInUser->userData->auth_hash;?></p>
-            <button class="button btn" data-clipboard-text="<?=$loggedInUser->userData->auth_hash;?>" style="margin: 0 0 10px;">Copy</button>
-            <button class="button regen-btn" style="margin: 0 0 10px;">Regenerate</button>
-        </div>
-    <?php endif; ?>
+    <div class="auth_hash" style="display: flex; gap: 1rem;">
+        <p>Auth Hash: <?=$loggedInUser->userData->auth_hash;?></p>
+        <button class="button btn" data-clipboard-text="<?=$loggedInUser->userData->auth_hash;?>" style="margin: 0 0 10px;">Copy</button>
+        <button class="button regen-btn" style="margin: 0 0 10px;">Regenerate</button>
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
 <script>
