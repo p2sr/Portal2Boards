@@ -1431,6 +1431,19 @@ class Leaderboard
         }
     }
 
+    public static function getLatestPb($profile_number, $map_id){
+        $data = Database::query("SELECT *
+            FROM changelog
+            where `profile_number` = '{$profile_number}' AND `map_id` = '{$map_id}' AND `banned` = 0 AND `pending` = 0
+            ORDER BY id DESC ");
+        $changelog = array();
+        while ($row = $data->fetch_assoc()) {
+            $changelog[] = $row;
+        }
+        $topRow = $changelog[0];
+        return $topRow;
+    }
+
     private static function isLatest($profile_number, $map_id, $changelogId){
         Debug::log("Profile Number: ".$profile_number." Map Id: ".$map_id." Changelog Id:".$changelogId);
         $data = Database::query("SELECT *

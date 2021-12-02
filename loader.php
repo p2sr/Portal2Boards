@@ -15,3 +15,4 @@ require_once(ROOT_PATH."/classes/Router.php");
 require_once(ROOT_PATH."/classes/Debug.php");
 require_once(ROOT_PATH."/classes/Database.php");
 require_once(ROOT_PATH."/classes/Util.php");
+require_once(ROOT_PATH."/classes/Auth.php");
