@@ -666,16 +666,25 @@ class Leaderboard
     //TODO: clean up ugly where clauses
     public static function getChangelog($parameters = array())
     {
-        $param = array("chamber" => "" , "chapter" => ""
-        , "boardName" => "" , "profileNumber" => ""
-        , "type" => "" , "sp" => "1", "coop" => "1"
-        , "wr" => ""
-        , "banned" => ""
-        , "demo" => "", "yt" => ""
-        , "submission" => ""
-        , "maxDaysAgo" => "", "hasDate" => ""
-        , "id" => ""
-        , "pending" => "2");
+        $param = array(
+            "chamber" => "",
+            "chapter" => "",
+            "boardName" => "",
+            "profileNumber" => "",
+            "type" => "",
+            "sp" => "1",
+            "coop" => "1",
+            "wr" => "",
+            "demo" => "",
+            "yt" => "",
+            //, "maxDaysAgo" => "",
+            "startDate" => "",
+            "endDate" => "",
+            "startRank" => "",
+            "endRank" => "",
+            "submission" => "",
+            "banned" => "",
+            "pending" => "2");
 
         foreach ($parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
@@ -683,32 +692,46 @@ class Leaderboard
                 $param[$key] = Database::getMysqli()->real_escape_string($result);
             }
         }
+
         $whereClause = "";
-        if ($param['maxDaysAgo'] != "") {
-            $whereClause = "time_gained > DATE_SUB(CONCAT(CURDATE(), ' ', '00:00:00'), INTERVAL ".$param['maxDaysAgo']." DAY) AND ";
+
+        // Time Span of leaderboard
+        if ($param['startDate'] != "") {
+            $whereClause .= "time_gained >= DATE('{$param['startDate']}') AND ";
         }
-        
-        if ($param['yt'] != "") {
-            if ($param['yt'] == "1")
-                $whereClause1 = "youtube_id IS NOT NULL AND";
-            if ($param['yt'] == "0")
-                $whereClause1 = "youtube_id IS NULL AND";
+        if ($param['endDate'] != "") {
+            $whereClause .= "time_gained <= DATE('{$param['endDate']}') AND ";
         }
 
-        $whereClause2 = ($param["hasDate"] == "1") ? "time_gained IS NOT NULL AND " : "";
-        $whereClause3 = ($param["wr"] != "") ? "wr_gain = '{$param["wr"]}' AND " : "";
-        $whereClause4 = ($param["banned"] != "") ? "banned = '{$param["banned"]}' AND " : "";
-        $whereClause5 = ($param["id"] != "") ? "id = '{$param["id"]}' AND " : "";
+        // Ranks
+        if ($param['startRank'] != "") {
+            $whereClause .= "post_rank >= '{$param['startRank']}' AND ";
+        }
+        if ($param['endRank'] != "") {
+            $whereClause .= "post_rank <= '{$param['endRank']}' AND ";
+        }
+
+        if ($param['yt'] != "") {
+            if ($param['yt'] == "1")
+                $whereClause .= "youtube_id IS NOT NULL AND";
+            if ($param['yt'] == "0")
+                $whereClause .= "youtube_id IS NULL AND";
+        }
+
+        $whereClause .= (($param["hasDate"] == "1") ? "time_gained IS NOT NULL AND " : "");
+        $whereClause .= (($param["wr"] != "") ? "wr_gain = '{$param["wr"]}' AND " : "");
+        $whereClause .= (($param["banned"] != "") ? "banned = '{$param["banned"]}' AND " : "");
+        $whereClause .= (($param["id"] != "") ? "id = '{$param["id"]}' AND " : "");
 
         if($param["pending"] != ""){
             if ($param['pending'] == "0") // None Pending
-                $whereClause6 = "pending = 0 AND ";
+                $whereClause .= "pending = 0 AND ";
             if ($param['pending'] == "1") // Just Pending
-                $whereClause6 = "pending = 1 AND ";
+                $whereClause .= "pending = 1 AND ";
             if ($param['pending'] == "2") // Both Pending and none Pending
-                $whereClause6 = "pending >= 0 AND ";
+                $whereClause .= "pending >= 0 AND ";
         }else{
-            $whereClause6 = "pending >= 0 AND ";
+            $whereClause .= "pending >= 0 AND ";
         }
 
         $changelog_data = Database::query("SELECT IFNULL(usersnew.boardname, usersnew.steamname) AS player_name, usersnew.avatar, ch.profile_number,
@@ -719,7 +742,7 @@ class Leaderboard
 												FROM (
                                                     SELECT *
                                                     FROM changelog
-                                                    WHERE " . $whereClause . " " . $whereClause1 . " " . $whereClause2 . " " . $whereClause3 . " " . $whereClause4 . " " . $whereClause5 . " " . $whereClause6 . "
+                                                    WHERE " . $whereClause . "
                                                     map_id LIKE '%{$param['chamber']}%' 
                                                     AND profile_number LIKE '%{$param['profileNumber']}%'
                                                     AND submission LIKE '%{$param['submission']}%'

@@ -141,7 +141,7 @@ class User {
 
     public function getChangelog($dayAmount) {
         $leaderboard = new Leaderboard();
-        return $leaderboard->getChangelog(array("profileNumber" => $this->profileNumber, "maxDaysAgo" => $dayAmount, "hasDate" => 1));
+        return $leaderboard->getChangelog(array("profileNumber" => $this->profileNumber, "startDate" => (new DateTime("NOW - {$dayAmount} day"))->format('Y-m-d'), "hasDate" => 1));
     }
 
     public function getActivity($dayAmount) {
