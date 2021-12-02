@@ -699,6 +699,9 @@ class Leaderboard
         if ($param['startDate'] != "") {
             $whereClause .= "time_gained >= DATE('{$param['startDate']}') AND ";
         }
+        else{
+            $whereClause .= "time_gained >= DATE_SUB(CONCAT(CURDATE(), ' ', '00:00:00'), INTERVAL ".'7'." DAY) AND ";
+        }
         if ($param['endDate'] != "") {
             $whereClause .= "time_gained <= DATE('{$param['endDate']}') AND ";
         }
