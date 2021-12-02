@@ -15,85 +15,111 @@
         <div id="filter_instructions_lol">Use these filters to display the changelog you want</div>
         <div id="filter_options">
             <form name="filters" action="/changelog" method="get">
-                <div style="float: left;" class="input">
-                    <label for="nickname">Nickname</label>
-                    <input type="text" name="boardName" value="<?=$param['boardName'];?>">
-                </div>
-                <div style="float: left;" class="input">
-                    <label for="profilenumber">Steam profile number</label>
-                    <input type="text" name="profileNumber" value="<?=$param['profileNumber'];?>">
-                </div>
-                <div style="float: left;" class="input">
-                    <label for="profilenumber">Chapter name</label>
-                    <select style="width: 100%;" name="chapter">
-                        <option value="">No chapter</option>
-                        <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
-                            <option disabled><?=$mode?></option>
-                            <?php foreach($mapInfo["modes"][$modeId] as $chapterId): ?>
-                                <?php $chapterName = $mapInfo["chapters"][$chapterId]["chapterName"]?>
-                                <option value="<?=$chapterId?>" <?php if($param['chapter'] == $chapterId) : ?>selected<?php endif; ?>>&nbsp;&nbsp;<?=$chapterName?></option>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="float: left;" class="input">
-                    <label for="profilenumber">Chamber name</label>
-                    <select style="width: 100%;" name="chamber">
-                        <option value="">No chamber</option>
-                        <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
-                            <option disabled><?=$mode?></option>
-                            <?php foreach($mapInfo["modes"][$modeId] as $chapterId): ?>
-                                <option disabled>&nbsp;&nbsp;<?=$mapInfo["chapters"][$chapterId]["chapterName"]?></option>
-                                <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
-                                    <?php $mapName = $mapInfo["maps"][$mapId]["mapName"]?>
-                                    <option value="<?=$mapId?>" <?php if($param['chamber'] == $mapId): ?>selected<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?=$mapName?></option>
+                <div class="changelog-filter-options-wrapper">
+                    <div class="changelog-filter-options-name changelog-filter-options-group">
+                        <div style="float: left;" class="input">
+                            <label for="nickname">Nickname</label>
+                            <input type="text" name="boardName" value="<?=$param['boardName'];?>">
+                        </div>
+                        <div style="float: left;" class="input">
+                            <label for="profilenumber">Steam profile number</label>
+                            <input type="text" name="profileNumber" value="<?=$param['profileNumber'];?>">
+                        </div>
+                    </div>
+                    <div class="changelog-filter-options-chamber changelog-filter-options-group">
+                        <div style="float: left;" class="input">
+                            <label for="profilenumber">Chapter name</label>
+                            <select style="width: 100%;" name="chapter">
+                                <option value="">No chapter</option>
+                                <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
+                                    <option disabled><?=$mode?></option>
+                                    <?php foreach($mapInfo["modes"][$modeId] as $chapterId): ?>
+                                        <?php $chapterName = $mapInfo["chapters"][$chapterId]["chapterName"]?>
+                                        <option value="<?=$chapterId?>" <?php if($param['chapter'] == $chapterId) : ?>selected<?php endif; ?>>&nbsp;&nbsp;<?=$chapterName?></option>
+                                    <?php endforeach; ?>
                                 <?php endforeach; ?>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">Single Player</div>
-                    <div class="checkbox <?php if($param['sp'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?=$param['sp'];?>" name="sp">
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">Cooperative</div>
-                    <div class="checkbox <?php if($param['coop'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?=$param['coop'];?>" name="coop">
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">World Record</div>
-                    <div class="checkbox <?php if($param['wr'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?=$param['wr'];?>" name="wr">
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">Demo</div>
-                    <div class="checkbox <?php if($param['demo'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?=$param['demo'];?>" name="demo">
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">Video</div>
-                    <div class="checkbox <?php if($param['yt'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?=$param['yt'];?>" name="yt">
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">Submission</div>
-                    <div class="checkbox <?php if($param['submission'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?=$param['submission'];?>" name="submission">
-                </div>
-                <div style="float: left;" class="check">
-                    <div style="position: relative;">Pending</div>
-                    <div class="checkbox <?php if($param['pending'] == "1"): ?>ticked<?php endif; ?>"></div>
-                    <input type="hidden" value="<?php if($param['pending'] == "1"): ?>2<?php endif; ?>" name="pending">
-                </div>
-                <!--                <div style="float: left; display: none" class="number">-->
-                <!--                    <label class="top" style="position: relative;">Max days ago</label>-->
-                <!--					<label class="bottom" style="position: relative;">Unlimited: 0</label>-->
-                <!--                    <input type="number" value="--><?//=$param['maxDaysAgo'];?><!--" name="maxDaysAgo">-->
-                <!--                </div>-->
-                <div style="float: right; margin: 24px 20px 0px 0px">
-                    <input type="submit" value="Filter"></input>
+                            </select>
+                        </div>
+                        <div style="float: left;" class="input">
+                            <label for="profilenumber">Chamber name</label>
+                            <select style="width: 100%;" name="chamber">
+                                <option value="">No chamber</option>
+                                <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
+                                    <option disabled><?=$mode?></option>
+                                    <?php foreach($mapInfo["modes"][$modeId] as $chapterId): ?>
+                                        <option disabled>&nbsp;&nbsp;<?=$mapInfo["chapters"][$chapterId]["chapterName"]?></option>
+                                        <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
+                                            <?php $mapName = $mapInfo["maps"][$mapId]["mapName"]?>
+                                            <option value="<?=$mapId?>" <?php if($param['chamber'] == $mapId): ?>selected<?php endif; ?>>&nbsp;&nbsp;&nbsp;&nbsp;<?=$mapName?></option>
+                                        <?php endforeach; ?>
+                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="changelog-filter-options-date changelog-filter-options-group">
+                        <div style="float: left;" class="input">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" name="startDate" value="<?=$param['startDate'];?>">
+                        </div>
+                        <div style="float: left;" class="input">
+                            <label for="endDate">End Date</label>
+                            <input type="date" name="endDate" value="<?=$param['endDate'];?>">
+                        </div>
+                    </div>
+                    <div class="changelog-filter-options-rank changelog-filter-options-group">
+                        <div style="float: left;" class="input">
+                            <label for="startRank">Start Rank</label>
+                            <input type="number" min="0" name="startRank" value="<?=$param['startRank'];?>">
+                        </div>
+                        <div style="float: left;" class="input">
+                            <label for="endRank">End Rank</label>
+                            <input type="number" min="1" name="endRank" value="<?=$param['endRank'];?>">
+                        </div>
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">Single Player</div>
+                        <div class="checkbox <?php if($param['sp'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?=$param['sp'];?>" name="sp">
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">Cooperative</div>
+                        <div class="checkbox <?php if($param['coop'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?=$param['coop'];?>" name="coop">
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">World Record</div>
+                        <div class="checkbox <?php if($param['wr'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?=$param['wr'];?>" name="wr">
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">Demo</div>
+                        <div class="checkbox <?php if($param['demo'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?=$param['demo'];?>" name="demo">
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">Video</div>
+                        <div class="checkbox <?php if($param['yt'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?=$param['yt'];?>" name="yt">
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">Submission</div>
+                        <div class="checkbox <?php if($param['submission'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?=$param['submission'];?>" name="submission">
+                    </div>
+                    <div style="float: left;" class="check">
+                        <div style="position: relative;">Pending</div>
+                        <div class="checkbox <?php if($param['pending'] == "1"): ?>ticked<?php endif; ?>"></div>
+                        <input type="hidden" value="<?php if($param['pending'] == "1"): ?>2<?php endif; ?>" name="pending">
+                    </div>
+                    <!--                <div style="float: left; display: none" class="number">-->
+                    <!--                    <label class="top" style="position: relative;">Max days ago</label>-->
+                    <!--					<label class="bottom" style="position: relative;">Unlimited: 0</label>-->
+                    <!--                    <input type="number" value="--><?//=$param['maxDaysAgo'];?><!--" name="maxDaysAgo">-->
+                    <!--                </div>-->
+                    <div style="float: right; margin: 24px 20px 0px 0px">
+                        <input type="submit" value="Filter"></input>
+                    </div>
                 </div>
             </form>
         </div>
@@ -148,41 +174,6 @@
 <script>
 
     $(document).ready(function() {
-
-        // $(".rank").each(function() {
-        //     //pointsOnHover($(this), $(this).text());
-
-        //     if ($(this).find("i").length) {
-        //         rank = 1;
-        //     }
-        //     else {
-        //         rank = parseInt($(this).text());
-        //     }
-
-        //     var points = Math.max(1,  Math.pow(200 - (rank - 1), 2) / 200);
-        //     points = Math.round(points * 10) / 10;
-
-        //     if (!isNaN(rank)) {
-
-        //         var title;
-        //         if (points == 1)
-        //             title = points + " point";
-        //         else
-        //             title = points + " points";
-
-        //         $(this).tooltip({
-        //             trigger: 'manual',
-        //             placement: 'top',
-        //             title: title
-        //         });
-
-        //         $(this).hover(function() {
-        //             $(this).tooltip('show');
-        //         }, function() {
-        //             $(this).tooltip('hide');
-        //         });
-        //     }
-        // });
 
         $(".entry").each(function() {
             
@@ -259,8 +250,11 @@
 
         var activityByScore = getActivityByScore(<?=json_encode($activity)?>);
         if (Object.keys(activityByScore).length > 0) {
-            var activityByDate = getActivityByDate(activityByScore);
-            drawActivityChart(activityByDate, localizeDate(getDateFirstChange(activityByDate)), getCurrentLocalDate(), $("#changelogActivity"));
+            let activityByDate = getActivityByDate(activityByScore);
+            const urlParams = new URLSearchParams(window.location.search);
+            let endDate = urlParams.get("endDate") !== ("" || null) ? urlParams.get("endDate") : getCurrentLocalDate();
+            let startDate = urlParams.get("startDate") !== ("" || null) ? urlParams.get("startDate") : localizeDate(getDateFirstChange(activityByDate));
+            drawActivityChart(activityByDate, startDate, endDate, $("#changelogActivity"));
         }
     });
 

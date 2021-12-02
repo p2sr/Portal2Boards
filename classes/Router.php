@@ -628,7 +628,7 @@ class Router {
         if ($location[1] == "changelog") {
 
             if (!$_GET) {
-                $changelogParams = array("maxDaysAgo" => "7", "pending" => "2");
+                $changelogParams = array("startDate" => (new DateTime('NOW - 7 day'))->format('Y-m-d'), "pending" => "2");
             }
             else {
                 $changelogParams = $_GET;
@@ -807,18 +807,24 @@ class Router {
     private function prepareChangelogParams($params)
     {
         $result = array(
-        "chamber" => ""
-        , "chapter" => ""
-        , "boardName" => "" 
-        , "profileNumber" => ""
-        , "type" => "" , "sp" => "1", "coop" => "1"
-        , "wr" => ""
-        , "demo" => ""
-        , "yt" => ""
-        , "maxDaysAgo" => ""
-        , "submission" => ""
-        , "banned" => ""
-        , "pending" => "");
+            "chamber" => ""
+            , "chapter" => ""
+            , "boardName" => ""
+            , "profileNumber" => ""
+            , "type" => ""
+            , "sp" => "1"
+            , "coop" => "1"
+            , "wr" => ""
+            , "demo" => ""
+            , "yt" => ""
+            //, "maxDaysAgo" => ""
+            , "startDate" => ""
+            , "endDate" => ""
+            , "startRank" => ""
+            , "endRank" => ""
+            , "submission" => ""
+            , "banned" => ""
+            , "pending" => "");
 
         $changelog_post = array();
         foreach ($params as $key => $val) {
