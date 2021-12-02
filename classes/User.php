@@ -99,7 +99,16 @@ class User {
 
     public function setUserData() {
         $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName, usersnew.* FROM usersnew WHERE profile_number = '$this->profileNumber'");
+        // Creates user if profile number does not exist
+        if($data->num_rows == 0) {
+            Database::query("INSERT INTO usersnew (profile_number) VALUES (" . $this->profileNumber. ")");
+            User::updateProfileData($this->profileNumber);
+            // Update again data
+            $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName, usersnew.* FROM usersnew WHERE profile_number = '$this->profileNumber'");
+        }
+
         while($row = $data->fetch_object()) {
+
             $row->displayName = htmlspecialchars($row->displayName);
             $row->steamname = htmlspecialchars($row->steamname);
             $row->boardname = htmlspecialchars($row->boardname);
