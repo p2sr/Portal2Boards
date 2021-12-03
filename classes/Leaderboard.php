@@ -677,7 +677,7 @@ class Leaderboard
             "wr" => "",
             "demo" => "",
             "yt" => "",
-            //, "maxDaysAgo" => "",
+            "maxDaysAgo" => "",
             "startDate" => "",
             "endDate" => "",
             "startRank" => "",
@@ -698,6 +698,11 @@ class Leaderboard
         // Time Span of leaderboard
         if ($param['startDate'] != "") {
             $whereClause .= "time_gained >= DATE('{$param['startDate']}') AND ";
+        }
+        else{
+            if($param['maxDaysAgo'] != ""){
+                $whereClause .= "time_gained >= DATE_SUB(CONCAT(CURDATE(), ' ', '00:00:00'), INTERVAL ".$param['maxDaysAgo']." DAY) AND ";
+            }
         }
         if ($param['endDate'] != "") {
             $whereClause .= "time_gained <= DATE('{$param['endDate']}') AND ";
