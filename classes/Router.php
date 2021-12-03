@@ -817,7 +817,7 @@ class Router {
             , "wr" => ""
             , "demo" => ""
             , "yt" => ""
-            //, "maxDaysAgo" => ""
+            , "maxDaysAgo" => ""
             , "startDate" => ""
             , "endDate" => ""
             , "startRank" => ""
