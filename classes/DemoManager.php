@@ -1,34 +1,30 @@
 <?php
 
-class DemoManager {
+use obregonco\B2\Client;
+use obregonco\B2\Bucket;
 
-    private $driveService;
-    // const demoFolderId = "0B3FgAePoQ2khX3gzc2dlNDdVZm8";
-    const demoFolderId = "1CJCPtRpcLV-7wrs-_9pNGqNOtORvqXnC";
+class DemoManager {
+    const accountId = "accountId";
+    const keyId = "keyId";
+    const applicationKey = "applicationKey";
+
+    const bucketId = "bucketId";
+
+    private $client;
+    private $bucket;
 
     public function __construct() {
-        $client = new Google_Client();
-        $client->setAuthConfigFile(ROOT_PATH."/secret/client_secret.json");
-        $client->addScope(Google_Service_Drive::DRIVE);
-        $client->setAccessToken(file_get_contents(ROOT_PATH."/secret/credentials.json"));
-        $this->driveService = new Google_Service_Drive($client);
+        $this->client = new Client(DemoManager::accountId, [
+            'keyId' => DemoManager::keyId,
+            'applicationKey' => DemoManager::applicationKey,
+        ]);
+
+        $this->bucket = $this->client->getBucketFromId(DemoManager::bucketId);
     }
 
     function getDemoFile($id) {
         $demoName = $this->getDemoName($id);
-
-        //echo $demoName;
-
-        $files_list = $this->driveService->files->listFiles(array(
-            "q" => "title='".$demoName."' and '".DemoManager::demoFolderId."' in parents"
-        ))->getItems();
-
-        if (count($files_list) > 0) {
-            return $files_list[0];
-        }
-        else {
-            return NULL;
-        }
+        return $this->client->getFile($this->bucket, $demoName);
     }
 
     function getDemoName($id) {
@@ -43,31 +39,20 @@ class DemoManager {
     }
 
     function uploadDemo($data, $id) {
+        $this->deleteDemo($id); // delete if exists - fails silently otherwise
         $demoName = $this->getDemoName($id);
 
-        try {
-            $this->deleteDemo($id);
-        }
-        catch (Exception $e) {
-            print "Tried to delete demo .".$demoName." but no files found. This must be a new score.";
-        }
-
-        $parent = new Google_Service_Drive_ParentReference();
-        $parent->setId(DemoManager::demoFolderId);
-        $file = new Google_Service_Drive_DriveFile();
-        $file->setTitle($demoName);
-        $file->setParents(array($parent));
-        $this->driveService->files->insert($file, array(
-            'data' => $data,
-            'mimeType' => 'application/octet-stream',
-            'uploadType' => 'media'
-        ));
+        $this->client->upload([
+            'BucketId' => $this->bucket->getId(),
+            'FileName' => $demoName,
+            'Body' => $data,
+        ]);
     }
 
     function getDemoURL($id) {
         $file = $this->getDemoFile($id);
         if ($file != NULL) {
-            return "https://docs.google.com/uc?export=download&id=".$file->id;
+            return $this->client->getDownloadUrlForFile($file);
         }
         else {
             return NULL;
@@ -75,14 +60,9 @@ class DemoManager {
     }
 
     function deleteDemo($id) {
-        try {
-            $file = $this->getDemoFile($id);
-            if ($file != NULL) {
-                $this->driveService->files->delete($file->getId());
-            }
-        }
-        catch (Exception $e) {
-            print "Can't delete demo ".$this->getDemoName($id). ". Error: " . $e->getMessage();
+        $file = $this->getDemoFile($id);
+        if ($file != NULL) {
+            $this->client->deleteFile($file);
         }
     }
 
