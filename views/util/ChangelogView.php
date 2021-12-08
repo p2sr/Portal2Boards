@@ -93,6 +93,8 @@ class ChangelogView
             <div class="submission">
                 <?php if ($val["submission"] == 1): ?>
                     <i class="fa fa-pencil" aria-hidden="true" data-toggle="tooltip" title="Submission"></i>
+                <?php elseif ($val["submission"] == 2): ?>
+                    <i class="fa fa-gamepad" aria-hidden="true" data-toggle="tooltip" title="Autosubmission"></i>
                 <?php endif; ?>
             </div>
             <?php if ($val["pending"] == 1): ?>

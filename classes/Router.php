@@ -151,7 +151,7 @@ class Router {
 
                 $comment = isset($_POST["comment"]) ? $_POST["comment"] : null;
 
-                $id = Leaderboard::submitChange($userId, $_POST["mapId"], $_POST["score"], null, $comment);
+                $id = Leaderboard::submitChange($userId, $_POST["mapId"], $_POST["score"], null, $comment, true);
 
                 if (array_key_exists("demoFile", $_FILES)) {
                     $file = $_FILES["demoFile"];
@@ -387,7 +387,7 @@ class Router {
                 }
 
                 if (SteamSignIn::hasProfilePrivileges($_POST["profileNumber"])) {
-                    $id = Leaderboard::submitChange($_POST["profileNumber"], $_POST["chamber"], $_POST["score"], $_POST["youtubeID"], $_POST["comment"]);
+                    $id = Leaderboard::submitChange($_POST["profileNumber"], $_POST["chamber"], $_POST["score"], $_POST["youtubeID"], $_POST["comment"], false);
 
                     if (array_key_exists("demoFile", $_FILES)) {
                         $file = $_FILES["demoFile"];

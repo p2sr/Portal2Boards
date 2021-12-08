@@ -111,6 +111,14 @@
             });
         });
         
+        $(".fa.fa-gamepad").each(function() {
+            $(this).tooltip( { title: "Autosubmission" });
+            $(this).hover(function() {
+                $(this).tooltip('show');
+            }, function() {
+                $(this).tooltip('hide');
+            });
+        });
     });
 
     function fadeInLetters(selector) {

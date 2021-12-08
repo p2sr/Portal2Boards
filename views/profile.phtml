@@ -1244,7 +1244,9 @@
                 "<div class='submission'>" +
                     ((entry.submission == 1)
                         ? "<i class='fa fa-pencil' aria-hidden='true' data-toggle='tooltip' title='Submission'></i>"
-                        : "") +
+                        : (entry.submission == 2)
+                            ? "<i class='fa fa-gamepad' aria-hidden='true' data-toggle='tooltip' title='Autosubmission'></i>"
+                            : "") +
                 "</div>" +
                 "<div class='comment'>"+
                     "<i class='fa fa-comment' aria-hidden='true' data-toggle='popover' data-content='"+entryNoteHTML+"'" + ((entryNoteHTML == null) ? "style='display: none'" : "" ) + "></i>"+

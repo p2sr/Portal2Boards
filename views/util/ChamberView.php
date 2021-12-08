@@ -32,6 +32,8 @@ class ChamberView
                 <?php if ($scoreData["submission"] == 1): ?>
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                     <!-- data-toggle="tooltip" title="Submission" -->
+                <?php elseif ($scoreData["submission"] == 2): ?>
+                    <i class="fa fa-gamepad" aria-hidden="true"></i>
                 <?php endif; ?>
             </div>
             <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$GLOBALS["chamberID"]?>" class="score"><?= Leaderboard::convertToTime($scoreData["score"]) ?></a>

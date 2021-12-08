@@ -724,6 +724,11 @@ class Leaderboard
                 $whereClause .= "youtube_id IS NULL AND ";
         }
 
+        if ($param['submission'] != "") {
+            // retrieve both manual and automatic submissions
+            $whereClause .= "submission != 0 AND ";
+        }
+
         $whereClause .= (($param["hasDate"] == "1") ? "time_gained IS NOT NULL AND " : "");
         $whereClause .= (($param["wr"] != "") ? "wr_gain = '{$param["wr"]}' AND " : "");
         $whereClause .= (($param["banned"] != "") ? "banned = '{$param["banned"]}' AND " : "");
@@ -751,7 +756,6 @@ class Leaderboard
                                                     WHERE " . $whereClause . "
                                                     map_id LIKE '%{$param['chamber']}%' 
                                                     AND profile_number LIKE '%{$param['profileNumber']}%'
-                                                    AND submission LIKE '%{$param['submission']}%'
                                                     AND has_demo LIKE '%{$param['demo']}%'
                                                     ORDER BY time_gained DESC, score ASC, profile_number ASC
                                                 ) as ch
@@ -1200,7 +1204,7 @@ class Leaderboard
         }
     }
 
-    public static function submitChange($profileNumber, $chamber, $score, $youtubeID, $comment)
+    public static function submitChange($profileNumber, $chamber, $score, $youtubeID, $comment, $auto)
     {
         Debug::log("Starting Submit Change");
         $maps = Cache::get("maps");
@@ -1229,7 +1233,7 @@ class Leaderboard
 
         Debug::log("Submissting change to Change LOG");
         Database::query("INSERT INTO changelog(id, profile_number, score, map_id, wr_gain, previous_id, pre_rank, submission, note, pending)
-              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", 1,'".$comment."', 1)
+              VALUES (NULL, '" . $profileNumber . "','" . $score . "','" . $chamber . "','" . $wr . "', ". $previousId .", ".$preRank.", ".($auto?2:1).",'".$comment."', 1)
             ");
 
         $id = Database::getMysqli()->insert_id;
