@@ -684,7 +684,8 @@ class Leaderboard
             "endRank" => "",
             "submission" => "",
             "banned" => "",
-            "pending" => "2");
+            "pending" => "2",
+            "id" => "");
 
         foreach ($parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
