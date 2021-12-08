@@ -719,9 +719,9 @@ class Leaderboard
 
         if ($param['yt'] != "") {
             if ($param['yt'] == "1")
-                $whereClause .= "youtube_id IS NOT NULL AND";
+                $whereClause .= "youtube_id IS NOT NULL AND ";
             if ($param['yt'] == "0")
-                $whereClause .= "youtube_id IS NULL AND";
+                $whereClause .= "youtube_id IS NULL AND ";
         }
 
         $whereClause .= (($param["hasDate"] == "1") ? "time_gained IS NOT NULL AND " : "");
