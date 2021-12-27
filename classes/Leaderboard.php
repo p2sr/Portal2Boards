@@ -1310,7 +1310,7 @@ class Leaderboard
     public static function getEvidenceRequirments($active = true){
         $evidenceRequirments = array();
         $data = Database::query("
-            SELECT `id`, `rank`, `demo`, `video`, `active`, `timestamp`
+            SELECT `id`, `rank`, `demo`, `video`, `active`, `timestamp`, `closed_timestamp`
             FROM evidence_requirements");
         while ($row = $data->fetch_assoc()) {
             $evidenceRequirments[$row["id"]] = $row;
