@@ -834,7 +834,7 @@ class Leaderboard
                     if ($userScoreData["scoreData"]["youtubeID"] != NULL || $userScoreData["scoreData"]["hasDemo"] != 0)
                         $bonusPoints = (self::proofBonusPointsPercentage / 100) * $points;
 
-                    $pointBoard[$chapter][$map][$user]["scoreData"]["score"] = max(1, $points) + $bonusPoints;
+                    $pointBoard[$chapter][$map][$user]["scoreData"]["score"] = $points + $bonusPoints;
                 }
             }
         }
@@ -845,7 +845,7 @@ class Leaderboard
         if($rank > Leaderboard::rankForPoints){
             return 0;
         }
-        return pow(Leaderboard::rankForPoints - ($rank - 1), 2) / Leaderboard::rankForPoints;
+        return max(1, pow(Leaderboard::rankForPoints - ($rank - 1), 2) / Leaderboard::rankForPoints);
     }
 
     //TODO: combine sorting functions
