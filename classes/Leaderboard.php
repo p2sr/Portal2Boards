@@ -1373,17 +1373,16 @@ class Leaderboard
             $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
             Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
 
-            if($videoRequirement >= $result['post_rank']){
-                // Rank under video requirement
-                if($demoRequirement >= $result['post_rank']){
-                    // Rank under Demo Requirement
-                    return 1;
-                }
-                if($removed == 1){
-                    // Video Removed
-                    return 1;
-                }
+            if($demoRequirement && $demoRequirement >= $result['post_rank']){
+                // Rank under Demo Requirement
+                return 1;
             }
+
+            if($videoRequirement && $videoRequirement >= $result['post_rank'] && $removed){
+                // Rank under video requirement and video removed
+                return 1;
+            }
+
             return 0;
         }
 
@@ -1400,7 +1399,7 @@ class Leaderboard
         $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
         Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
 
-        return $demoRequirement >= $result['post_rank'] ? 1 : 0;
+        return ($demoRequirement && $demoRequirement >= $result['post_rank']) ? 1 : 0;
     }
 
     private static function setScoreTable($profileNumber, $chamber, $id){
