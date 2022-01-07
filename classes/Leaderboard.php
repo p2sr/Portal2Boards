@@ -590,7 +590,7 @@ class Leaderboard
     //TODO: remove indexing by chapter id. Chamber id is sufficient.
     public static function getBoard($parameters = array())
     {
-        $param = array("chamber" => "" , "mode" => "", "pending" => "1");
+        $param = array("chamber" => "" , "mode" => "", "pending" => "");
 
         foreach ($parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
@@ -621,6 +621,7 @@ class Leaderboard
                           WHERE is_coop LIKE '%{$param["mode"]}%' AND steam_id LIKE '%{$param["chamber"]}'
                         )
                         AND changelog.banned = '0'
+                        AND changelog.pending LIKE '%{$param["pending"]}%'
                 ) as sc
                 JOIN (SELECT @rownum := NULL, @prevMap := 0, @prevScore := 0) AS r
                 ORDER BY sc.map_id, sc.score, sc.time_gained, sc.profile_number ASC
