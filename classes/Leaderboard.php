@@ -1122,20 +1122,23 @@ class Leaderboard
 
     public static function setYoutubeID($changelogId, $youtubeID)
     {
+        if ($youtubeID == null || $youtubeID == "") {
+            Debug::log("Ignoring setYoutubeID({$changelogId}, null)");
+            return;
+        }
+
         Debug::log("Setting Demo for changelog id: ".$changelogId);
         $change = self::getChange($changelogId);
         $pending = self::isPendingRequired($changelogId, 1);
         $profile_number = $change['profile_number'];
         $map_id = $change['mapid'];
 
-        if ($youtubeID != null && $youtubeID != "") {
-            Database::query("UPDATE changelog
-                        SET youtube_id = '{$youtubeID}',
-                            pending = '{$pending}'
-                        WHERE changelog.id = '{$changelogId}'");
-        }
+        Database::query("UPDATE changelog
+                    SET youtube_id = '{$youtubeID}',
+                        pending = '{$pending}'
+                    WHERE changelog.id = '{$changelogId}'");
 
-        if(self::isLatest($profile_number, $map_id, $changelogId) && $pending != 1){
+        if(self::isLatest($profile_number, $map_id, $changelogId) && !$pending){
             // TODO - Check on removed if we need to go back to old value and sent as pending
             self::setScoreTable($profile_number, $map_id, $changelogId);
         }
