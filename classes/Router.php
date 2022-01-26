@@ -4,7 +4,7 @@ class Router {
     static $location;
     
     //10MB in bytes
-    const maxUploadBytes = 8388608; //1024 * 1024 * 8
+    const maxUploadBytes = 16777216; //1024 * 1024 * 16
     
     //a week in seconds
     const sessionLifetime = 604800; //60 * 60 * 24 * 7
