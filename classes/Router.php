@@ -659,6 +659,8 @@ class Router {
             View::$pageData["pageTitle"] = (isset($view->profile->userData->displayName)) ? $view->profile->userData->displayName : "No profile";
 
             if (isset($location[3]) && $location[3] == "json") {
+                // REALLY IMPORTANT: don't show the user's auth hash!
+                unset($view->profile->userData->auth_hash);
                 echo json_encode($view->profile);
                 exit;                
             }
