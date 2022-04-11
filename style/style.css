@@ -479,7 +479,7 @@ a:hover, a:focus {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    width: 159px;
+    width: 150px;
 }
 #chambers .chamber_scores .entry .dateDifference {
     border-radius: 2px;
