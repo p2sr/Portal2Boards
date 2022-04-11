@@ -90,6 +90,13 @@
                                         <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?>
                                     </a>
                                     <div class="youtube">
+                                        <?php if ($playerData["scoreData"]["hasDemo"] == 1): ?>
+                                            <a href="/getDemo?id=<?=$playerData["scoreData"]["changelogId"] ?>">
+                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="youtube">
                                         <?php if ($rank1youtube != NULL): ?>
                                             <i onclick="embedOnBody(
                                                 '<?=$rank1youtube?>',
@@ -107,6 +114,13 @@
                               <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$map?>" class="score">
                                   <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?>
                               </a>
+                              <div class="youtube">
+                                  <?php if ($playerData["scoreData"]["hasDemo"] == 1): ?>
+                                      <a href="/getDemo?id=<?=$playerData["scoreData"]["changelogId"] ?>">
+                                          <i class="fa fa-download" aria-hidden="true"></i>
+                                      </a>
+                                  <?php endif; ?>
+                              </div>
                               <div class="youtube">
                                   <?php if ($playerData["scoreData"]["youtubeID"] != NULL): ?>
                                       <i onclick="embedOnBody(
