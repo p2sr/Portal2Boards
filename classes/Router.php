@@ -426,6 +426,22 @@ class Router {
             exit;
         }
 
+        if ($location[1] == "verifyScore") {
+            if (isset($_POST["id"])) {
+                if (!is_numeric($_POST["id"])) {
+                    exit;
+                }
+
+                if (SteamSignIn::loggedInUserIsAdmin()) {
+                    Database::query("UPDATE changelog SET pending=0 WHERE changelog.id='{$_POST['id']}'");
+                }
+            }
+            else {
+                echo "Missing post data!";
+            }
+            exit;
+        }
+
         if ($location[1] == "fetchNewChamberScores") {
             if (isset($_POST["chamber"])) {
 

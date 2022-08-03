@@ -1335,6 +1335,11 @@
 
             var entryId = entry.id;
             if ($changeMenu.find(".changeForm").length == 0) {
+                var adminButtons = "";
+                if (isAdmin) {
+                    adminButtons = "<div><div class='button verifyScore' style='" + ((entry.pending == 0) ? "display:none;" : "") + "'>Manually Verify</div></div>";
+                }
+
                 var $content = $(
                     "<form class='changeForm'>" +
                         "<input type='text' name='id' style='display: none' value='" + entry.id + "'>" +
@@ -1379,7 +1384,7 @@
                             "<div class='button deleteComment' style='" + ((entry.note == null) ? "display:none;" : "") + "'>" +
                                 "Remove Comment" +
                             "</div>" +
-                        "</div>" +
+                        "</div>" + adminButtons +
                     "</form>");
 
                 $changeMenu.append($content);
@@ -1388,6 +1393,28 @@
             $changeMenu.slideDown("slow");
             $changeMenu.addClass("open");
             $changeMenuToggleIcon.attr("class", "fa fa-caret-down");
+
+            $changeMenu.find(".button.verifyScore").on('click', function(event) {
+                event.preventDefault();
+
+                var $form = $(this).closest(".changeForm");
+                var el = $(this);
+                el.prop('disabled', true);
+                setTimeout(function(){el.prop('disabled', false); }, 1000);
+                setStatusProcessing();
+
+                $.ajax({
+                    url: '/verifyScore',
+                    data: new FormData($form[0]),
+                    type: 'POST',
+                    success: function (data) {
+                        setStatusSuccess("Score verified.");
+                    },
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                }, 'json');
+            });
 
             $changeMenu .find(".button.deleteSubmission").on('click', function(event) {
                 event.preventDefault();
