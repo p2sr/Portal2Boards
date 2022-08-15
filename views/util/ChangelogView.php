@@ -77,14 +77,19 @@ class ChangelogView
                         <i class="fa fa-lg fa-download" aria-hidden="true"></i>
                     </a>
                 <?php endif; ?></div>
-            <div class="youtube"><?php if ($val["youtubeID"] != NULL): ?>
+            <div class="youtube">
                     <i <?php if ($val["youtubeID"] == NULL): ?>
-                        style="display:none"
+                        <?php if (isset($val["post_rank"]) && $val["post_rank"] <= 200 && ($val["hasDemo"] == 1)) : ?>
+                            onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$val["id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                        <?php else: ?>
+                            style="display:none"
+                        <?php endif; ?>
                     <?php else : ?>
-                        onclick="embedOnBody('<?=$val["youtubeID"]?>', '<?=$val["chamberName"]?> - <?=Leaderboard::convertToTime($val["score"])?> - <?=Util::escapeQuotesHTML($val["player_name"])?>');"
+                        onclick="embedOnBody('<?=$val["youtubeID"]?>', '<?=$val["chamberName"]?> - <?=Leaderboard::convertToTime($val["score"])?> - <?=Util::escapeQuotesHTML($val["player_name"])?>');" class="youtubeEmbedButton fa fa-lg fa-youtube-play"
                     <?php endif; ?>
-                        class="youtubeEmbedButton fa fa-lg fa-youtube-play" aria-hidden="true"></i>
-                <?php endif; ?></div>
+                        aria-hidden="true">
+                    </i>
+            </div>
             <div class="comment">
                 <?php if ($val["note"] != NULL): ?>
                     <i class="fa fa-comment" aria-hidden="true" data-toggle='popover' data-content="<?=$val["note"]?>"></i>

@@ -46,14 +46,16 @@ class ChamberView
                 <?php endif; ?>
             </div>
             <div class="youtube">
-                <?php if ($scoreData["youtubeID"] != NULL): ?>
-                    <i <?php if ($scoreData["youtubeID"] == NULL): ?>
+                <i <?php if ($scoreData["youtubeID"] == NULL): ?>
+                    <?php if (isset($scoreData["playerRank"]) && $scoreData["playerRank"] <= 200 && ($scoreData["hasDemo"] == 1)) : ?>
+                        onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$scoreData["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                    <?php else: ?>
                         style="display:none"
-                    <?php else : ?>
-                        onclick="embedOnBody('<?=$scoreData["youtubeID"]?>', '#<?=$scoreData["playerRank"]?> - <?=Leaderboard::convertToTime($scoreData["score"])?> - <?=Util::escapeQuotesHTML($playerData["boardname"])?>');"
                     <?php endif; ?>
-                        class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                <?php else : ?>
+                    onclick="embedOnBody('<?=$scoreData["youtubeID"]?>', '#<?=$scoreData["playerRank"]?> - <?=Leaderboard::convertToTime($scoreData["score"])?> - <?=Util::escapeQuotesHTML($playerData["boardname"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
                 <?php endif; ?>
+                        aria-hidden="true"></i>
             </div>
             <div class="comment">
                 <?php if ($scoreData["note"] != NULL): ?>
