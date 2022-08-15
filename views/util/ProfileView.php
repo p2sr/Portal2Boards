@@ -30,7 +30,7 @@ class ProfileView
         </div>
     <?php }
 
-    static function chamberScoreRow($user, $mapInfo, $map, $score) { ?>
+    static function chamberScoreRow($user, $mapInfo, $map, $score, $autoRenderedVideoIds) { ?>
         <div class="scoreTableEntry">
             <div class="chamberScoreInfo" date="<?=$score["date"]?>">
                 <div class="cell scoreMenuToggle" onclick="openScoreMenu(event, '<?=$map?>', '<?=$score["changelogId"]?>')">
@@ -53,7 +53,7 @@ class ProfileView
                 </div>
                 <div class="cell youtube" align="center">
                     <i <?php if ($score["youtubeID"] == NULL): ?>
-                        <?php if (isset($score["playerRank"]) && $score["playerRank"] <= 200 && ($score["hasDemo"] == 1)) : ?>
+                        <?php if (in_array((int) $score["changelogId"], $autoRenderedVideoIds)) : ?>
                             onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$score["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
                         <?php else: ?>
                             style="display:none"
