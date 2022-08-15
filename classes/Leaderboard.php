@@ -1495,4 +1495,18 @@ class Leaderboard
         return $changelogId == $topRow["id"];
     }
 
+    public static function getActiveRunners($months) {
+        $data = Database::query("
+            SELECT usersnew.profile_number
+            FROM usersnew
+            INNER JOIN changelog USING (profile_number)
+            WHERE changelog.time_gained > NOW() - INTERVAL {$months} MONTH
+            GROUP BY usersnew.profile_number
+        ");
+        $runners = array();
+        while ($obj = $data->fetch_row()) {
+            $runners[] = $obj[0];
+        }
+        return $runners;
+    }
 }
