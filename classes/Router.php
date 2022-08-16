@@ -111,6 +111,20 @@ class Router {
         // TODO - NEW API SHIT
 
         if($location[1] == "api-v2"){
+            // unauthenticated endpoints first
+            if ($location[2] == "active-profiles") {
+                if (!$_POST || !isset($_POST["months"]) || !is_numeric($_POST["months"])) {
+                    echo "Missing or invalid paramters";
+                    http_response_code(400);
+                    exit;
+                }
+                $runners = Leaderboard::getActiveRunners($_POST["months"]);
+                echo json_encode(array(
+                    "profiles" => $runners,
+                ));
+                exit;
+            }
+
             if (!$_POST || !isset($_POST["auth_hash"])) {
                 echo "Missing paramters";
                 http_response_code(400);

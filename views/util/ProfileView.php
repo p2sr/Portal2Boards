@@ -30,7 +30,7 @@ class ProfileView
         </div>
     <?php }
 
-    static function chamberScoreRow($user, $mapInfo, $map, $score) { ?>
+    static function chamberScoreRow($user, $mapInfo, $map, $score, $autoRenderedVideoIds) { ?>
         <div class="scoreTableEntry">
             <div class="chamberScoreInfo" date="<?=$score["date"]?>">
                 <div class="cell scoreMenuToggle" onclick="openScoreMenu(event, '<?=$map?>', '<?=$score["changelogId"]?>')">
@@ -53,11 +53,15 @@ class ProfileView
                 </div>
                 <div class="cell youtube" align="center">
                     <i <?php if ($score["youtubeID"] == NULL): ?>
-                        style="display:none"
+                        <?php if (in_array((int) $score["changelogId"], $autoRenderedVideoIds)) : ?>
+                            onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$score["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                        <?php else: ?>
+                            style="display:none"
+                        <?php endif; ?>
                     <?php else : ?>
-                        onclick="embedOnBody('<?=$score["youtubeID"]?>', '<?=$mapInfo["maps"][$map]["mapName"]?> - #<?=$score["playerRank"]?> - <?=Leaderboard::convertToTime($score["score"])?>');"
+                        onclick="embedOnBody('<?=$score["youtubeID"]?>', '<?=$mapInfo["maps"][$map]["mapName"]?> - #<?=$score["playerRank"]?> - <?=Leaderboard::convertToTime($score["score"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
                     <?php endif; ?>
-                    class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                   aria-hidden="true"></i>
                 </div>
                 <div class="cell rank" align="right"><?=isset($score["playerRank"]) ? $score["playerRank"] : "-"?></div>
                 <a class="cell score" align="right" href="/changelog?profileNumber=<?=$user->profileNumber?>&chamber=<?=$map?>">

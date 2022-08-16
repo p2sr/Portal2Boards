@@ -1,6 +1,7 @@
 <?php $mapInfo = $GLOBALS["mapInfo"]; ?>
 <?php $mode = Router::$location[2]; ?>
 <?php $youtubeIDs = (($mode == "coop") ? Cache::get("COOPyoutubeIDs") : Cache::get("SPyoutubeIDs")) ?>
+<?php $autoRenderedVideoIds = AutoRenderApiClient::getChambersVideos($view->board)?>
 
 <script>
     function goToChamber(evt, map) {
@@ -102,6 +103,10 @@
                                                 '<?=$rank1youtube?>',
                                                 '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($rank1String)?>');"
                                             class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <?php if (in_array((int) $playerData["scoreData"]["changelogId"], $autoRenderedVideoIds)) : ?>
+                                                <i onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$playerData["scoreData"]["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render" aria-hidden="true"></i>
+                                            <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -127,6 +132,10 @@
                                           '<?=$playerData["scoreData"]["youtubeID"]?>',
                                           '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($playerData["userData"]["boardname"])?>');"
                                          class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                                  <?php else: ?>
+                                    <?php if (in_array((int) $playerData["scoreData"]["changelogId"], $autoRenderedVideoIds)) : ?>
+                                          <i onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$playerData["scoreData"]["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render" aria-hidden="true"></i>
+                                    <?php endif; ?>
                                   <?php endif; ?>
                               </div>
                           </div>
