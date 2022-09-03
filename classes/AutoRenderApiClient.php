@@ -39,7 +39,7 @@ class AutoRenderApiClient
                 }
             }
         }
-        Debug::log(json_encode($ids));
+        //Debug::log(json_encode($ids));
         $result = AutoRenderApiClient::getIfVideosExists($ids);
         //Debug::log(json_encode($result->ids));
         return $result->ids;
