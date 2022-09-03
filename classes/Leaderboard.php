@@ -134,6 +134,29 @@ class Leaderboard
         Debug::log("Finished caching");
     }
 
+    // this is dumb as fuck, but sometimes the scores table can get out of sync
+    // so i hacked this bullshit in to automate the fix because i was too scared
+    // to touch all the other code
+    public static function fixupScoresForUser($profile_number)
+    {
+        Debug::log("Begin score fixup for profile $profile_number");
+
+        $data = Database::query("SELECT steam_id FROM maps");
+        $maps = array();
+        while ($row = $data->fetch_row()) {
+            $maps[] = $row[0];
+        }
+
+        Debug::log("Fetched " . strval(count($maps)) . " maps");
+
+        foreach ($maps as $steam_id) {
+            Debug::log("Resolving score for map $steam_id");
+            self::resolveScore($profile_number, $steam_id);
+        }
+
+        Debug::log("Fixed up scores for profile $profile_number");
+    }
+
     //TODO: generalize map list to id's instead of steam time id's
     public static function getMaps()
     {
