@@ -1164,18 +1164,16 @@ class Leaderboard
     //note that we sort the changelog by descending date such that we guarantee that in the scenario that there are
     //two changelog entries with the same score for whatever reason, the newest entry is picked
     public static function resolveScore($profileNumber, $mapId) {
-
         $minScoreRows = Database::query("
-            SELECT changelog.score, changelog.id
+            SELECT score, id
             FROM changelog
-            INNER JOIN (
-                SELECT map_id, profile_number, min(score) as score
-                FROM changelog
-                WHERE banned = 0 AND pending = 0 AND changelog.profile_number = '{$profileNumber}' AND changelog.map_id = '{$mapId}'
-                GROUP BY map_id, profile_number
-            ) as minScoreId ON (changelog.profile_number = minScoreId.profile_number AND changelog.map_id = minScoreId.map_id AND changelog.score = minScoreId.score)
-            WHERE changelog.score = minScoreId.score
-            ORDER BY time_gained DESC");
+            WHERE
+                banned=0 AND
+                pending=0 AND
+                map_id='$mapId' AND
+                profile_number='$profileNumber'
+            ORDER BY changelog.score ASC, time_gained DESC
+            LIMIT 1");
 
         if ($minScoreRows->num_rows > 0) {
 
