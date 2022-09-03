@@ -1115,7 +1115,7 @@ class Leaderboard
                             pending = {$pending}
                         WHERE changelog.id = '{$changelogId}'");
 
-        if(self::isLatest($profile_number, $map_id, $changelogId) && $hasDemo == 1){
+        if(self::isBest($profile_number, $map_id, $changelogId) && $hasDemo == 1){
             // TODO - Check on removed if we need to go back to old value and sent as pending
             Debug::log("Is latest");
             self::wrCheck($changelogId);
@@ -1162,7 +1162,7 @@ class Leaderboard
                         pending = '{$pending}'
                     WHERE changelog.id = '{$changelogId}'");
 
-        if(self::isLatest($profile_number, $map_id, $changelogId) && !$pending){
+        if(self::isBest($profile_number, $map_id, $changelogId) && !$pending){
             // TODO - Check on removed if we need to go back to old value and sent as pending
             self::setScoreTable($profile_number, $map_id, $changelogId);
         }
@@ -1501,12 +1501,18 @@ class Leaderboard
         return $topRow;
     }
 
-    private static function isLatest($profile_number, $map_id, $changelogId){
+    private static function isBest($profile_number, $map_id, $changelogId){
         Debug::log("Profile Number: ".$profile_number." Map Id: ".$map_id." Changelog Id:".$changelogId);
-        $data = Database::query("SELECT *
+        $data = Database::query("
+            SELECT id
             FROM changelog
-            where `profile_number` = '{$profile_number}' AND `map_id` = '{$map_id}'
-            ORDER BY id DESC ");
+            WHERE
+                banned=0 AND
+                pending=0 AND
+                profile_number='{$profile_number}' AND
+                map_id='{$map_id}'
+            ORDER BY changelog.score ASC, time_gained DESC
+            LIMIT 1");
         $changelog = array();
         while ($row = $data->fetch_assoc()) {
             $changelog[] = $row;
