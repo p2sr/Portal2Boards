@@ -13,7 +13,7 @@ class DemoManager {
               WHERE changelog.id = '" . $id . "'");
         $row = $data->fetch_assoc();
         $map = str_replace(" ", "" , $GLOBALS["mapInfo"]["maps"][$row["map_id"]]["mapName"]);
-        return $map."_".$row["score"]."_".$row["profile_number"].".dem";
+        return $map."_".$row["score"]."_".$row["profile_number"]."_".$id.".dem";
     }
 
     function getDemoPath($id) {
