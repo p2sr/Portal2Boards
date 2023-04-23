@@ -16,6 +16,15 @@ class DemoManager {
         return $map."_".$row["score"]."_".$row["profile_number"]."_".$id.".dem";
     }
 
+    function getDemoDetails($id) {
+        $data = Database::query("SELECT changelog.id, changelog.profile_number, map_id
+              FROM changelog INNER JOIN usersnew ON (changelog.profile_number = usersnew.profile_number)
+              WHERE changelog.id = '" . $id . "'");
+        $row = $data->fetch_assoc();
+        return $row;
+    }
+
+
     function getDemoPath($id) {
         return ROOT_PATH . '/' . DemoManager::demoFolder . '/' . $this->getDemoName($id);
     }
@@ -43,6 +52,7 @@ class DemoManager {
 
         fwrite($f, $data);
         fclose($f);
+        return $path;
     }
 
     function deleteDemo($id) {
