@@ -827,8 +827,17 @@ class Router {
         $demoManager = new DemoManager();
         if ($file["size"] < self::maxUploadBytes) {
             $data = file_get_contents($file["tmp_name"]);
-            $demoManager->uploadDemo($data, $id);
+            $demoPath = $demoManager->uploadDemo($data, $id);
             Leaderboard::setDemo($id, 1);
+            try {
+                //Debug::log("Attempting to run execute mdp for $demoPath");
+                $demoDetails = $demoManager->getDemoDetails($id);
+                MdpManager::Execute($demoPath, $demoDetails);
+            } catch (\Throwable $th) {
+                //throw $th;
+                Debug::log("FAILED to Execute mdp");
+                Debug::log($th->__toString());
+            }
             return true;
         }
         else {
@@ -839,7 +848,8 @@ class Router {
     private function prepareChangelogParams($params)
     {
         $result = array(
-            "chamber" => ""
+            "id" => ""
+            , "chamber" => ""
             , "chapter" => ""
             , "boardName" => ""
             , "profileNumber" => ""

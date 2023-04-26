@@ -1,0 +1,170 @@
+sar_speedrun_category
+sar_speedrun_offset 16868
+sar_speedrun_smartsplit 1
+sar_autorecord 1
+sar_record_at_demo_name "drink_water"
+sar_record_prefix "demo/fullgame/%Y-%m-%d/"
+sar_fast_load_preset full
+ui_loadingscreen_transition_time 0.0
+ui_loadingscreen_fadein_time 0.0
+svar_set course_name
+developer
+ui_loadingscreen_mintransition_time 0.0
+sar_disable_progress_bar_update 2
+fs_fios_prefetch_file_in_pack models/container_ride
+bind mwheelup +jump
+sar_hud_x
+sar_hud_y
+sar_hud_font_index
+sar_speedrun_autostop 2
+sar_prevent_mat_snapshot_recompute 1
+sar_hud_orange_only
+sar_toast_create fade
+sv_player_funnel_into_portals 1
+sar_record_at
+mat_queue_mode
+sar_ihud_modify all highlight
+viewmodel_offset
+sar_toast_tag_dismiss_all fade
+sar_record_prefix
++dash
+-dash
+mat_fullbright 0
+swap_ss_input
+bind mwheeldown +jump
+bind mwheeldown +use
+sar_toast_create "fade"
+cl_playermodel models
+sar_ihud_x
+bind mwheelup +use
+fps_max 300
+sar_force_fov 115 33
+ss_pip_bottom_offset
+in_forceuser
+sar_cm_rightwarp 1
+sar_speedrun_offset
+sar_loads_uncap 1
+sar_loads_norender 1
+sar_challenge_autostop
+voice_modenable
+sar_toast_dismiss_all
+cmd1 voice_modenable
+room_type
+sar_speedrun_smartsplit
+dsp_db_min
+dsp_vol_2ch
+dsp_spatial
+dsp_automatic
+dsp_vol_5ch
+dsp_player
+dsp_room
+dsp_speaker
+dsp_dist_max
+dsp_dist_min
+dsp_db_mixdrop
+dsp_slow_cpu
+dsp_mix_max
++mouse_menu
+toggle sensitivity
+-mouse_menu
+dsp_facingaway
+//sensitivity
+dsp_vol_4ch
+dsp_water
+snd_profile
+snd_setmixer gladosVO vol 0.7
+snd_setmixer potatosVO vol 0.4
+snd_setmixer announcerVO vol 0.7
+snd_setmixer wheatleyVO vol 0.7
+snd_setmixer coreVO vol 0.75
+snd_setmixer caveVO vol 0.88
+dsp_mix_min
+crosshair 1
+dsp_volume
+setpause
+ss_pipsplit
+ss_pipscale
+cl_fov 110
+sar_hud_hide_text
+gameui_allowescape
+gameui_preventescape
+gameui_activate
+sar_hud_set_text
+unpause
+cl_fov 120
+gameui_hide
++zoom
+-zoom
++forward
++back
+-forward
+-back
++moveleft
+-moveleft
++moveright
+-moveright
++remote_view
+-remote_view
++attack
+-attack
++attack2
+-attack2
++duck
+-duck
++use
+-use
++jump
+-jump
++leaderboard
+-leaderboard
++quick_ping
+-quick_ping
++coop_ping
+-coop_ping
++movedown
+-movedown
+voice_enable
+sar_sr_hud
+m_rawinput
+gameinstructor_enable
+sar_hud_demo
+sar_hud_velocity
+sar_hud_position
+sar_hud_angles
+ss_pip_right_offset
+quit
+sar_exit
+plugin_unload
+stopvideos
+voicerecord_toggle
+exec listenserver.cfg
+exec skill1.cfg
+cl_playermodel models/player/ballbot/ballbot.mdl
+playvideo_end_level_transition
+playvideo_exitcommand_nointerrupt
+cl_playermodel models/player/eggbot/eggbot.mdl
+stop_transition_videos_fadeout
+r_flashlightbrightness
+ss_force_primary_fullscreen 0
+snd_ducktovolume
+mat_ambient_light
+autosavedangerous
+autosavedangerousissafe
+autosave
+soundfade
+map_wants_save_disable 1
+cond
+say !SAR:
+
+ui_transition_effect
+save_screenshot
+sys_minidumpexpandedspew
+phys_penetration_error_time
+r_PortalTestEnts
+net_graph
+
+fps_max 360
+cl_fov 105 33
+sar_disable_challenge_stats_hud 1 33
+mat_motion_blur_enabled 0 33
+cl_fov 100 33

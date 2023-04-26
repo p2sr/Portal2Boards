@@ -6,6 +6,7 @@ class Discord {
     private static $username;
     private static $avatar;
     private static $embed_icon;
+    private static $mdp;
 
     public static function init() {
         $secret = json_decode(file_get_contents(ROOT_PATH.'/secret/discord.json'));
@@ -14,6 +15,48 @@ class Discord {
         self::$username = 'Portal2Boards';
         self::$avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
         self::$embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
+        self::$mdp = $secret->mdp;
+    }
+
+    public static function sendMdpWebhook($data, $demoName, $text, $err = null){
+        try {
+            //Debug::log("Trying to sending Webhook for mdp");
+            $payload = [
+                'username' => 'Demo Parse Bot',
+                'avatar_url' => self::$avatar,
+                'content' => 'Link to change log: [Click Here](https://board.portal2.sr/changelog?id='.$data['id'].')'
+            ];
+            $tempFile = self::CreateTempFile($text);
+            $tempErrFile = self::CreateTempFile($err);
+            $post = [
+                'files[0]' => curl_file_create($tempFile, 'text/plain', $demoName.'.txt'),
+                'payload_json' => json_encode($payload)
+            ];
+    
+            if($err != null){
+                $post['files[1]'] = curl_file_create($tempErrFile, 'text/plain', $demoName.'_err.txt');
+            }
+            //Debug::log(json_encode($payload));
+            $ch = curl_init(self::$mdp);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // DEV TESTING
+            curl_setopt($ch, CURLOPT_USERAGENT, 'board.portal2.sr (https://github.com/p2sr/Portal2Boards)');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: multipart/form-data'));
+            $response = curl_exec($ch);
+            curl_close($ch);
+            //Debug::log($response);
+
+            self::DeleteTempFile($tempErrFile);
+            self::DeleteTempFile($tempFile);
+            //Debug::log("Finished sending");
+            
+        } catch (\Throwable $th) {
+            Debug::log($th->__toString());
+        }
+        
     }
 
     public static function sendWebhook($data) {
@@ -103,6 +146,16 @@ class Discord {
 
     public static function sanitiseText($text) {
         return preg_replace('/(\\*|_|`|~)/miu', '\\\\$1', $text);
+    }
+
+    private static function CreateTempFile($text){
+        $file = tempnam(sys_get_temp_dir(), 'POST');
+        file_put_contents($file, $text);
+        return $file;
+    }
+
+    private static function DeleteTempFile($file){
+        unlink($file);
     }
 }
 Discord::init();
