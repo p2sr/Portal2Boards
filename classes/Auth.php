@@ -8,7 +8,7 @@ class Auth {
 
         // Create Auth hash
         $auth_hash = Util::random_str(32);
-        Debug::log("User id: ".$userId." - Hash: ".$auth_hash);
+        //Debug::log("User id: ".$userId." - Hash: ".$auth_hash);
         // Save to db
         Database::query("UPDATE usersnew 
                                 SET usersnew.auth_hash = '{$auth_hash}'
