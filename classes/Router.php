@@ -95,9 +95,11 @@ class Router {
                     }
                     $_SESSION["user_auth_hash"] = $auth_hash;
                 }
+                header("Location: /profile/".$user);
+            } else {
+                header("Location: /");
             }
 
-            header("Location: /profile/".$user);
             exit;
         }
 
