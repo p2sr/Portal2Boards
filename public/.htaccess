@@ -18,3 +18,4 @@ RewriteRule ^(api|api/)$ - [R=404,L,NC]
 php_value upload_max_filesize 16M
 Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
 Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"
+Header edit Set-Cookie ^(.*)$  $1;SameSite=Lax;Secure;HttpOnly
