@@ -16,12 +16,12 @@
 
         <title><?php echo $view->siteTitle . View::$pageData["pageTitle"]; ?></title>
 
-        <?php foreach($view->css as $path): ?>
-            <link rel="stylesheet" type="text/css" href="<?=$path; ?>?v=<?=$view->browserCacheVersion; ?>">
+        <?php foreach($view->css as [$path, $hash]): ?>
+            <link rel="stylesheet" type="text/css" href="<?=$path; ?>?v=<?=$view->browserCacheVersion; ?>"<?php echo isset($hash) ? " integrity=\"$hash\" crossorigin=\"anonymous\"" : '' ?>>
         <?php endforeach; ?>
 
-        <?php foreach($view->js as $path): ?>
-            <script type="text/javascript" src="<?=$path; ?>"></script>
+        <?php foreach($view->js as [$path, $hash]): ?>
+            <script type="text/javascript" src="<?=$path; ?>"<?php echo isset($hash) ? " integrity=\"$hash\" crossorigin=\"anonymous\"" : '' ?>></script>
         <?php endforeach; ?>
 
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
