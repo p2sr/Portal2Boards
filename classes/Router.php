@@ -792,11 +792,16 @@ class Router {
                     }
 
                     if (strlen($_POST["youtube"]) != 0) {
-                        if (!preg_match("/^[A-Za-z0-9_\\-\\/:.]+$/", $_POST["youtube"])) {
+                        if (!preg_match("/^[A-Za-z0-9_\\-\\/:.@]+$/", $_POST["youtube"])) {
                             $view->msg = "Invalid YouTube channel id or username.";
                         }
                         else {
-                            if (strpos($_POST["youtube"], '/user/') !== false) {
+                            if (strpos($_POST["youtube"], '@') !== false) {
+                                $youtubePrefix = "/@";
+                                $strComponents = explode("@", $_POST["youtube"]);
+                                $youtubeChannelID = $strComponents[count($strComponents) - 1];
+                            }
+                            else if (strpos($_POST["youtube"], '/user/') !== false) {
                                 $youtubePrefix = "/user/";
                                 $strComponents = explode("/user/", $_POST["youtube"]);
                                 $youtubeChannelID = $strComponents[count($strComponents) - 1];
@@ -807,7 +812,7 @@ class Router {
                                 $youtubeChannelID = $strComponents[count($strComponents) - 1];
                             }
                             else {
-                                $youtubePrefix = "/user/";
+                                $youtubePrefix = "/@";
                                 $youtubeChannelID = $_POST["youtube"];
                             }
                             $youtube = $youtubePrefix . $mysqli->real_escape_string($youtubeChannelID);
