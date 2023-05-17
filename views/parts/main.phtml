@@ -12,6 +12,8 @@
                 img-src 'self' https://*;
             "
         />
+        <meta name="referrer" content="no-referrer" />
+
         <title><?php echo $view->siteTitle . View::$pageData["pageTitle"]; ?></title>
 
         <?php foreach($view->css as $path): ?>
