@@ -6,6 +6,9 @@
     url('/style/din1451alt.ttf') format('truetype'),
     url('/style/din1451alt.svg#din1451alt') format('svg');
 }
+html {
+    height: 100%;
+}
 body {
     height: 100%;
     width: 100%;
@@ -15,6 +18,9 @@ body {
     font-size: 12px;
     min-width: 1115px;
     /*min-width: 1319px;*/
+}
+form {
+    margin-block-end: 1em;
 }
 label {
     display: block;
@@ -455,11 +461,11 @@ a:hover, a:focus {
 }
 #chambers .chamber_scores .firstplace .entry .youtube {
     display:inline-block;
-    padding-top: 14px;
+    padding-top: 11px;
 }
 #chambers .chamber_scores .othernoobscores .entry .youtube {
     display:inline-block;
-    padding-top: 3.5px;
+    padding-top: 0px;
 }
 #chambers .chamber_scores .entry .youtube {
     float: right;
@@ -730,6 +736,7 @@ a:hover, a:focus {
 
 #changelog #firstentry > div, #changelog #otherentries .entry > div  {
     box-sizing: content-box;
+    height: 0px;
 }
 #changelog #firstentry > div:not(.profileIcon)  {
     height: 27px;
@@ -874,7 +881,7 @@ body > #youtube #ytclose {
     height: 20px;
     float: right;
     padding-left: 6px;
-    padding-top: 5px;
+    padding-top: 2px;
     cursor: pointer;
     color: #888;
     box-sizing: content-box;
@@ -883,7 +890,7 @@ body > #youtube #ytclose:hover {
     color: #444;
 }
 body > #youtube #descriptionContainer {
-    display: inline-block;
+    display: flex;
     width: calc(100% - 2px);
     /*background: url("/images/header_bg.jpg");*/
     background: #eee;
@@ -962,6 +969,7 @@ body > #youtube #ytplayer {
 #profile .userinformation .general-wrapper {
     position: relative;
     top: 50%;
+    height: 265px;
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
@@ -1351,8 +1359,8 @@ body > #youtube #ytplayer {
     width: 252px;
 }
 #profile .uploadDemoContainer, #profile .setYoutubeContainer, #profile .setCommentContainer {
-    margin-bottom: 3px;
-    margin-top: 3px;
+    margin-bottom: 1px;
+    margin-top: 1px;
 }
 #profile .button, #editProfile .button {
     display: inline-block;
@@ -1463,12 +1471,6 @@ body > #youtube #ytplayer {
 }
 #changelog .demo-url i, #changelog .youtube i, #changelog .submission, #changelog .comment, #changelog .banScore   {
     font-size: 12px;
-}
-#changelog .demo-url a, #changelog .youtube i  {
-    margin-top: 17px;
-}
-#changelog .banScore .banIndicator, #changelog .submission i, #changelog .setBannedStatus, #changelog .comment i {
-    margin-top: 14px;
 }
 #changelog .demo-url i:hover, #changelog .youtube i:hover, #changelog .setBannedStatus i:hover, #changelog .comment i:hover,
 #chamber .demo-url i:hover, #chamber .youtube i:hover, #chamber .comment i:hover {
@@ -1741,7 +1743,6 @@ body > #youtube #ytplayer {
     text-decoration: underline;
 }
 #chamber .profileIcon  {
-    margin-top: 4px;
     margin-right: 15px;
     /*width: 50px;*/
 }
@@ -1825,6 +1826,7 @@ body > #youtube #ytplayer {
     font-size: 13px;
     font-family: Segoe UI;
     text-transform: none;
+    height: 24px;
     line-height: 24px;
 }
 .controls .linkButton a {
