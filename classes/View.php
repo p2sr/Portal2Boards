@@ -38,6 +38,10 @@ class View {
         "https://cdnjs.cloudflare.com/ajax/libs/jquery-color/2.1.2/jquery.color.min.js",
         "sha512-VjRpiWhUqdNa9bwBV7LnlG8CwsCVPenFyOQTSRTOGHw/tjtME96zthh0Vv9Itf3i8w4CkUrdYaS6+dAt1m1YXQ==",
     ];
+    const clipboardJs = [
+        "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js",
+        "sha512-sIqUEnRn31BgngPmHt2JenzleDDsXwYO+iyvQ46Mw6RL+udAUZj2n/u/PGY80NxRxynO7R9xIGx5LEzw4INWJQ==",
+    ];
 
     const pages = ["/js/pages.js"];
     const chart = ["/js/chart.js"];
@@ -81,7 +85,8 @@ class View {
         ),
         "editprofile" => array(
             "contentTemplate" => "editprofile.phtml",
-            "pageTitle" => "Edit profile"
+            "pageTitle" => "Edit profile",
+            "js" => [self::clipboardJs],
         ),
         "lp" => array(
             "contentTemplate" => "leastportals.phtml",
