@@ -679,21 +679,6 @@
         drawActivityChart(activityByDate, firstDate, getCurrentLocalDate(), $("#changelogactivity"), false);
     }
 
-    <?php if(strlen($user->userData->twitch) == 0): ?>
-        jQuery.ajax({cache: true, dataType: 'jsonp', url: '//api.twitch.tv/api/steam/<?=$user->profileNumber;?>', success: function (data) {
-            if (data.name) {
-                var $icon =
-                    $("<a href='http://www.twitch.tv/"+data.name+"' target='_blank' rel='nofollow' style='text-decoration : none;'>"
-                        + "<span class='twitchLink fa-stack'>"
-                        + "<i class='fa fa-square fa-stack-2x'></i>"
-                        + "<i class='fa fa-twitch fa-stack-1x'></i>"
-                        + "</span>"
-                        + "</a>");
-                $(".usericons").append($icon);
-            }
-        }});
-    <?php endif; ?>
-
     setTimeout(function() {
         <?php if(SteamSignIn::isLoggedIn($user->profileNumber)): ?>
             $(".uploadInfo").slideDown('slow');
