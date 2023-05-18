@@ -97,6 +97,10 @@ class User {
     }
 
     public function setUserData() {
+        if (!$this->profileNumber) {
+            return;
+        }
+
         $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName, usersnew.* FROM usersnew WHERE profile_number = '$this->profileNumber'");
         // Creates user if profile number does not exist
         if($data->num_rows == 0) {
