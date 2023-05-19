@@ -723,9 +723,12 @@ class Router {
         if ($location[1] == "donators") {
             $data = Database::query("SELECT profile_number, avatar, IFNULL(boardname, steamname) as playername, donation_amount FROM usersnew WHERE title LIKE 'Donator' ORDER BY CAST(donation_amount AS DECIMAL(9, 2)) DESC");
             $view->donators = array();
+
             while ($row = $data->fetch_assoc()) {
+                $row["playername"] = htmlspecialchars($row["playername"]);
                 $view->donators[] = $row;
             }
+
             if (isset($location[2]) && $location[2] == "json") {
                 echo json_encode($view->donators);
                 exit;
@@ -737,6 +740,7 @@ class Router {
             $view->wallofshame = array();
 
             while ($row = $data->fetch_assoc()) {
+                $row["playername"] = htmlspecialchars($row["playername"]);
                 $view->wallofshame[] = $row;
             }
 
