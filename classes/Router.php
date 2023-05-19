@@ -569,16 +569,18 @@ class Router {
         if ($location[1] == "setProfileBanStatus") {
             if (isset($_POST["profileNumber"]) && isset($_POST["banStatus"])) {
 
-                $profileNumber = $_POST["profileNumber"];
-
                 if (!SteamSignIn::loggedInUserIsAdmin()) {
                     exit;
                 }
 
-                if (!is_numeric($profileNumber)) {
+                if (!is_numeric($_POST["profileNumber"]) || !is_numeric($_POST["banStatus"])) {
                     exit;
                 }
-              
+
+                if (SteamSignIn::isLoggedIn($_POST["profileNumber"])) {
+                    exit;
+                }
+
                 Leaderboard::setProfileBanStatus($_POST["profileNumber"], $_POST["banStatus"]);
             }
             else {

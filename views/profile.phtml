@@ -61,7 +61,7 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                    <?php if(SteamSignIn::loggedInUserIsAdmin()): ?>
+                    <?php if(!SteamSignIn::isLoggedIn($user->profileNumber) && SteamSignIn::loggedInUserIsAdmin()): ?>
                         <div class="profileBannerButtonContainer" style="left: 7px">
                             <div class="banToggleButton profileBannerButton">
                                 <?php if($user->userData->banned): ?> 
@@ -726,7 +726,7 @@
         });
     <?php endif; ?>
 
-    <?php if(SteamSignIn::loggedInUserIsAdmin()): ?>
+    <?php if(!SteamSignIn::isLoggedIn($user->profileNumber) && SteamSignIn::loggedInUserIsAdmin()): ?>
         var changingBannedState = false;
         $(".banToggleButton").click(function() {
             if (!changingBannedState) {
