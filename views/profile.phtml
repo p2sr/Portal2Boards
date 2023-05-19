@@ -7,7 +7,7 @@
 
 <div id="profile">
     <?php if($user->userData != NULL): ?>
-        <?php $avatar = ($user->userData->avatar != NULL) ? $user->userData->avatar : "http://media.steampowered.com/steamcommunity/public/images/avatars/f9/f91787b7fb6d4a2cb8dee079ab457839b33a8845_full.jpg"; ?>
+        <?php $avatar = ($user->userData->avatar != NULL) ? $user->userData->avatar : "https://media.steampowered.com/steamcommunity/public/images/avatars/f9/f91787b7fb6d4a2cb8dee079ab457839b33a8845_full.jpg"; ?>
         <div class="userinformation">
               <div class="profilebg hasavatar">
                   <img src="<?php echo $avatar; ?>" alt="" id="profileimage"/>
@@ -83,7 +83,7 @@
                     <?php endif; ?>
                     <div class="usericons">
                         <?php if(strlen($user->userData->youtube) > 0): ?>
-                            <a href="http://www.youtube.com<?=$user->userData->youtube;?>" style="text-decoration : none;" target="_blank">
+                            <a href="https://www.youtube.com<?=$user->userData->youtube;?>" style="text-decoration : none;" target="_blank">
                                 <span class="youtubeLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>
                                   <i class="fa fa-play fa-stack-1x"></i>
@@ -92,14 +92,14 @@
                         <?php endif; ?>
 
                         <?php if(strlen($user->userData->twitch) > 0): ?>
-                            <a href="http://www.twitch.tv/<?=$user->userData->twitch;?>" style="text-decoration : none;" target="_blank">
+                            <a href="https://www.twitch.tv/<?=$user->userData->twitch;?>" style="text-decoration : none;" target="_blank">
                                 <span class="twitchLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>
                                   <i class="fa fa-twitch fa-stack-1x"></i>
                                 </span>
                             </a>
                         <?php endif; ?>
-                        <a href="http://steamcommunity.com/profiles/<?=$user->profileNumber;?>" style="text-decoration : none;" target="_blank">
+                        <a href="https://steamcommunity.com/profiles/<?=$user->profileNumber;?>" style="text-decoration : none;" target="_blank">
                             <span class="steamLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>
                                   <i class="fa fa-steam-square fa-stack-2x"></i>

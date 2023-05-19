@@ -4,7 +4,7 @@
 <script>
     function goToSteamPage(evt, map) {
         if ($(evt.target).hasClass("chamberimage") || $(evt.target).hasClass("portalamount") || $(evt.target).hasClass("portalsused")) {
-            location.href = 'http://steamcommunity.com/stats/Portal2/leaderboards/' + map;
+            location.href = 'https://steamcommunity.com/stats/Portal2/leaderboards/' + map;
         }
     }
 </script>
@@ -25,7 +25,7 @@
 				<div class="chamberimage" onclick="goToSteamPage(event, <?=$steamIdTime?>)" style="background: url('/images/chambers/<?=$steamIdTime;?>.jpg')">
 					<div class="chambertitle">
 						<div class="titlebghelper"></div>
-						<div class="titlebg"><a href="http://steamcommunity.com/stats/Portal2/leaderboards/<?=$steamId;?>"><?=$mapData["mapName"]; ?></a></div>
+						<div class="titlebg"><a href="https://steamcommunity.com/stats/Portal2/leaderboards/<?=$steamId;?>"><?=$mapData["mapName"]; ?></a></div>
                         <div class="chamber_icons_right">
                             <?php if ($boardData["youtubeId"] != NULL): ?>
                                 <span class="icons youtubeEmbedButton fa-stack"
