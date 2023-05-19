@@ -131,12 +131,12 @@ class View {
         $this->addCss(["/style/style.css"]);
     }
     public function addJs($path) {
-        $this->js[] = $path;
+        $this->js[] = $path + [1 => null];
         return $this;
     }
 
     public function addCss($path) {
-        $this->css[] = $path;
+        $this->css[] = $path + [1 => null];;
         return $this;
     }
     public function addJsMultiple($arr) {
