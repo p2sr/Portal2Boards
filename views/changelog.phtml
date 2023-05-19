@@ -28,8 +28,8 @@
                     </div>
                     <div class="changelog-filter-options-chamber changelog-filter-options-group">
                         <div style="float: left;" class="input">
-                            <label for="profilenumber">Chapter name</label>
-                            <select style="width: 100%;" name="chapter">
+                            <label for="chapter">Chapter name</label>
+                            <select style="width: 100%;" id="chapter" name="chapter">
                                 <option value="">No chapter</option>
                                 <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
                                     <option disabled><?=$mode?></option>
@@ -41,8 +41,8 @@
                             </select>
                         </div>
                         <div style="float: left;" class="input">
-                            <label for="profilenumber">Chamber name</label>
-                            <select style="width: 100%;" name="chamber">
+                            <label for="chamber-name">Chamber name</label>
+                            <select style="width: 100%;" id="chamber-name" name="chamber">
                                 <option value="">No chamber</option>
                                 <?php foreach(array("sp" => "Single Player", "coop" => "Cooperative") as $modeId => $mode): ?>
                                     <option disabled><?=$mode?></option>
