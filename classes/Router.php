@@ -367,7 +367,7 @@ class Router {
         if ($location[1] == "setScoreBanStatus") {
             if (isset($_POST["id"]) && isset($_POST["banStatus"])) {
 
-                if (!is_numeric($_POST["id"])) {
+                if (!is_numeric($_POST["id"]) || !is_numeric($_POST["banStatus"])) {
                     exit;
                 }
 
