@@ -1761,12 +1761,12 @@ body > #youtube #ytplayer {
 }
 #chamber .controls.topright {
     position: absolute;
-    top: 10px;
+    top: 9px;
     right: 10px;
 }
 #chamber .controls.topleft {
     position: absolute;
-    top: 10px;
+    top: 9px;
     left: 10px;
 }
 #chamber .chamberControls {
@@ -1835,9 +1835,6 @@ body > #youtube #ytplayer {
     padding-right: 10px;
     text-decoration: none;
     color: inherit;
-}
-.controls .button span.name {
-    vertical-align: middle;
 }
 .controls span.currentPageLabel {
     font-size: 15px;
