@@ -18,12 +18,12 @@
                 <div class="changelog-filter-options-wrapper">
                     <div class="changelog-filter-options-name changelog-filter-options-group">
                         <div style="float: left;" class="input">
-                            <label for="nickname">Nickname</label>
-                            <input type="text" name="boardName" value="<?=$param['boardName'];?>">
+                            <label for="boardName">Nickname</label>
+                            <input type="text" id="boardName" name="boardName" value="<?=htmlspecialchars($param['boardName']);?>">
                         </div>
                         <div style="float: left;" class="input">
-                            <label for="profilenumber">Steam profile number</label>
-                            <input type="text" name="profileNumber" value="<?=$param['profileNumber'];?>">
+                            <label for="profileNumber">Steam profile number</label>
+                            <input type="text" id="profileNumber" name="profileNumber" value="<?=htmlspecialchars($param['profileNumber']);?>">
                         </div>
                     </div>
                     <div class="changelog-filter-options-chamber changelog-filter-options-group">
@@ -60,52 +60,52 @@
                     <div class="changelog-filter-options-date changelog-filter-options-group">
                         <div style="float: left;" class="input">
                             <label for="startDate">Start Date</label>
-                            <input type="date" name="startDate" value="<?=$param['startDate'];?>">
+                            <input type="date" id="startDate" name="startDate" value="<?=htmlspecialchars($param['startDate']);?>">
                         </div>
                         <div style="float: left;" class="input">
                             <label for="endDate">End Date</label>
-                            <input type="date" name="endDate" value="<?=$param['endDate'];?>">
+                            <input type="date" id="endDate" name="endDate" value="<?=htmlspecialchars($param['endDate']);?>">
                         </div>
                     </div>
                     <div class="changelog-filter-options-rank changelog-filter-options-group">
                         <div style="float: left;" class="input">
                             <label for="startRank">Start Rank</label>
-                            <input type="number" min="0" name="startRank" value="<?=$param['startRank'];?>">
+                            <input type="number" min="0" id="startRank" name="startRank" value="<?=htmlspecialchars($param['startRank']);?>">
                         </div>
                         <div style="float: left;" class="input">
                             <label for="endRank">End Rank</label>
-                            <input type="number" min="1" name="endRank" value="<?=$param['endRank'];?>">
+                            <input type="number" min="1" id="endRank" name="endRank" value="<?=htmlspecialchars($param['endRank']);?>">
                         </div>
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">Single Player</div>
                         <div class="checkbox <?php if($param['sp'] == "1"): ?>ticked<?php endif; ?>"></div>
-                        <input type="hidden" value="<?=$param['sp'];?>" name="sp">
+                        <input type="hidden" value="<?=htmlspecialchars($param['sp']);?>" name="sp">
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">Cooperative</div>
                         <div class="checkbox <?php if($param['coop'] == "1"): ?>ticked<?php endif; ?>"></div>
-                        <input type="hidden" value="<?=$param['coop'];?>" name="coop">
+                        <input type="hidden" value="<?=htmlspecialchars($param['coop']);?>" name="coop">
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">World Record</div>
                         <div class="checkbox <?php if($param['wr'] == "1"): ?>ticked<?php endif; ?>"></div>
-                        <input type="hidden" value="<?=$param['wr'];?>" name="wr">
+                        <input type="hidden" value="<?=htmlspecialchars($param['wr']);?>" name="wr">
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">Demo</div>
                         <div class="checkbox <?php if($param['demo'] == "1"): ?>ticked<?php endif; ?>"></div>
-                        <input type="hidden" value="<?=$param['demo'];?>" name="demo">
+                        <input type="hidden" value="<?=htmlspecialchars($param['demo']);?>" name="demo">
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">Video</div>
                         <div class="checkbox <?php if($param['yt'] == "1"): ?>ticked<?php endif; ?>"></div>
-                        <input type="hidden" value="<?=$param['yt'];?>" name="yt">
+                        <input type="hidden" value="<?=htmlspecialchars($param['yt']);?>" name="yt">
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">Submission</div>
                         <div class="checkbox <?php if($param['submission'] == "1"): ?>ticked<?php endif; ?>"></div>
-                        <input type="hidden" value="<?=$param['submission'];?>" name="submission">
+                        <input type="hidden" value="<?=htmlspecialchars($param['submission']);?>" name="submission">
                     </div>
                     <div style="float: left;" class="check">
                         <div style="position: relative;">Pending</div>
