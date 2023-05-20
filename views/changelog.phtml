@@ -14,7 +14,7 @@
     <div id="filters">
         <div id="filter_instructions_lol">Use these filters to display the changelog you want</div>
         <div id="filter_options">
-            <form name="filters" action="/changelog" method="get">
+            <form name="filters" action="/changelog" method="get" onsubmit="clearEmptyParams(this)">
                 <div class="changelog-filter-options-wrapper">
                     <div class="changelog-filter-options-name changelog-filter-options-group">
                         <div style="float: left;" class="input">
@@ -172,6 +172,13 @@
     <?php endif; ?>
     </div>
 <script>
+    function clearEmptyParams(form) {
+        for (const input of form.querySelectorAll('input,select')) {
+            if (input.getAttribute('name') && (!input.value || input.value === '')) {
+                input.setAttribute('name', '');
+            }
+        }
+    }
 
     $(document).ready(function() {
 

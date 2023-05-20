@@ -877,8 +877,8 @@ class Router {
             , "boardName" => ""
             , "profileNumber" => ""
             , "type" => ""
-            , "sp" => "1"
-            , "coop" => "1"
+            , "sp" => ""
+            , "coop" => ""
             , "wr" => ""
             , "demo" => ""
             , "yt" => ""
@@ -891,13 +891,9 @@ class Router {
             , "banned" => ""
             , "pending" => "");
 
-        $changelog_post = array();
         foreach ($params as $key => $val) {
-            $changelog_post[$key] = $val;
-        }
-        foreach ($changelog_post as $key => $val) {
             if (array_key_exists($key, $result)) {
-                $result[$key] = $changelog_post[$key];
+                $result[$key] = $val;
             }
         }
         if ($result["sp"] == "1" && $result["coop"] != "1") {
