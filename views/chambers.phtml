@@ -160,14 +160,6 @@
                 $(this).removeAttr("href");
             }
         });
-
-        $(".firstplace .entry .boardname").each(function() {
-            var targetWidth = $(this).width();
-            var content = $(this).find(".content");
-            while(content.width()  > targetWidth ) {
-                content.css('font-size', (parseFloat(content.css('font-size')) - 0.1) + "px" );
-            }
-        });
     });
 
 </script>
