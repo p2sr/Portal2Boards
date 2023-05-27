@@ -1336,7 +1336,7 @@ body > #youtube #ytplayer {
 #profile .demoUploadForm {
     display: inline;
 }
-#profile .filename {
+#profile .fileName {
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1346,10 +1346,10 @@ body > #youtube #ytplayer {
     padding-right: 5px;
     white-space: nowrap;
 }
-#profile .changeForm .filename {
+#profile .changeForm .fileName {
     max-width: 183px;
 }
-#profile .submissionForm .filename {
+#profile .submissionForm .fileName {
     max-width: 229px;
 }
 #profile .submissionForm input[type=text] {
