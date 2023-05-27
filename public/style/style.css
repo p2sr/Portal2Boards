@@ -90,7 +90,7 @@ a {
 }
 a:hover, a:focus {
     text-decoration: underline;
-    color: inherit; !important
+    color: inherit;
 }
 #header {
     height: 92px;
@@ -1736,7 +1736,7 @@ body > #youtube #ytplayer {
 #chamber .entry.you .boardname, #chamber .entry.you .boardname a,
 #chamber .entry.you .rank, #chamber .entry.you .rank a,
 #chamber .entry.you .score, #chamber .entry.you .score a {
-    color: #0066cc; !important;
+    color: #0066cc;
     /*font-weight: bold;*/
 }
 .entry .boardname a {
