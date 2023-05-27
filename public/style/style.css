@@ -59,7 +59,7 @@ html, body {
     background: #fff;
     /*background: #888;*/
 }
-#profile .global-stats, #profile .chapterwrs-wrapper, #changelogActivity, #profile .noactivity, #profile .profile-title,
+#profile .global-stats, #profile .chapterwrs-wrapper, #changelogactivity, #profile .noactivity, #profile .profile-title,
 #profile .column-3 .block-content  {
     background: #f9f9f9;
     /*background: #bbb;*/
@@ -752,7 +752,7 @@ a:hover, a:focus {
     width: 276px;
     padding-left: 20px;
 }
-#changelog .datetime {
+#changelog .dateTime {
     width: 152px;
 }
 #changelog .dateDifference {
@@ -968,8 +968,8 @@ body > #youtube #ytplayer {
 }
 #profile .userinformation .general-wrapper {
     position: relative;
-    top: 50%;
-    height: 265px;
+    top: 49%;
+    margin-top: 1px;
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
