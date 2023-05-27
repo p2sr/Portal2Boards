@@ -1020,6 +1020,8 @@
         $scoreMenu.append($entryContainer);
 
         if (profilePermissions) {
+            $(".submissionContainer").remove();
+
             var $submissionContainer = $(
                 "<div class='submissionContainer'>" +
                     "<div class='createSubmission'>" +
