@@ -1496,10 +1496,12 @@ body > #youtube #ytplayer {
     font-size: 13px;
 }
 #chamber .submission {
-    padding-right: 10px;
-    width: 15px;
+    padding-right: 11px;
+    width: 25px;
 }
-
+#chamber .submission.autosubmission {
+    padding-right: 10px;
+}
 
 #profile .sp .score, #profile .coop .score  {
     width: 55px;
