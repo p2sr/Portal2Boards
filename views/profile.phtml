@@ -10,12 +10,12 @@
         <?php $avatar = ($user->userData->avatar != NULL) ? $user->userData->avatar : "https://media.steampowered.com/steamcommunity/public/images/avatars/f9/f91787b7fb6d4a2cb8dee079ab457839b33a8845_full.jpg"; ?>
         <div class="userinformation">
               <div class="profilebg hasavatar">
-                  <img src="<?php echo $avatar; ?>" alt="" id="profileimage"/>
+                  <img src="<?php echo $avatar; ?>" alt="" id="profileimage" style="transform: scale(1.1)"/>
               </div>
               <script type="text/javascript">
                   var Vague = $('#profileimage').Vague({
                       intensity: 15,
-                      forceSVGUrl: false
+                      forceSVGUrl: false,
                   });
                   Vague.blur();
               </script>

@@ -1964,10 +1964,15 @@ body > #youtube #ytplayer {
 
 /* DARK MODE */
 
-html[class="dark"] input,html[class="dark"] select,html[class="dark"] {
+html[class="dark"] {
     background-color: #0002;
     color: #ffffff;
     color-scheme: dark;
+}
+
+html[class="dark"] select>option {
+    background-color: #0002;
+    color: #ffffff;
 }
 
 html[class="dark"] .checkbox,html[class="dark"] input[type="submit"] {
@@ -1980,6 +1985,32 @@ html[class="dark"] .controls .button, html[class="dark"] .controls span.currentP
     display: inline-block;
     border: 2px solid #0002;
     box-sizing: content-box;
+}
+
+html[class="dark"] label {
+    display: block;
+    font-family: Segoe UI;
+    color: #fff;
+}
+
+html[class="dark"] input,html[class="dark"] select {
+    background: #0002;
+    border: 1px solid #4e4e4e;
+    color: #ffffff;
+    color-scheme: dark;
+}
+
+html[class="dark"] input[type=text],html[class="dark"]  input[type=number],html[class="dark"]  input[type=date]  {
+    border: 1px solid #4e4e4e;
+    background: #0002;
+}
+
+html[class="dark"] input[type=text]:focus  {
+    outline: none;
+}
+
+html[class="dark"] p {
+    color: #ffffff;
 }
 
 /*HEADER*/
@@ -2091,7 +2122,7 @@ html[class="dark"] #changelog #filter_instructions_lol{
 }
 
 html[class="dark"] #changelog label,html[class="dark"] #changelog .check>div:first-child{
-    color:#b9bbbe;
+    color:#fff;
 }
 
 html[class="dark"] #changelog input[type=text]{
@@ -2102,16 +2133,22 @@ html[class="dark"] #entries{
     box-shadow: 0px 0px 5px #0002;
     -webkit-box-shadow: 0px 0px 5px #0002;
 }
+
 html[class="dark"] #entries .entry{
     background: #3e4146;
     color:#b9babc;
     border-bottom: 1px solid #36393e;
 }
+
 html[class="dark"] #entries #firstentry,html[class="dark"] #entries .entry[style="background: #d6d6d6"]{
     background-color: #36393e !important;
     border-bottom: 1px solid #3e4146;
     border-top:none;
     color:#b9babc;
+}
+
+html[class="dark"] #changelog input[type=submit] {
+    color: #000;
 }
 
 /* CHAMBERS */
@@ -2185,6 +2222,7 @@ html[class="dark"] #aggregated .entry>div,html[class="dark"] #chamber .entry>div
 
 html[class="dark"] #profile .profile-title,html[class="dark"] #profile .column-3 .column,html[class="dark"] #profile a,html[class="dark"] #profile .scoretable {
     color: #fff;
+    background:#36393e;
 }
 
 html[class="dark"] #profile .button:hover,html[class="dark"] #editProfile .button:hover {
@@ -2207,14 +2245,20 @@ html[class="dark"] #profile .noactivity{
 }
 
 html[class="dark"] #profile>div,html[class="dark"] #profile .column-3>div>div{
-    background:none !important;
-    color:#c0c1c2 !important;
+    /* background:none !important; */
+    /* color:#c0c1c2 !important; */
+    color: #fff;
+    background:#36393e;
+}
+
+html[class="dark"] #profile .button,html[class="dark"] #editProfile .button {
+    color: #fff;
 }
 
 /*ABOUT*/
 
 html[class="dark"] #about .container,html[class="dark"] #about td{
-    color:#c0c1c2 !important;
+    color:#fff;
 }
 
 html[class="dark"] #about a{
