@@ -1961,3 +1961,263 @@ body > #youtube #ytplayer {
     flex-direction: column;
     gap: 0.3rem;
 }
+
+/* DARK MODE */
+
+html[class="dark"] input,html[class="dark"] select,html[class="dark"] {
+    background-color: #0002;
+    color: #ffffff;
+    color-scheme: dark;
+}
+
+html[class="dark"] .checkbox,html[class="dark"] input[type="submit"] {
+    filter: invert(85%);
+}
+
+html[class="dark"] .controls .button, html[class="dark"] .controls span.currentPageLabel {
+    border-radius: 5px;
+    background: #202225;
+    display: inline-block;
+    border: 2px solid #0002;
+    box-sizing: content-box;
+}
+
+/*HEADER*/
+
+html[class="dark"] #header{
+    background: #202225;
+    box-shadow: 0px 1px 5px #0002;
+    -webkit-box-shadow: 0px 1px 5px #0002;
+}
+
+html[class="dark"] #sitetitle{
+    color:#fff;
+}
+
+html[class="dark"] .nav_button>.btnLabel,html[class="dark"] .nav_dropdown>.btnLabel{
+    color:#b9bbbe;
+}
+
+html[class="dark"] #navigation>a:hover .btnLabel,html[class="dark"]#navigation>div:hover .btnLabel{
+    color:#ffffff;
+}
+
+html[class="dark"] .nav_button>.nav_icon,html[class="dark"] .nav_dropdown>.nav_icon,html[class="dark"] #edition{
+    filter:brightness(110%) invert(88%)  hue-rotate(180deg);
+    -webkit-filter:brightness(110%) invert(88%)  hue-rotate(180deg);
+}
+
+html[class="dark"] .nav_dropdown>ul {
+    background-color: #282b30 !important;
+    /*border-radius:5px;*/
+    box-shadow: 0px 1px 2px #0008;
+    -webkit-box-shadow: 0px 1px 2px #0008;
+}
+html[class="dark"] .nav_dropdown li:first-child{ 
+    /* border-radius:5px 5px 0px 0px;  */
+}
+
+html[class="dark"] .nav_dropdown li:last-child{ 
+    /* border-radius:0px 0px 5px 5px;  */
+}
+
+html[class="dark"] .nav_dropdown>ul .btnLabel{
+    color: #a0a2a4;
+}
+
+html[class="dark"] .nav_dropdown>ul .nav_icon{
+    filter:brightness(110%) invert(85%) hue-rotate(180deg);
+    -webkit-filter:brightness(110%) invert(85%) hue-rotate(180deg);
+}
+
+html[class="dark"] .nav_dropdown li:hover{
+    background-color:#25282d !important;
+}
+
+html[class="dark"] .nav_dropdown li:hover .btnLabel{
+    color:#fff;
+}
+
+html[class="dark"] #welcome {
+    color: #fff;
+}
+
+html[class="dark"] #welcome a {
+    color: #fff;
+}
+
+/*CONTENT*/
+
+html[class="dark"] body,html[class="dark"] #content{
+    background:#2a2c31;
+}
+
+html[class="dark"] h1 {
+    color:#4ba6db !important;
+}
+
+/*FOOTER*/
+
+html[class="dark"] #footer{
+    background: #202225;
+    color: #fff;
+}
+
+/*CHANGELOG*/
+
+html[class="dark"] #changelogActivity{
+    background:none !important;
+}
+
+html[class="dark"] #changelogActivity .morris-hover{
+    background-color: #282b30 !important;
+    border-radius:0px;
+    /* border:none; */
+    color:#a0a2a4;
+    box-shadow: 0px 1px 2px #0008;
+    -webkit-box-shadow: 0px 1px 2px #0008;
+}
+
+html[class="dark"] #changelog>#filters{
+    background:#36393f;
+    border-color:#36393f;
+    /*border-radius:3px;*/
+    box-shadow: 0px 1px 2px #0005;
+    -webkit-box-shadow: 0px 1px 2px #0005;
+}
+
+html[class="dark"] #changelog #filter_instructions_lol{
+    color:#f6f6f7;
+}
+
+html[class="dark"] #changelog label,html[class="dark"] #changelog .check>div:first-child{
+    color:#b9bbbe;
+}
+
+html[class="dark"] #changelog input[type=text]{
+    /* height:31px; */
+}
+
+html[class="dark"] #entries{
+    box-shadow: 0px 0px 5px #0002;
+    -webkit-box-shadow: 0px 0px 5px #0002;
+}
+html[class="dark"] #entries .entry{
+    background: #3e4146;
+    color:#b9babc;
+    border-bottom: 1px solid #36393e;
+}
+html[class="dark"] #entries #firstentry,html[class="dark"] #entries .entry[style="background: #d6d6d6"]{
+    background-color: #36393e !important;
+    border-bottom: 1px solid #3e4146;
+    border-top:none;
+    color:#b9babc;
+}
+
+/* CHAMBERS */
+
+html[class="dark"] #chambers .chamberimage{
+    /* border:none; */
+}
+
+html[class="dark"] #chambers .chamber{
+    background:#36393e;
+    /*border-radius: 5px;*/
+    /* border:none; */
+    border-bottom: 2px solid #0008;
+    overflow:hidden;
+    box-shadow: 0px 1px 2px #0008;
+    -webkit-box-shadow: 0px 1px 2px #0008;
+}
+
+html[class="dark"] #chambers .firstplace{
+    background: #3e4146 !important;
+}
+
+html[class="dark"] #chambers .firstplace,html[class="dark"] #chambers .othernoobscores{
+    color:#c0c1c2 !important;
+}
+
+html[class="dark"] #chambers .entry .youtube i{
+    color: #aaa !important;
+}
+
+html[class="dark"] #chambers .entry .youtube i:hover{
+    color: #777 !important;
+}
+
+html[class="dark"] #chambers .chambertitle .titlebg{
+    background: #36393e;
+}
+
+html[class="dark"] #chambers .chambertitle .titlebg a{
+    color:#eee;
+}
+
+html[class="dark"] #chambers .chambertitle .titlebghelper{
+    background: none;
+    border-bottom: 34px solid transparent;
+    border-right: 20px solid #36393e;
+}
+
+/* AGGREGATED AND CHAMBERS */
+
+html[class="dark"] #aggregated #time,html[class="dark"] #aggregated #points{
+    /* width: 49.7%; */
+}
+
+html[class="dark"] #aggregated .entry,html[class="dark"] #chamber .entry{
+    background: #3e4146;
+    /* border:none; */
+    border-bottom: 1px solid #36393e;
+}
+
+html[class="dark"] #aggregated .entry[style*="background: #d3d3d3"],html[class="dark"] #chamber .entry[style*="background: #d6d6d6"]{
+    background: #36393e !important;
+    border-bottom: 1px solid #3e4146;
+}
+
+html[class="dark"] #aggregated .entry>div,html[class="dark"] #chamber .entry>div,html[class="dark"] #chamber .entry>a{
+    color:#b9babc;
+}
+
+/*PROFILE*/
+
+html[class="dark"] #profile .profile-title,html[class="dark"] #profile .column-3 .column,html[class="dark"] #profile a,html[class="dark"] #profile .scoretable {
+    color: #fff;
+}
+
+html[class="dark"] #profile .button:hover,html[class="dark"] #editProfile .button:hover {
+    background: #3096d1;
+    color: #fff;
+}
+
+html[class="dark"] #profile{
+    background:none;
+}
+
+html[class="dark"] #profile #profileimage{
+    /* width:110%; */
+    /* left:-5%; */
+}
+
+html[class="dark"] #profile .noactivity{
+    background:none;
+    color:#c0c1c2;
+}
+
+html[class="dark"] #profile>div,html[class="dark"] #profile .column-3>div>div{
+    background:none !important;
+    color:#c0c1c2 !important;
+}
+
+/*ABOUT*/
+
+html[class="dark"] #about .container,html[class="dark"] #about td{
+    color:#c0c1c2 !important;
+}
+
+html[class="dark"] #about a{
+    color:#fff;
+    font-weight:bold;
+}

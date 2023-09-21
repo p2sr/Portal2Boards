@@ -28,6 +28,19 @@
 
         <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+        <script>
+            localStorage.getItem('color-theme') ==='dark' && document.documentElement.classList.add('dark');
+
+            function toggleTheme() {
+                if (localStorage.getItem('color-theme') ==='dark') {
+                    localStorage.setItem('color-theme', 'light');
+                    document.documentElement.classList.remove('dark');
+                } else {
+                    localStorage.setItem('color-theme', 'dark');
+                    document.documentElement.classList.add('dark');
+                }
+            }
+        </script>
     </head>
 
     <body>
