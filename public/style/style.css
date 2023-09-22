@@ -2213,7 +2213,11 @@ html[class="dark"] #chamber .youtube i:hover{
     color: red !important;
 }
 
-html[class="dark"] #chambers .entry .youtube i:hover{
+html[class="dark"] #chambers .entry .youtube .fa-download:hover{
+    color: #4ba6db !important;
+}
+
+html[class="dark"] #chambers .entry .youtube > .fa-youtube-play:hover{
     color: red !important;
 }
 
