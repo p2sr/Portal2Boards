@@ -1,11 +1,16 @@
+const rankingDomain = [0, 10, 20, 50, 500];
+const darkModeRankingRange = ['violet', 'lightblue', '#42ff42', '#ffa542', '#ff4242'];
+const lightModeRankingRange = ['darkviolet', 'blue', 'darkgreen', '#d67104', 'darkred'];
+
 function drawRank($element) {
-    var scale = d3.scaleLinear()
-        .domain([0, 10, 20, 50, 200, 500])
-        .range(['darkviolet', 'blue', '#28a428', 'darkorange', '#cc0000', 'darkred']);
+    const isDarkMode = localStorage.getItem('color-theme') !== 'light';
+
+    const scale = d3.scaleLinear()
+        .domain(rankingDomain)
+        .range(isDarkMode ? darkModeRankingRange : lightModeRankingRange);
 
     var rank = $element.text();
-    if (!isNaN(rank)) {
-
+    if (!isNaN(rank) && rank !== '-') {
         rank = parseInt(rank);
         if (rank == 1) {
             $element.html("<i class='fa fa-trophy' aria-hidden='tru'></i>");

@@ -39,6 +39,10 @@
                     localStorage.setItem('color-theme', 'dark');
                     document.documentElement.classList.add('dark');
                 }
+
+                $(".rank, .preRank, .postRank").each(function() {
+                    !this.firstElementChild && drawRank($(this));
+                });
             }
         </script>
     </head>
