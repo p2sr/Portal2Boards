@@ -204,6 +204,40 @@ class Router {
                 exit;
             }
 
+            // Provide scores before and after PB
+            if ($location[2] == "top-scores") {
+                if (!strlen($_POST["mapId"] ?? '') || !is_integer(intval($_POST["mapId"]))) {
+                    echo "{\"error\":\"Invalid value for field 'mapId'\"}";
+                    header('Content-Type: application/json');
+                    http_response_code(400);
+                    exit;
+                }
+
+                if (!strlen($_POST["before"] ?? '') || !is_integer(intval($_POST["before"]))) {
+                    echo "{\"error\":\"Invalid value for field 'before'\"}";
+                    header('Content-Type: application/json');
+                    http_response_code(400);
+                    exit;
+                }
+
+                if (!strlen($_POST["after"] ?? '') || !is_integer(intval($_POST["after"]))) {
+                    echo "{\"error\":\"Invalid value for field 'after'\"}";
+                    header('Content-Type: application/json');
+                    http_response_code(400);
+                    exit;
+                }
+
+                echo json_encode(Leaderboard::getTopScores(
+                    $userId,
+                    strval($_POST["mapId"]),
+                    intval($_POST["before"]),
+                    intval($_POST["after"]),
+                ));
+
+                header('Content-Type: application/json');
+                exit;
+            }
+
         }
 
         // API v3 for bots
