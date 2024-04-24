@@ -1,11 +1,6 @@
 {
     "require": {
         "tedivm/stash": "^0.12.3",
-        "google/apiclient": "1.0.*@beta",
-      "ext-mysqli": "*",
-      "ext-json": "*",
-      "ext-curl": "*",
-      "ext-simplexml": "*",
-      "ext-libxml": "*"
+        "google/apiclient": "1.0.*@beta"
     }
 }

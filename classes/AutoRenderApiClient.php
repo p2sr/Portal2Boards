@@ -81,6 +81,7 @@ class AutoRenderApiClient
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json'
             ),
+            CURLOPT_TIMEOUT => 5,
         ));
 
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);

@@ -9,7 +9,7 @@
 
 class SteamSignIn
 {
-	const STEAM_LOGIN = 'https://steamcommunity.com/openid/login';
+	const STEAM_LOGIN = 'https://steamcommunity.com/openid/login/';
 
     static $loggedInUser;
 
@@ -82,9 +82,8 @@ class SteamSignIn
 		$context = stream_context_create(array(
 			'http' => array(
 				'method'  => 'POST',
-				'header'  =>
-					"Accept-language: en\r\n".
-					"Content-type: application/x-www-form-urlencoded\r\n" .
+				'header'  => "Accept-Language: en-US,en\r\n" .
+					"Content-Type: application/x-www-form-urlencoded\r\n" .
 					"Content-Length: " . strlen($data) . "\r\n",
 				'content' => $data,
 			),

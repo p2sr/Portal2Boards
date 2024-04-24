@@ -154,7 +154,6 @@ autosave
 soundfade
 map_wants_save_disable 1
 cond
-say !SAR:
 
 ui_transition_effect
 save_screenshot
