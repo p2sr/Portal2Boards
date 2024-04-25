@@ -1,39 +1,68 @@
-Originally developed and designed by Nuclear: https://github.com/ncla/Portal-2-Leaderboard
+# board.portal2.sr
 
+Challenge Mode leaderboard for Portal 2 speedrunners.
 
-Server requirements:
+## Development
 
-1. Basic LAMP/XAMPP webserver. Note that for MySQL, MariaDB is known to cause issues when using query variables.
-2. Google account.
+### Requirements
 
+- [Docker Engine] | [Reference](https://docs.docker.com/compose/reference/)
+- [mkcert]
+- [Steam Web API Key]
 
-Server configuration:
+[Docker Engine]: https://docs.docker.com/engine/install
+[mkcert]: https://github.com/FiloSottile/mkcert
+[Steam Web API Key]: https://steamcommunity.com/dev
 
-1. Set the 'public' folder as the server's document root.
-2. For Apache, enable 'mod_rewrite' and 'mod_expires' for image caching and beautiful URLs.
-3. For PHP, enable the cURL extension for scraping the Steam leaderboards.
-4. Import database dump data/leaderboard.sql into phpMyAdmin.
-5. Configure database authorization settings in secret/database.json.
-6. Set database timezone to UTC by executing data/setDatabaseTimeZoneUTC.php
+### Setup
 
+- Project setup with `chmod +x setup && ./setup dev`
+- Start the containers with `docker compose up`
+- Add the host entry `127.0.0.1 board.portal2.local` to `/etc/hosts`
 
-Configuring Google Drive for storing demos
+The server should now be available at: `https://board.portal2.local`
 
-5. Go to 
-https://console.developers.google.com
-6. Create a project and activate the Google Drive API 
-7. Create an OAuth client ID. Download and copy the client secret file associated with this ID, and paste it in secret/client_secret.json. 
-8. Execute 'php util/authorizeGoogleDrive.php' from the command line to provide the project access to Google Drive.
-9. Configure the demos folder in classes/demoManager.php.
+### Overview of .env
 
+This is used by Dockerfile and docker-compose.yml.
 
-Fetching data:
+|Variable|Description|
+|---|---|
+|PROJECT_NAME|This name is used as a prefix for the containers.|
+|SERVER_NAME|The domain name which should be set before building the image. Docker will use it to mount the correct apache config file which links to the SSL certificates.|
+|HTTP_PORT|The unsafe HTTP port of the local host. Change it if a different port is needed e.g. reverse proxy|
+|HTTPS_PORT|The safe HTTPS port of the local host. Change it if a different port is needed e.g. reverse proxy|
+|DATABASE_PORT|The MariaDB database port of the local host. NOTE: Make sure that the docker compose file does not expose the server to an unwanted address. By default it's mapped to `127.0.0.1`.|
+|MARIADB_ROOT_PASSWORD|The root's password of the MariaDB database.|
+|APT_PACKAGES|Optional apt-packages to build the server image. The image should be kept as small as possible but sometimes it is useful to install some packages (e.g. `vim`, `htop` etc.) in order to debug problems more quickly.|
 
-1. Updating scores and refreshing the server cache accordingly is performed by running data/fetchNewScores.php. 
-2. Updating user data is done by running data/fetchNewProfileData.php. This requires a Steam API developer key which has 
-to be placed in secret/steam_api_key.json. For obtaining an API key, go to 
-https://steamcommunity.com/dev
+### Overview of .config.json
 
+This is used by the server.
+
+|Key|Description|
+|---|---|
+|database_host|Address of the database. Docker creates a link to the container under the `database` alias.|
+|database_port|Port of the database.|
+|database_user|User login name for database.|
+|database_pass|User password for database access.|
+|database_name|The database name.|
+|discord_webhook_id|The webhook ID for sending wr updates to a Discord channel.|
+|discord_webhook_token|The webhook token for sending wr updates to a Discord channel.|
+|discord_webhook_mdp|Discord webhook URL for sending [mdp] data to a Discord channel.|
+|steam_api_key|The Steam Web API Key for fetching profile data.|
+
+[mdp]: https://github.com/p2sr/mdp
+
+## Credits
+
+* Originally developed and designed by [ncla] (2014-2015)
+* Further development by [iVerb] (2016-2020)
+
+[ncla]: https://github.com/ncla/Portal-2-Leaderboard
+[iVerb]: https://github.com/iVerb1/Portal2Boards
+
+## License
 
 Software licensed under CC Attribution - Non-commercial license.
 https://creativecommons.org/licenses/by-nc/4.0/legalcode
