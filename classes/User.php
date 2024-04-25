@@ -85,8 +85,7 @@ class User {
     }
 
     public static function fetchCurrentProfileData($user) {
-
-        $steamAPIKey = json_decode(file_get_contents(ROOT_PATH."/secret/steam_api_key.json"));
+        $steamAPIKey = Config::get()->steam_api_key;
         $ch = curl_init("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=".$steamAPIKey->key."&steamids=" . $user);
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
