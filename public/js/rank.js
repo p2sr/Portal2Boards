@@ -21,6 +21,9 @@ function drawRank($element) {
 }
 
 function getPointsFromRank(rank) {
+    if(rank > 200){
+        return 0;
+    }
     var points = Math.max(1,  Math.pow(200 - (rank - 1), 2) / 200);
     return Math.round(points * 10) / 10;
 }

@@ -71,12 +71,12 @@ function realDate(date) {
 
 function getServerDate(date) {
     //return moment.utc(date);
-    return moment.tz(date, "America/Chicago");
+    return moment.tz(date, "Europe/Amsterdam");
 }
 
 function getCurrentServerDate() {
     //return moment().utc();
-    return moment().tz("America/Chicago");
+    return moment().tz("Europe/Amsterdam");
 }
 
 function getCurrentLocalDate(formatString) {

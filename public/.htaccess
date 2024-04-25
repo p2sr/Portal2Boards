@@ -7,8 +7,14 @@ RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 
 RewriteRule ^.*$ ./index.php
-RewriteRule ^(classes/|data/|views/|vendor/|util/|secret/) - [R=404,L,NC]
+RewriteRule ^(classes/|data/|views/|vendor/|util/|sessions/|secret/|sessions/) - [R=404,L,NC]
+RewriteRule ^(cmd_whitelist|config|cvar_whitelist|debug|demo_list|expected_maps|filesum_whitelist|mdp|sar_whitelist) - [R=404,L,NC]
+RewriteRule ^(api|api/)$ - [R=404,L,NC]
 
 <FilesMatch "\.(|jpg|jpeg|png|ico|eot|svg|ttf|wolf)$">
   Header set Cache-Control "max-age=86400"
 </FilesMatch>
+
+php_value upload_max_filesize 16M
+Header add Access-Control-Allow-Headers "origin, x-requested-with, content-type"
+Header add Access-Control-Allow-Methods "PUT, GET, POST, DELETE, OPTIONS"

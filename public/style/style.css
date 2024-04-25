@@ -24,16 +24,17 @@ label {
 input, select {
     display: block;
     font-family: Segoe UI;
-    background: #fdfdfd;;
+    background: #fdfdfd;
+    border: 1px solid #c2cbd0;
     color: #000;
     font-weight: normal;
 }
-input[type=text] {
+input[type=text], input[type=number], input[type=date]  {
     height: 27px;
     font-family: Segoe UI;
     font-size: 11px;
     border: 1px solid #c2cbd0;
-    background: #fdfdfd;;
+    background: #fdfdfd;
     padding-left: 5px;
     padding-right: 5px;
 }
@@ -478,7 +479,7 @@ a:hover, a:focus {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    width: 160px;
+    width: 150px;
 }
 #chambers .chamber_scores .entry .dateDifference {
     border-radius: 2px;
@@ -618,7 +619,6 @@ a:hover, a:focus {
     width: 98%;
     background: green;
     margin: 30px auto 30px;
-    height: 96px;
     border: 1px solid #94bec8;
     background: #ededed;
     font-weight: bold;
@@ -1931,7 +1931,6 @@ body > #youtube #ytplayer {
 .popover-content {
     word-wrap: break-word;
 }
-
 @-moz-document domain(board.portal2.sr) {
     #changelog .datetime{
         width: auto !important;
@@ -1942,4 +1941,17 @@ body > #youtube #ytplayer {
     #profile .global-stats .block .title{
         font-size: 12px !important;
     }
+}
+
+.changelog-filter-options-wrapper{
+    display: flex;
+    align-content: center;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.changelog-filter-options-group{
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
 }
