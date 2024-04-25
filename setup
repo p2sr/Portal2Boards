@@ -1,0 +1,126 @@
+#!/bin/bash
+
+# File name for generating SSL certificates (dev-only)
+site=board.portal2.local
+
+# File name of gzip'd database dump
+dbname=iverborg_leaderboard
+
+# Configuration files:
+#   .env          > used by docker
+#   .config.json -> used by the server (mounted by docker)
+
+create_config_and_env()
+{
+    echo "[+] creating .config.json and .env file"
+
+    cp -n .config.example.json .config.json
+    cp -n .env.example .env
+}
+
+# Mounted log files.
+#   access.log -> apache vhosts access log
+#   error.log  -> apache erro log
+#   debug.txt  -> debug output by the server
+
+create_logs()
+{
+    echo "[+] creating logs in docker/logs"
+
+    mkdir -p docker/logs
+    touch docker/logs/access.log docker/logs/error.log docker/logs/debug.txt
+}
+
+# Other mounted volumes.
+#   docker/volumes/cache    -> cache files used by the server
+#   docker/volumes/demos    -> uploaded demo files
+#   docker/volumes/sessions -> user sessions used by the server
+
+create_volumes()
+{
+    echo "[+] creating volumes in docker/volumes"
+
+    mkdir -p docker/volumes docker/volumes/cache docker/volumes/demos docker/volumes/sessions
+}
+
+# Self-signed certificate for development only.
+
+create_ssl_cert()
+{
+    if [ -f "docker/ssl/$site.crt" ];
+    then
+        echo "[+] skipped generating certificate"
+        return
+    fi
+
+    if ! command -v mkcert &> /dev/null ;
+    then
+        echo "[-] mkcert does not seem to be installed. failed to generate ssl certificates"
+    else
+        echo "[+] generating certificate in docker/ssl"
+
+        mkdir -p "docker/ssl"
+
+        if ! err=$(mkcert -cert-file docker/ssl/$site.crt -key-file docker/ssl/$site.key $site 2>&1) ;
+        then
+            echo $err
+        fi
+    fi
+}
+
+# Database dump.
+
+create_db()
+{
+    echo "[+] extracting database dump to docker/initdb"
+
+    echo "USE $dbname;" > docker/initdb/_init.sql
+    gunzip -c data/leaderboard.gz >> docker/initdb/_init.sql
+}
+
+# Set permissions for www-data for all mounted volumes.
+
+set_permissions()
+{
+    echo "[+] setting permissions for all volumes"
+
+    sudo chown -R www-data:www-data  \
+        ./docker/logs/debug.txt \
+        ./docker/volumes/cache \
+        ./docker/volumes/demos \
+        ./docker/volumes/sessions
+}
+
+# Development server only.
+
+setup_dev()
+{
+    echo "[+] setup for development..."
+
+    create_config_and_env
+    create_logs
+    create_volumes
+    create_ssl_cert
+    create_db
+
+    echo "[+] done"
+}
+
+# Prodcution server only.
+
+setup_prod()
+{
+    echo "[+] setup for production..."
+
+    create_config_and_env
+    create_logs
+    create_volumes
+    create_db
+
+    echo "[+] done"
+}
+
+case $1 in
+dev)    setup_dev ;;
+* )     echo "usage: ./setup <dev>" ;;
+esac
