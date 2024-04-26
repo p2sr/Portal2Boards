@@ -6,6 +6,7 @@
  * Example: `Config::get()->database_host`
  */
 final class Config {
+    public bool   $is_using_proxy;
     public string $database_host;
     public int    $database_port;
     public string $database_user;

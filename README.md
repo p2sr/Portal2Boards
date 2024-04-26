@@ -42,6 +42,7 @@ This is used by the server.
 
 |Key|Description|
 |---|---|
+|is_using_proxy|Enable proxy support. This is disabled by default.|
 |database_host|Address of the database. Docker creates a link to the container under the `database` alias.|
 |database_port|Port of the database.|
 |database_user|User login name for database.|

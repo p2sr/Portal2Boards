@@ -1,4 +1,5 @@
 {
+    "is_using_proxy": false,
     "database_host": "database",
     "database_port": 3306,
     "database_user": "board",
