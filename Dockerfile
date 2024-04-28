@@ -10,8 +10,10 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update
 RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ondrej/php
+RUN apt-get remove -y --purge software-properties-common
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y ${APT_PACKAGES} cron curl php7.4 php7.4-cli php7.4-curl php7.4-mysql apache2 libapache2-mod-php7.4
+RUN apt-get install -y cron curl php7.4 php7.4-cli php7.4-curl php7.4-mysql php7.4-xml apache2 libapache2-mod-php7.4
+RUN apt-get install -y ${APT_PACKAGES}
 
 # install composer
 RUN apt-get install -y unzip
@@ -36,8 +38,10 @@ RUN chown -R www-data:www-data .
 RUN ln -s /etc/apache2/sites-available/${SERVER_NAME}.conf /etc/apache2/sites-enabled/${SERVER_NAME}.conf
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-# enable cron job
+# enable cron jobs
 RUN echo '*/1 * * * * www-data php /var/www/html/api/refreshCache.php > /dev/null 2>&1' > /etc/cron.d/board
+#RUN echo '*/5 * * * * www-data php /var/www/html/api/fetchNewScores.php > /dev/null 2>&1' >> /etc/cron.d/board
+#RUN echo '0 0 */4 * * www-data php /var/www/html/api/fetchImportantProfileData.php > /dev/null 2>&1' >> /etc/cron.d/board
 
 EXPOSE 80 443
 
