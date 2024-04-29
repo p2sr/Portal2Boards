@@ -16,19 +16,20 @@ class SteamSignIn
 	/**
 	* Get the URL to sign into steam
 	*
-	* @param mixed returnTo URI to tell steam where to return, MUST BE THE FULL URI WITH THE PROTOCOL
+	* @param string host The server hostname.
+	* @param mixed returnTo Callback path for Steam to return to e.g. /login
 	* @param bool useAmp Use &amp; in the URL, true; or just &, false. 
 	* @return string The string to go in the URL
 	*/
-	public static function genUrl($returnTo = false, $useAmp = true)
+	public static function genUrl($host, $returnTo, $useAmp = true)
 	{
-		$returnTo = (!$returnTo) ? (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'] : $returnTo;
-		
+		$returnTo = 'https://' . $host . $returnTo;
+
 		$params = array(
 			'openid.ns'			=> 'http://specs.openid.net/auth/2.0',
 			'openid.mode'		=> 'checkid_setup',
 			'openid.return_to'	=> $returnTo,
-			'openid.realm'		=> (!empty($_SERVER['HTTPS']) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'],
+			'openid.realm'		=> 'https://' . $host,
 			'openid.identity'	=> 'http://specs.openid.net/auth/2.0/identifier_select',
 			'openid.claimed_id'	=> 'http://specs.openid.net/auth/2.0/identifier_select',
 		);

@@ -1,0 +1,12 @@
+{
+    "is_using_proxy": false,
+    "database_host": "database",
+    "database_port": 3306,
+    "database_user": "board",
+    "database_pass": "board",
+    "database_name": "iverborg_leaderboard",
+    "discord_webhook_id": "",
+    "discord_webhook_token": "",
+    "discord_webhook_mdp": "",
+    "steam_api_key": ""
+}

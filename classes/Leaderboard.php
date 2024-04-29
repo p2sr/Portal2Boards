@@ -582,26 +582,6 @@ class Leaderboard
             $rankLimits[$row["steam_id"]] = $row["cheatedScoreAmount"];
         }
 
-        //in case many people are tied at max rank
-//        $data = Database::query("SELECT map_id, COUNT(*) as numTrackedScores
-//               FROM (
-//                   SELECT map_id,
-//                   IF( @prevMap <> map_id, @rownum := 1,  @rownum := @rownum + 1 ) as rowNum,
-//                   IF( @prevMap <> map_id, @displayRank := 1,  IF( @prevScore <> score, @displayRank := @rownum,  @displayRank ) ) AS player_rank,
-//                   @prevMap := map_id, @prevScore := score
-//                   FROM scores
-//                   JOIN (SELECT @rownum := NULL, @prevMap := 0, @prevScore := 0) AS r
-//                   WHERE profile_number IN (SELECT profile_number FROM usersnew WHERE banned = 0)
-//                   AND banned = '0'
-//                   ORDER BY scores.map_id, scores.score ASC
-//                ) as ranks
-//                WHERE player_rank <= ". self::numTrackedPlayerRanks . "
-//                GROUP BY map_id");
-
-//        while ($row = $data->fetch_assoc()) {
-//            $rankLimits[$row["map_id"]] += $row["numTrackedScores"];
-//        }
-
         foreach ($rankLimits as $map => $amount) {
             $rankLimits[$map] += self::numTrackedPlayerRanks;
         }
@@ -629,10 +609,8 @@ class Leaderboard
             FROM usersnew as u
             JOIN (
                 SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note, sc.pending,
-                IF( @prevMap <> sc.map_id, @rownum := 1,  @rownum := @rownum + 1 ) as rowNum,
-                IF( @prevMap <> sc.map_id, @displayRank := 1,  IF( @prevScore <> sc.score, @displayRank := @rownum,  @displayRank ) ) AS player_rank,
-                IF( @prevMap <> sc.map_id, @rank := 1,  IF( @prevScore <> sc.score, @rank := @rank + 1,  @rank ) ) AS score_rank,
-                @prevMap := sc.map_id, @prevScore := sc.score
+                RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as player_rank,
+                DENSE_RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as score_rank
                 FROM (
                     SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note, changelog.pending 
                     FROM scores
@@ -646,7 +624,6 @@ class Leaderboard
                         AND changelog.banned = '0'
                         AND changelog.pending LIKE '%{$param["pending"]}%'
                 ) as sc
-                JOIN (SELECT @rownum := NULL, @prevMap := 0, @prevScore := 0) AS r
                 ORDER BY sc.map_id, sc.score, sc.time_gained, sc.profile_number ASC
             ) as ranks ON u.profile_number = ranks.profile_number
             JOIN maps ON ranks.map_id = maps.steam_id

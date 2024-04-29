@@ -9,13 +9,13 @@ class Discord {
     private static $mdp;
 
     public static function init() {
-        $secret = json_decode(file_get_contents(ROOT_PATH.'/secret/discord.json'));
-        self::$id = $secret->id;
-        self::$token = $secret->token;
+        $config = Config::get();
+        self::$id = $config->discord_webhook_id;
+        self::$token = $config->discord_webhook_token;
         self::$username = 'Portal2Boards';
         self::$avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
         self::$embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
-        self::$mdp = $secret->mdp;
+        self::$mdp = $config->discord_webhook_mdp;
     }
 
     public static function sendMdpWebhook($data, $demoName, $text, $err = null){

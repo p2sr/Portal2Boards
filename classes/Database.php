@@ -4,10 +4,15 @@ class Database {
     static $instance;
 
     public static function authorize() {
+        $config = Config::get();
 
-        $auth = json_decode(file_get_contents(ROOT_PATH."/secret/database.json"));
-        $db = new mysqli($auth->host, $auth->user, $auth->password, $auth->database);
-
+        $db = new mysqli(
+            $config->database_host,
+            $config->database_user,
+            $config->database_pass,
+            $config->database_name,
+            $config->database_port,
+        );
 
         if ($db->connect_errno) {
             trigger_error($db->connect_error);
