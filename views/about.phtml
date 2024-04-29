@@ -84,6 +84,7 @@
                 $teamMembers = array();
 
                 while ($row = $data->fetch_assoc()) {
+                    $row["playername"] = htmlentities($row["playername"]);
                     $teamMembers[] = $row;
                 }
             ?>
