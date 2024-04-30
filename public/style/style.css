@@ -113,7 +113,7 @@ a:hover, a:focus {
     position: absolute;
     display: table;
     margin-right: 45px;
-    min-width: 325px;
+    min-width: 405px;
 }
 #header_right #userinfo{
     top: 20px;
@@ -2293,4 +2293,8 @@ html[class="dark"] #about .container,html[class="dark"] #about td{
 html[class="dark"] #about a{
     color:#fff;
     font-weight:bold;
+}
+
+html[class="dark"] code {
+    background-color: #202225;
 }
