@@ -28,7 +28,7 @@ class ChamberView
                 </a>
             </div>
             <div class="boardname"><a href="/profile/<?= $player; ?>"><?= $playerData["boardname"] ?></a></div>
-            <div class="submission">
+            <div class="submission<?= $scoreData["submission"] == 2 ? ' autosubmission' : '' ?>">
                 <?php if ($scoreData["submission"] == 1): ?>
                     <i class="fa fa-pencil" aria-hidden="true"></i>
                     <!-- data-toggle="tooltip" title="Submission" -->

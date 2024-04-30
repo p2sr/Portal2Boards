@@ -6,6 +6,9 @@
     url('/style/din1451alt.ttf') format('truetype'),
     url('/style/din1451alt.svg#din1451alt') format('svg');
 }
+html {
+    height: 100%;
+}
 body {
     height: 100%;
     width: 100%;
@@ -15,6 +18,9 @@ body {
     font-size: 12px;
     min-width: 1115px;
     /*min-width: 1319px;*/
+}
+form {
+    margin-block-end: 1em;
 }
 label {
     display: block;
@@ -53,7 +59,7 @@ html, body {
     background: #fff;
     /*background: #888;*/
 }
-#profile .global-stats, #profile .chapterwrs-wrapper, #changelogActivity, #profile .noactivity, #profile .profile-title,
+#profile .global-stats, #profile .chapterwrs-wrapper, #changelogactivity, #profile .noactivity, #profile .profile-title,
 #profile .column-3 .block-content  {
     background: #f9f9f9;
     /*background: #bbb;*/
@@ -84,7 +90,7 @@ a {
 }
 a:hover, a:focus {
     text-decoration: underline;
-    color: inherit; !important
+    color: inherit;
 }
 #header {
     height: 92px;
@@ -455,11 +461,11 @@ a:hover, a:focus {
 }
 #chambers .chamber_scores .firstplace .entry .youtube {
     display:inline-block;
-    padding-top: 14px;
+    padding-top: 11px;
 }
 #chambers .chamber_scores .othernoobscores .entry .youtube {
     display:inline-block;
-    padding-top: 3.5px;
+    padding-top: 0px;
 }
 #chambers .chamber_scores .entry .youtube {
     float: right;
@@ -730,6 +736,7 @@ a:hover, a:focus {
 
 #changelog #firstentry > div, #changelog #otherentries .entry > div  {
     box-sizing: content-box;
+    height: 0px;
 }
 #changelog #firstentry > div:not(.profileIcon)  {
     height: 27px;
@@ -745,7 +752,7 @@ a:hover, a:focus {
     width: 276px;
     padding-left: 20px;
 }
-#changelog .datetime {
+#changelog .dateTime {
     width: 152px;
 }
 #changelog .dateDifference {
@@ -874,7 +881,7 @@ body > #youtube #ytclose {
     height: 20px;
     float: right;
     padding-left: 6px;
-    padding-top: 5px;
+    padding-top: 2px;
     cursor: pointer;
     color: #888;
     box-sizing: content-box;
@@ -883,7 +890,7 @@ body > #youtube #ytclose:hover {
     color: #444;
 }
 body > #youtube #descriptionContainer {
-    display: inline-block;
+    display: flex;
     width: calc(100% - 2px);
     /*background: url("/images/header_bg.jpg");*/
     background: #eee;
@@ -961,7 +968,8 @@ body > #youtube #ytplayer {
 }
 #profile .userinformation .general-wrapper {
     position: relative;
-    top: 50%;
+    top: 49%;
+    margin-top: 1px;
     -webkit-transform: translateY(-50%);
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
@@ -1193,11 +1201,16 @@ body > #youtube #ytplayer {
     overflow: hidden;
 }
 #profile .scoreMenu .descriptionButton {
-    display: inline-block;
     cursor: pointer;
     margin-left: 12px;
     margin-top: 13px;
     width: calc(100% - 12px)
+}
+.submissionContainer {
+    display: flex;
+}
+.button.submission {
+    float: right;
 }
 #profile .scoreMenu .descriptionContainer {
     padding-top: 13px;
@@ -1323,7 +1336,7 @@ body > #youtube #ytplayer {
 #profile .demoUploadForm {
     display: inline;
 }
-#profile .filename {
+#profile .fileName {
     display: inline-block;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1333,10 +1346,10 @@ body > #youtube #ytplayer {
     padding-right: 5px;
     white-space: nowrap;
 }
-#profile .changeForm .filename {
+#profile .changeForm .fileName {
     max-width: 183px;
 }
-#profile .submissionForm .filename {
+#profile .submissionForm .fileName {
     max-width: 229px;
 }
 #profile .submissionForm input[type=text] {
@@ -1351,8 +1364,8 @@ body > #youtube #ytplayer {
     width: 252px;
 }
 #profile .uploadDemoContainer, #profile .setYoutubeContainer, #profile .setCommentContainer {
-    margin-bottom: 3px;
-    margin-top: 3px;
+    margin-bottom: 1px;
+    margin-top: 1px;
 }
 #profile .button, #editProfile .button {
     display: inline-block;
@@ -1464,12 +1477,6 @@ body > #youtube #ytplayer {
 #changelog .demo-url i, #changelog .youtube i, #changelog .submission, #changelog .comment, #changelog .banScore   {
     font-size: 12px;
 }
-#changelog .demo-url a, #changelog .youtube i  {
-    margin-top: 17px;
-}
-#changelog .banScore .banIndicator, #changelog .submission i, #changelog .setBannedStatus, #changelog .comment i {
-    margin-top: 14px;
-}
 #changelog .demo-url i:hover, #changelog .youtube i:hover, #changelog .setBannedStatus i:hover, #changelog .comment i:hover,
 #chamber .demo-url i:hover, #chamber .youtube i:hover, #chamber .comment i:hover {
     color: #444;
@@ -1489,10 +1496,12 @@ body > #youtube #ytplayer {
     font-size: 13px;
 }
 #chamber .submission {
-    padding-right: 10px;
-    width: 15px;
+    padding-right: 11px;
+    width: 25px;
 }
-
+#chamber .submission.autosubmission {
+    padding-right: 10px;
+}
 
 #profile .sp .score, #profile .coop .score  {
     width: 55px;
@@ -1729,7 +1738,7 @@ body > #youtube #ytplayer {
 #chamber .entry.you .boardname, #chamber .entry.you .boardname a,
 #chamber .entry.you .rank, #chamber .entry.you .rank a,
 #chamber .entry.you .score, #chamber .entry.you .score a {
-    color: #0066cc; !important;
+    color: #0066cc;
     /*font-weight: bold;*/
 }
 .entry .boardname a {
@@ -1741,9 +1750,8 @@ body > #youtube #ytplayer {
     text-decoration: underline;
 }
 #chamber .profileIcon  {
-    margin-top: 4px;
     margin-right: 15px;
-    /*width: 50px;*/
+    min-width: 35px;
 }
 #chamber .profileIcon a {
     display: inline-block;
@@ -1760,12 +1768,12 @@ body > #youtube #ytplayer {
 }
 #chamber .controls.topright {
     position: absolute;
-    top: 10px;
+    top: 9px;
     right: 10px;
 }
 #chamber .controls.topleft {
     position: absolute;
-    top: 10px;
+    top: 9px;
     left: 10px;
 }
 #chamber .chamberControls {
@@ -1825,6 +1833,7 @@ body > #youtube #ytplayer {
     font-size: 13px;
     font-family: Segoe UI;
     text-transform: none;
+    height: 24px;
     line-height: 24px;
 }
 .controls .linkButton a {
@@ -1833,9 +1842,6 @@ body > #youtube #ytplayer {
     padding-right: 10px;
     text-decoration: none;
     color: inherit;
-}
-.controls .button span.name {
-    vertical-align: middle;
 }
 .controls span.currentPageLabel {
     font-size: 15px;

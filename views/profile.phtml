@@ -1023,7 +1023,7 @@
             var $submissionContainer = $(
                 "<div class='submissionContainer'>" +
                     "<div class='createSubmission'>" +
-                        "<div class='button'>Create new submission</div>" +
+                        "<div class='button submission'>Create new submission</div>" +
                     "</div>" +
                 "</div>");
 
@@ -1074,15 +1074,15 @@
                 "<input type='text' name='chamber' style='display: none' value='"+currentMap+"'>" +
                 "<div class='scoreInputContainer' style='display:inline-block; width: 100%;'>" +
                     "<label for='score' style='float: left; color: inherit; margin-top: 3px;'>Time</label>" +
-                    "<input type='text' name='score' value='' style='width: 65px;'>" +
+                    "<input type='text' id='score' name='score' value='' style='width: 65px;'>" +
                 "</div>" +
                 "<div class='setYoutubeContainer' style='display:inline-block; width: 100%;'>" +
                     "<label for='youtubeID' style='float: left; color: inherit; margin-top: 3px;'>Youtube URL</label>" +
-                    "<input type='text' name='youtubeID' value='' style='width: 265px;'>" +
+                    "<input type='text' id='youtubeID' name='youtubeID' value='' style='width: 265px;'>" +
                 "</div>" +
                 "<div class='setCommentContainer'  style='display:inline-block; width: 100%;'>" +
                     "<label for='comment' style='float: left; color: inherit; margin-top: 3px;'>Comment</label>" +
-                    "<input type='text' name='comment' value='' style='width: 265px;'>" +
+                    "<input type='text' id='comment' name='comment' value='' style='width: 265px;'>" +
                 "</div>" +
                 "<div class='uploadDemoContainer'>" +
                     "<label class='button browseDemo'>" +
@@ -1192,7 +1192,7 @@
             var fileNameComponents = $(this).val().split("\\");
             var fileName = fileNameComponents[fileNameComponents.length - 1];
             $(this).parent().parent().find(".uploadDemo").show();
-            $(this).parent().parent().find(".filename").text(fileName);
+            $(this).parent().parent().find(".fileName").text(fileName);
         });
     }
 
@@ -1637,7 +1637,7 @@
                 var fileNameComponents = $(this).val().split("\\");
                 var fileName = fileNameComponents[fileNameComponents.length - 1];
                 $(this).parent().parent().find(".uploadDemo").show();
-                $(this).parent().parent().find(".filename").text(fileName);
+                $(this).parent().parent().find(".fileName").text(fileName);
             });
 
             $changeMenu.find(".button.uploadDemo").on('click', function(event) {

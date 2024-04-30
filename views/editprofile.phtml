@@ -6,11 +6,11 @@
     <div class="normalcontent">
         <form action="/editprofile" method="post">
             <label for="twitch">Twitch username</label>
-            <input type="text" name="twitch" value="<?=$loggedInUser->userData->twitch;?>"/>
+            <input type="text" id="twitch" name="twitch" value="<?=$loggedInUser->userData->twitch;?>"/>
             <label for="youtube">Youtube channel URL / user name</label>
-            <input type="text" name="youtube" value="<?=($loggedInUser->userData->youtube != NULL) ? "www.youtube.com".$loggedInUser->userData->youtube : ""?>"/>
+            <input type="text" id="youtube" name="youtube" value="<?=($loggedInUser->userData->youtube != NULL) ? "www.youtube.com".$loggedInUser->userData->youtube : ""?>"/>
             <label for="youtube">Board name (Keep empty to remain synced with your steam nickname)</label>
-            <input type="text" name="boardname" value="<?=$loggedInUser->userData->boardname;?>"/>
+            <input type="text" id="boardname" name="boardname" value="<?=$loggedInUser->userData->boardname;?>"/>
             <button class="button" type="submit">Save</button>
         </form>
     </div>
