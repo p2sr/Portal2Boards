@@ -113,7 +113,7 @@ a:hover, a:focus {
     position: absolute;
     display: table;
     margin-right: 45px;
-    min-width: 325px;
+    min-width: 405px;
 }
 #header_right #userinfo{
     top: 20px;
@@ -1960,4 +1960,341 @@ body > #youtube #ytplayer {
     display: flex;
     flex-direction: column;
     gap: 0.3rem;
+}
+
+/* DARK MODE */
+
+html[class="dark"] {
+    background-color: #0002;
+    color: #ffffff;
+    color-scheme: dark;
+}
+
+html[class="dark"] select>option {
+    background: #3e4146;
+    color: #ffffff;
+}
+
+html[class="dark"] .checkbox,html[class="dark"] input[type="submit"] {
+    filter: invert(85%);
+}
+
+html[class="dark"] .fa.fa-download,
+html[class="dark"] .fa.fa-gamepad,
+html[class="dark"] .fa.fa-ban,
+html[class="dark"] .fa.fa-times {
+    color: #aaa !important;
+}
+
+html[class="dark"] .fa.fa-download:hover,
+html[class="dark"] .fa.fa-times:hover {
+    color: #4ba6db !important;
+}
+
+html[class="dark"] .fa.fa-ban:hover,
+html[class="dark"] .fa.fa-youtube-play:hover {
+    color: #db4b4b !important;
+}
+
+html[class="dark"] body > #youtube #descriptionContainer {
+    background: #444;
+    color: #fff;
+    border-left: 1px solid #444;
+    border-right: 1px solid #444;
+}
+
+html[class="dark"] .controls .button, html[class="dark"] .controls span.currentPageLabel {
+    border-radius: 5px;
+    background: #202225;
+    display: inline-block;
+    border: 2px solid #0002;
+    box-sizing: content-box;
+    color: #fff;
+}
+
+html[class="dark"] label {
+    display: block;
+    font-family: Segoe UI;
+    color: #fff;
+}
+
+html[class="dark"] input,html[class="dark"] select {
+    background: #0002;
+    border: 1px solid #4e4e4e;
+    color: #ffffff;
+    color-scheme: dark;
+}
+
+html[class="dark"] input[type=text],html[class="dark"]  input[type=number],html[class="dark"]  input[type=date]  {
+    border: 1px solid #4e4e4e;
+    background: #0002;
+}
+
+html[class="dark"] input:focus,html[class="dark"] select:focus  {
+    outline: none;
+}
+
+html[class="dark"] p {
+    color: #ffffff;
+}
+
+html[class="dark"] .highlight {
+    color: #37b5ff;;
+}
+
+html[class="dark"] #chamber .entry.you .boardname,html[class="dark"]  #chamber .entry.you .boardname a,
+html[class="dark"] #chamber .entry.you .rank,html[class="dark"]  #chamber .entry.you .rank a,
+html[class="dark"] #chamber .entry.you .score,html[class="dark"] #chamber .entry.you .score a {
+    color: #37b5ff;
+}
+
+/*HEADER*/
+
+html[class="dark"] #header{
+    background: #202225;
+    box-shadow: 0px 1px 5px #0002;
+    -webkit-box-shadow: 0px 1px 5px #0002;
+}
+
+html[class="dark"] #sitetitle{
+    color:#fff;
+}
+
+html[class="dark"] .nav_button>.btnLabel,html[class="dark"] .nav_dropdown>.btnLabel{
+    color:#b9bbbe;
+}
+
+html[class="dark"] #navigation>a:hover .btnLabel,html[class="dark"]#navigation>div:hover .btnLabel{
+    color:#ffffff;
+}
+
+html[class="dark"] .nav_button>.nav_icon,html[class="dark"] .nav_dropdown>.nav_icon,html[class="dark"] #edition{
+    filter:brightness(110%) invert(88%)  hue-rotate(180deg);
+    -webkit-filter:brightness(110%) invert(88%)  hue-rotate(180deg);
+}
+
+html[class="dark"] .nav_dropdown>ul {
+    background-color: #282b30 !important;
+    /*border-radius:5px;*/
+    box-shadow: 0px 1px 2px #0008;
+    -webkit-box-shadow: 0px 1px 2px #0008;
+}
+
+html[class="dark"] .nav_dropdown>ul .btnLabel{
+    color: #a0a2a4;
+}
+
+html[class="dark"] .nav_dropdown>ul .nav_icon{
+    filter:brightness(110%) invert(85%) hue-rotate(180deg);
+    -webkit-filter:brightness(110%) invert(85%) hue-rotate(180deg);
+}
+
+html[class="dark"] .nav_dropdown li:hover{
+    background-color:#25282d !important;
+}
+
+html[class="dark"] .nav_dropdown li:hover .btnLabel{
+    color:#fff;
+}
+
+html[class="dark"] #welcome {
+    color: #fff;
+}
+
+html[class="dark"] #welcome a {
+    color: #fff;
+}
+
+/*CONTENT*/
+
+html[class="dark"] body,html[class="dark"] #content{
+    background:#2a2c31;
+}
+
+html[class="dark"] h1 {
+    color:#4ba6db !important;
+}
+
+/*FOOTER*/
+
+html[class="dark"] #footer{
+    background: #202225;
+    color: #fff;
+}
+
+/*CHANGELOG*/
+
+html[class="dark"] #changelogactivity {
+    background-color: #36393f;
+}
+
+html[class="dark"] #changelogActivity .morris-hover{
+    background-color: #282b30 !important;
+    color:#a0a2a4;
+    box-shadow: 0px 1px 2px #0008;
+    -webkit-box-shadow: 0px 1px 2px #0008;
+}
+
+html[class="dark"] #changelog>#filters{
+    background:#36393f;
+    border-color:#36393f;
+    box-shadow: 0px 1px 2px #0005;
+    -webkit-box-shadow: 0px 1px 2px #0005;
+}
+
+html[class="dark"] #changelog div {
+    color:#f6f6f7;
+}
+
+html[class="dark"] #changelog #filter_instructions_lol{
+    color:#f6f6f7;
+}
+
+html[class="dark"] #changelog label,html[class="dark"] #changelog .check>div:first-child{
+    color:#fff;
+}
+
+html[class="dark"] #entries{
+    box-shadow: 0px 0px 5px #0002;
+    -webkit-box-shadow: 0px 0px 5px #0002;
+}
+
+html[class="dark"] #entries .entry{
+    background: #3e4146;
+    color:#b9babc;
+    border-bottom: 1px solid #36393e;
+}
+
+html[class="dark"] #entries #firstentry,html[class="dark"] #entries .entry[style="background: #d6d6d6"]{
+    background-color: #36393e !important;
+    border-bottom: 1px solid #3e4146;
+    border-top:none;
+    color:#b9babc;
+}
+
+html[class="dark"] #changelog input[type=submit] {
+    color: #000;
+}
+
+/* CHAMBERS */
+
+html[class="dark"] #chambers .chamber{
+    background:#36393e;
+    border-bottom: 2px solid #0008;
+    box-shadow: 0px 1px 2px #0008;
+    -webkit-box-shadow: 0px 1px 2px #0008;
+}
+
+html[class="dark"] #chambers .firstplace{
+    background: #3e4146 !important;
+}
+
+html[class="dark"] #chambers .firstplace,html[class="dark"] #chambers .othernoobscores{
+    color:#c0c1c2 !important;
+}
+
+html[class="dark"] #chambers .entry .youtube i{
+    color: #aaa !important;
+}
+
+html[class="dark"] #changelog .youtube i{
+    color: #aaa !important;
+}
+
+html[class="dark"] #changelog .youtube i:hover{
+    color: red !important;
+}
+
+html[class="dark"] #chamber .youtube i{
+    color: #aaa !important;
+}
+
+html[class="dark"] #chamber .youtube i:hover{
+    color: red !important;
+}
+
+html[class="dark"] #chambers .entry .youtube .fa-download:hover{
+    color: #4ba6db !important;
+}
+
+html[class="dark"] #chambers .entry .youtube > .fa-youtube-play:hover{
+    color: red !important;
+}
+
+html[class="dark"] #chambers .chambertitle .titlebg{
+    background: #36393e;
+}
+
+html[class="dark"] #chambers .chambertitle .titlebg a{
+    color:#eee;
+}
+
+html[class="dark"] #chambers .chambertitle .titlebghelper{
+    background: none;
+    border-bottom: 34px solid transparent;
+    border-right: 20px solid #36393e;
+}
+
+/* AGGREGATED AND CHAMBERS */
+
+html[class="dark"] #aggregated .entry,html[class="dark"] #chamber .entry{
+    background: #3e4146;
+    border-bottom: 1px solid #36393e;
+}
+
+html[class="dark"] #aggregated .entry[style*="background: #d3d3d3"],html[class="dark"] #chamber .entry[style*="background: #d6d6d6"]{
+    background: #36393e !important;
+    border-bottom: 1px solid #3e4146;
+}
+
+html[class="dark"] #aggregated .entry>div,html[class="dark"] #chamber .entry>div,html[class="dark"] #chamber .entry>a{
+    color:#b9babc;
+}
+
+/*PROFILE*/
+
+html[class="dark"] #profile .profile-title,html[class="dark"] #profile .column-3 .column,html[class="dark"] #profile a,html[class="dark"] #profile .scoretable {
+    color: #fff;
+}
+
+html[class="dark"] .profile-title,html[class="dark"] .block-content.all-records, html[class="dark"] .global-stats {
+    background:#36393e !important;
+}
+
+html[class="dark"] #profile .button:hover,html[class="dark"] #editProfile .button:hover {
+    background: #3096d1;
+    color: #fff;
+}
+
+html[class="dark"] #profile{
+    background:none;
+}
+
+html[class="dark"] #profile .noactivity{
+    background:none;
+    color:#c0c1c2;
+}
+
+html[class="dark"] #profile>div,html[class="dark"] #profile .column-3>div>div{
+    background:none;
+    color: #fff;
+}
+
+html[class="dark"] #profile .button,html[class="dark"] #editProfile .button {
+    color: #fff;
+}
+
+/*ABOUT*/
+
+html[class="dark"] #about .container,html[class="dark"] #about td{
+    color:#fff;
+}
+
+html[class="dark"] #about a{
+    color:#fff;
+    font-weight:bold;
+}
+
+html[class="dark"] code {
+    background-color: #202225;
 }
