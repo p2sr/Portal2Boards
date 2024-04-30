@@ -921,6 +921,9 @@ body > #youtube #ytplayer {
     width: 960px;
     padding-bottom: 10px;
 }
+html[class="dark"] #editProfile .msg {
+    color: #ffffff;
+}
 #donate a {
     font-size: 10px;
     font-weight: bold;
