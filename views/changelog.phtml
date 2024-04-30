@@ -252,8 +252,8 @@
         if (Object.keys(activityByScore).length > 0) {
             let activityByDate = getActivityByDate(activityByScore);
             const urlParams = new URLSearchParams(window.location.search);
-            let endDate = urlParams.get("endDate") !== ("" || null) ? urlParams.get("endDate") : getCurrentLocalDate();
-            let startDate = urlParams.get("startDate") !== ("" || null) ? urlParams.get("startDate") : localizeDate(getDateFirstChange(activityByDate));
+            let endDate = (urlParams.get("endDate") ?? '') !== ''  ? urlParams.get("endDate") : getCurrentLocalDate();
+            let startDate = (urlParams.get("startDate") ?? '') !== ''  ? urlParams.get("startDate") : localizeDate(getDateFirstChange(activityByDate));
             drawActivityChart(activityByDate, startDate, endDate, $("#changelogActivity"));
         }
     });

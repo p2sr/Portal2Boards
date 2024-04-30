@@ -95,9 +95,11 @@ class Router {
                     }
                     $_SESSION["user_auth_hash"] = $auth_hash;
                 }
+                header("Location: /profile/".$user);
+            } else {
+                header("Location: /");
             }
 
-            header("Location: /profile/".$user);
             exit;
         }
 
@@ -699,13 +701,23 @@ class Router {
         }
 
         if ($location[1] == "chamber" && isset($location[2])) {
-            $GLOBALS["chamberID"] = $location[2];
-            View::$pageData["pageTitle"] = $GLOBALS["mapInfo"]["maps"][$location[2]]["mapName"];
             $view->chamber = Cache::get("chamberBoard" . $location[2]);
 
-            if (isset($location[3]) && $location[3] == "json") {
-                echo json_encode($view->chamber);
-                exit;
+            if ($view->chamber) {
+                $GLOBALS["chamberID"] = $location[2];
+                View::$pageData["pageTitle"] = $GLOBALS["mapInfo"]["maps"][$location[2]]["mapName"];
+    
+                if (isset($location[3]) && $location[3] == "json") {
+                    echo json_encode($view->chamber);
+                    exit;
+                }
+            } else {
+                if (isset($location[3]) && $location[3] == "json") {
+                    echo "{}";
+                    exit;
+                } else {
+                    $this->routeTo404();
+                }
             }
         }
 

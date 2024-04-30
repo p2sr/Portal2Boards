@@ -423,7 +423,7 @@ class Leaderboard
     {
         $maps = self::getMaps();
         $changes = array();
-        $highestEvidenceRank = max(array_column($evidenceRequirments, 'rank'));
+        $highestEvidenceRank = !empty($evidenceRequirments) ? max(array_column($evidenceRequirments, 'rank')) : false;
 
         Debug::log("Saving new leaderboard data");
         $db_data = Database::query("SELECT id, profile_number, score, map_id FROM changelog");
@@ -679,6 +679,7 @@ class Leaderboard
             "demo" => "",
             "yt" => "",
             "maxDaysAgo" => "",
+            "hasDate" => "",
             "startDate" => "",
             "endDate" => "",
             "startRank" => "",
@@ -1356,7 +1357,7 @@ class Leaderboard
                 return false;
             });
 
-            $videoRequirement = max(array_column($videoBeforeDate, 'rank'));
+            $videoRequirement = !empty($videoBeforeDate) ? max(array_column($videoBeforeDate, 'rank')) : false;
             Debug::log("Video Requirement: ".$videoRequirement." > ".$result['post_rank']);
 
             // Getting Highest Demo Requirement
@@ -1369,7 +1370,7 @@ class Leaderboard
                 }
                 return false;
             });
-            $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
+            $demoRequirement = !empty($demoBeforeDate) ? max(array_column($demoBeforeDate, 'rank')) : false;
             Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
 
             if($demoRequirement && $demoRequirement >= $result['post_rank']){
@@ -1395,7 +1396,7 @@ class Leaderboard
             }
             return false;
         });
-        $demoRequirement = max(array_column($demoBeforeDate, 'rank'));
+        $demoRequirement = !empty($demoBeforeDate) ? max(array_column($demoBeforeDate, 'rank')) : false;
         Debug::log("Demo Requirement: ".$demoRequirement." > ".$result['post_rank']);
 
         return ($demoRequirement && $demoRequirement >= $result['post_rank']) ? 1 : 0;

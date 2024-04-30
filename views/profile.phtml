@@ -936,6 +936,13 @@
 
                 $scoreMenu.slideDown("slow");
             },
+            complete: function() {
+                if ($scoreMenu.hasClass("open")) {
+                    $scoreMenuToggleIcon.attr("class", "fa fa-caret-down");
+                } else {
+                    $scoreMenuToggleIcon.attr("class", "fa fa-caret-right");
+                }
+            },
             cache: false,
             contentType: false,
             processData: false
@@ -1020,6 +1027,8 @@
         $scoreMenu.append($entryContainer);
 
         if (profilePermissions) {
+            $(".submissionContainer").remove();
+
             var $submissionContainer = $(
                 "<div class='submissionContainer'>" +
                     "<div class='createSubmission'>" +
@@ -1035,26 +1044,6 @@
 
             $scoreMenu.append($submissionContainer);
             $scoreMenu.append($status);
-        }
-
-        if ($scoreMenu.css("display") == "none") {
-            $scoreMenuToggleIcon.attr("class", "fa fa-caret-down");
-            /*
-            var activity = getActivity(entries);
-            if (Object.keys(activity).length > 0) {
-
-                $chart.css("height", "150px");
-                $scoreMenu.css("height", "0px");
-                $scoreMenu.show();
-
-                var firstDate = getDateFirstChange(activity);
-                var changesByDate = getChangesByDate(activity);
-                drawChangeChart(changesByDate, firstDate, moment().format("YYYY-MM-DD"), $chart);
-
-                $scoreMenu.hide();
-                $scoreMenu.css("height", "");
-            }
-            */
         }
     }
 
