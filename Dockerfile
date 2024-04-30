@@ -12,7 +12,7 @@ RUN apt-get install -y software-properties-common
 RUN add-apt-repository ppa:ondrej/php
 RUN apt-get remove -y --purge software-properties-common
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y cron curl php7.4 php7.4-cli php7.4-curl php7.4-mysql php7.4-xml apache2 libapache2-mod-php7.4
+RUN apt-get install -y cron curl php7.4 php7.4-cli php7.4-curl php7.4-mysql php7.4-xml php7.4-xml php7.4-mbstring apache2 libapache2-mod-php7.4
 RUN apt-get install -y ${APT_PACKAGES}
 
 # install composer
