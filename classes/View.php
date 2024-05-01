@@ -1,13 +1,10 @@
 <?php
 class View {
-    /* Used for forcing update for client side cached files */
-    public $browserCacheVersion = "0.1";
-
     public $css = array();
     public $js = array();
 
     const morrisStyle = [
-        "https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.0/morris.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.0/morris.css?v=0.1",
         "sha512-fjy4e481VEA/OTVR4+WHMlZ4wcX/+ohNWKpVfb7q+YNnOCS++4ZDn3Vi6EaA2HJ89VXARJt7VvuAKaQ/gs1CbQ==",
     ];
     const morrisJs = [
@@ -111,7 +108,7 @@ class View {
         $this->siteTitle = "";
 
         $this->addCss([
-            "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css",
+            "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css?v=0.1",
             "sha512-4uGZHpbDliNxiAv/QzZNo/yb2FtAX+qiDb7ypBWiEdJQX8Pugp8M6il5SRkN8jQrDLWsh3rrPDSXRf3DwFYM6g==",
         ]);
         $this->addJs([
@@ -119,7 +116,7 @@ class View {
             "sha512-qzrZqY/kMVCEYeu/gCm8U2800Wz++LTGK4pitW/iswpCbjwxhsmUwleL1YXaHImptCHG0vJwU7Ly7ROw3ZQoww==",
         ]);
         $this->addCss([
-            "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css",
+            "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css?v=0.1",
             "sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==",
         ]);
         $this->addJs([
@@ -128,7 +125,7 @@ class View {
         ]);
 
         $this->addJs(["/js/popover.js"]);
-        $this->addCss(["/style/style.css"]);
+        $this->addCss(["/style/style.css?v=0.1"]);
     }
     public function addJs($path) {
         $this->js[] = $path + [1 => null];
