@@ -30,6 +30,10 @@ down:
 build:
     docker compose build
 
+# Start and recreate containers.
+reload:
+    docker compose up -d --force-recreate
+
 # Refresh leaderboard cache.
 cache:
     docker exec -u www-data -ti {{project}}-server php /var/www/html/api/refreshCache.php > /dev/null 2>&1

@@ -66,6 +66,7 @@ Command shortcuts with [just]. Example: `just cache`
 | up             | Start all containers. Accepts arguments like `-d` to start in background. |
 | down           | Stop all containers.                                                      |
 | build          | Build the server image.                                                   |
+| reload         | Start and recreate containers.                                            |
 | cache          | Refresh leaderboard cache.                                                |
 | update         | Update scores by fetching new scores from Steam.                          |
 | server-debug   | Open shell in server container.                                           |
