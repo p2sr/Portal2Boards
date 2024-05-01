@@ -40,9 +40,11 @@
                     document.documentElement.classList.add('dark');
                 }
 
-                $(".rank, .preRank, .postRank").each(function() {
-                    !this.firstElementChild && drawRank($(this));
-                });
+                if (location.pathname.startsWith('/changelog') || location.pathname.startsWith('/profile/')) {
+                    $(".rank, .preRank, .postRank").each(function() {
+                        !this.firstElementChild && drawRank($(this));
+                    });
+                }
             }
         </script>
     </head>
