@@ -79,5 +79,3 @@
         
         $j++;
     }
-
-    Leaderboard::cacheLeaderboard();
