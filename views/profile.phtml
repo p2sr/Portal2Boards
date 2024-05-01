@@ -915,7 +915,7 @@
                     return;
                 }
 
-                entries = JSON.parse(data);
+                entries = data;
                 updateBestScore();
                 drawScoreMenu();
 
@@ -1139,7 +1139,7 @@
                 type: 'POST',
                 data: formData,
                 success: function(data) {
-                    var entry = JSON.parse(data);
+                    var entry = data;
                     entries.push(entry);
                     var $entry = addChangeEntry(entry);
 

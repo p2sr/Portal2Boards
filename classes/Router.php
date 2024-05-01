@@ -121,6 +121,7 @@ class Router {
                     exit;
                 }
                 $runners = Leaderboard::getActiveRunners($_POST["months"]);
+                header("Content-Type: application/json");
                 echo json_encode(array(
                     "profiles" => $runners,
                 ));
@@ -142,6 +143,7 @@ class Router {
 
             if ($location[2] == "validate-user") {
                 // If we got here, the hash is definitely valid
+                header("Content-Type: application/json");
                 echo "{\"userId\": \"{$userId}\"}";
                 exit;
             }
@@ -177,6 +179,7 @@ class Router {
                 }
 
                 $change = Leaderboard::getChange($id);
+                header("Content-Type: application/json");
                 echo json_encode($change);
                 exit;
             }
@@ -184,6 +187,7 @@ class Router {
             if ($location[2] == "current-pb") {
                 // Get current valid PB
                 $pb_row = Leaderboard::getLatestPb($userId, $_POST["mapId"]);
+                header("Content-Type: application/json");
                 if (isset($pb_row)) {
                     echo json_encode($pb_row);
                 } else {
@@ -413,6 +417,7 @@ class Router {
                     }
 
                     $change = Leaderboard::getChange($id);
+                    header("Content-Type: application/json");
                     echo json_encode($change);
                 }
             }
@@ -698,6 +703,7 @@ class Router {
             }
 
             if ((isset($location[3]) && $location[3] == "json") || (isset($location[4]) && $location[4] == "json")) {
+                header("Content-Type: application/json");
                 echo "{\"Points\":" . json_encode($view->points) . ", \"Times\":" . json_encode($view->times) . "}";
                 exit;
             }
@@ -717,6 +723,7 @@ class Router {
             $view->changelog = Leaderboard::getChangelog($param);
 
             if (isset($location[2]) && $location[2] == "json") {
+                header("Content-Type: application/json");
                 echo json_encode($view->changelog);
                 exit;                
             }
@@ -739,6 +746,7 @@ class Router {
             if (isset($location[3]) && $location[3] == "json") {
                 // REALLY IMPORTANT: don't show the user's auth hash!
                 unset($view->profile->userData->auth_hash);
+                header("Content-Type: application/json");
                 echo json_encode($view->profile);
                 exit;                
             }
@@ -752,11 +760,13 @@ class Router {
                 View::$pageData["pageTitle"] = $GLOBALS["mapInfo"]["maps"][$location[2]]["mapName"];
     
                 if (isset($location[3]) && $location[3] == "json") {
+                    header("Content-Type: application/json");
                     echo json_encode($view->chamber);
                     exit;
                 }
             } else {
                 if (isset($location[3]) && $location[3] == "json") {
+                    header("Content-Type: application/json");
                     echo "{}";
                     exit;
                 } else {
@@ -786,6 +796,7 @@ class Router {
             }
 
             if (isset($location[2]) && $location[2] == "json") {
+                header("Content-Type: application/json");
                 echo json_encode($view->donators);
                 exit;
             }
@@ -801,6 +812,7 @@ class Router {
             }
 
             if (isset($location[2]) && $location[2] == "json") {
+                header("Content-Type: application/json");
                 echo json_encode($view->wallofshame);
                 exit;
             }
