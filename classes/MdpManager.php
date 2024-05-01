@@ -31,7 +31,7 @@ class MdpManager {
         $proc = proc_open($cmd,[
             1 => ['pipe','w'],
             2 => ['pipe','w'],
-        ],$pipes);
+        ],$pipes, MdpManager::mdpLocation);
         $stdout = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
