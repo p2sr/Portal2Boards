@@ -1985,17 +1985,19 @@ html[class="dark"] .checkbox,html[class="dark"] input[type="submit"] {
 html[class="dark"] .fa.fa-download,
 html[class="dark"] .fa.fa-gamepad,
 html[class="dark"] .fa.fa-ban,
+html[class="dark"] .fa.fa-comment,
 html[class="dark"] .fa.fa-times {
     color: #aaa !important;
 }
 
 html[class="dark"] .fa.fa-download:hover,
-html[class="dark"] .fa.fa-times:hover {
+html[class="dark"] .fa.fa-comment:hover,
+html[class="dark"] .fa.fa-times:hover,
+html[class="dark"] .fa.fa-play:hover {
     color: #4ba6db !important;
 }
 
-html[class="dark"] .fa.fa-ban:hover,
-html[class="dark"] .fa.fa-youtube-play:hover {
+html[class="dark"] .fa.fa-ban:hover {
     color: #db4b4b !important;
 }
 
@@ -2200,12 +2202,16 @@ html[class="dark"] #chambers .entry .youtube i{
     color: #aaa !important;
 }
 
+html[class="dark"] #chambers .entry .youtube i:hover{
+    color: #4ba6db !important;
+}
+
 html[class="dark"] #changelog .youtube i{
     color: #aaa !important;
 }
 
 html[class="dark"] #changelog .youtube i:hover{
-    color: red !important;
+    color: #4ba6db !important;
 }
 
 html[class="dark"] #chamber .youtube i{
@@ -2213,7 +2219,7 @@ html[class="dark"] #chamber .youtube i{
 }
 
 html[class="dark"] #chamber .youtube i:hover{
-    color: red !important;
+    color: #4ba6db !important;
 }
 
 html[class="dark"] #chambers .entry .youtube .fa-download:hover{
@@ -2221,7 +2227,7 @@ html[class="dark"] #chambers .entry .youtube .fa-download:hover{
 }
 
 html[class="dark"] #chambers .entry .youtube > .fa-youtube-play:hover{
-    color: red !important;
+    color: #4ba6db !important;
 }
 
 html[class="dark"] #chambers .chambertitle .titlebg{
@@ -2264,9 +2270,16 @@ html[class="dark"] .profile-title,html[class="dark"] .block-content.all-records,
     background:#36393e !important;
 }
 
-html[class="dark"] #profile .button:hover,html[class="dark"] #editProfile .button:hover {
+html[class="dark"] #profile .button:hover,
+html[class="dark"] #editProfile .button:hover {
     background: #3096d1;
     color: #fff;
+}
+
+html[class="dark"] .button.deleteSubmission:hover,
+html[class="dark"] .button.deleteDemo:hover,
+html[class="dark"] .button.deleteComment:hover {
+    background: red !important;
 }
 
 html[class="dark"] #profile{
@@ -2279,7 +2292,6 @@ html[class="dark"] #profile .noactivity{
 }
 
 html[class="dark"] #profile>div,html[class="dark"] #profile .column-3>div>div{
-    background:none;
     color: #fff;
 }
 
