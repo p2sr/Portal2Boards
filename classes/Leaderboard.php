@@ -43,7 +43,7 @@ class Leaderboard
         $SPChamberBoard = self::getBoard(array("mode" => "0", "pending" => "0"));
         $COOPChamberBoard = self::getBoard(array("mode" => "1", "pending" => "0"));
 
-        echo json_encode($SPChamberBoard);
+        //echo json_encode($SPChamberBoard);
 
         Cache::set("SPChamberBoard", $SPChamberBoard);
         Cache::set("COOPChamberBoard", $COOPChamberBoard);
