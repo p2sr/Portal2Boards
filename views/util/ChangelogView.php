@@ -74,7 +74,7 @@ class ChangelogView
             <div class="demo-url">
                 <?php if ($val["hasDemo"] == 1): ?>
                     <a href="/getDemo?id=<?=$val["id"]?>">
-                        <i class="fa fa-lg fa-download" aria-hidden="true"></i>
+                        <i class="fa fa-download" aria-hidden="true"></i>
                     </a>
                 <?php endif; ?></div>
             <div class="youtube">
@@ -85,7 +85,7 @@ class ChangelogView
                             style="display:none"
                         <?php endif; ?>
                     <?php else : ?>
-                        onclick="embedOnBody('<?=$val["youtubeID"]?>', '<?=$val["chamberName"]?> - <?=Leaderboard::convertToTime($val["score"])?> - <?=Util::escapeQuotesHTML($val["player_name"])?>');" class="youtubeEmbedButton fa fa-lg fa-youtube-play"
+                        onclick="embedOnBody('<?=$val["youtubeID"]?>', '<?=$val["chamberName"]?> - <?=Leaderboard::convertToTime($val["score"])?> - <?=Util::escapeQuotesHTML($val["player_name"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
                     <?php endif; ?>
                         aria-hidden="true">
                     </i>
