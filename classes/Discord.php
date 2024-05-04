@@ -1,22 +1,9 @@
 <?php
-class Discord {
-    const API = 'https://discordapp.com/api';
-    private static $id;
-    private static $token;
-    private static $username;
-    private static $avatar;
-    private static $embed_icon;
-    private static $mdp;
 
-    public static function init() {
-        $config = Config::get();
-        self::$id = $config->discord_webhook_id;
-        self::$token = $config->discord_webhook_token;
-        self::$username = 'Portal2Boards';
-        self::$avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
-        self::$embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
-        self::$mdp = $config->discord_webhook_mdp;
-    }
+class Discord {
+    private static $username = 'board.portal2.sr';
+    private static $avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
+    private static $embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
 
     public static function sendMdpWebhook($data, $demoName, $text, $err = null){
         try {
@@ -37,7 +24,7 @@ class Discord {
                 $post['files[1]'] = curl_file_create($tempErrFile, 'text/plain', $demoName.'_err.txt');
             }
             //Debug::log(json_encode($payload));
-            $ch = curl_init(self::$mdp);
+            $ch = curl_init(Config::get()->discord_webhook_mdp);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // DEV TESTING
             curl_setopt($ch, CURLOPT_USERAGENT, 'board.portal2.sr (https://github.com/p2sr/Portal2Boards)');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -71,7 +58,7 @@ class Discord {
             'payload_json' => json_encode($payload)
         ];
         Debug::log(json_encode($payload));
-        $ch = curl_init(Discord::API.'/webhooks/'.self::$id.'/'.self::$token);
+        $ch = curl_init(Config::get()->discord_webhook_wr);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // DEV TESTING
         curl_setopt($ch, CURLOPT_USERAGENT, 'board.portal2.sr (https://github.com/p2sr/Portal2Boards)');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -83,64 +70,22 @@ class Discord {
 
     public static function buildEmbed($data) {
         $embed = [
-            'title' => 'New Portal 2 World Record',
-            'url' => 'https://board.portal2.sr',
+            'title' => $data['map'],
+            'url' => 'https://board.portal2.sr/chamber/'.$data['map_id'],
             'color' => 295077,
-            'timestamp' => $data['timestamp']->format('Y-m-d\TH:i:s.u\Z'),
-            'footer' => [
-                'icon_url' => self::$embed_icon,
-                'text' => 'board.portal2.sr'
-            ],
-            'image' => [
-                'url' => 'https://board.portal2.sr/images/chambers_full/'.$data['map_id'].'.jpg'
-            ],
-            'author' => [
-                'name' => $data['player'],
-                'url' => 'https://board.portal2.sr/profile/'.$data['player_id'],
-                'icon_url' => $data['player_avatar']
-            ],
             'fields' => [
                 [
-                    'name' => 'Map',
-                    'value' => '['.$data['map'].'](https://board.portal2.sr/chamber/'.$data['map_id'].')',
-                    'inline' => true
-                ],
-                [
-                    'name' => 'Time',
+                    'name' => 'WR',
                     'value' => $data['score'].' (-'.$data['wr_diff'].')',
                     'inline' => true
                 ],
                 [
-                    'name' => 'Player',
+                    'name' => 'By',
                     'value' => '['.self::sanitiseText($data['player']).'](https://board.portal2.sr/profile/'.$data['player_id'].')',
                     'inline' => true
                 ],
-                [
-                    'name' => 'Date',
-                    'value' => $data['timestamp']->format('Y-m-d H:i:s'),
-                    'inline' => true
-                ],
-                [
-                    'name' => 'Demo File',
-                    'value' => '[Download](https://board.portal2.sr/getDemo?id='.$data['id'].')',
-                    'inline' => true
-                ]
             ]
         ];
-        if ($data['yt'] != NULL && $data['yt'] != '') {
-            array_push($embed['fields'], [
-                'name' => 'Video Link',
-                'value' => '[Watch](https://youtu.be/'.$data['yt'].')',
-                'inline' => true
-            ]);
-        }
-        if ($data['comment'] != NULL && $data['comment'] != '') {
-            array_push($embed['fields'], [
-                'name' => 'Comment',
-                'value' => '*'.self::sanitiseText($data['comment']).'*',
-                'inline' => false
-            ]);
-        }
         return (object)$embed;
     }
 
@@ -158,4 +103,3 @@ class Discord {
         unlink($file);
     }
 }
-Discord::init();
