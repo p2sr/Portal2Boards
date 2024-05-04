@@ -125,7 +125,7 @@ class View {
         ]);
 
         $this->addJs(["/js/popover.js"]);
-        $this->addCss(["/style/style.css?v=0.2"]);
+        $this->addCss(["/style/style.css?v=0.3"]);
     }
     public function addJs($path) {
         $this->js[] = $path + [1 => null];
