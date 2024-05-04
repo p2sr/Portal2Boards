@@ -977,6 +977,16 @@ html[class="dark"] #editProfile .msg {
     -ms-transform: translateY(-50%);
     transform: translateY(-50%);
 }
+html[class="dark"] #profile .userinformation .general-wrapper .profileBannerButton {
+    background: #202225;
+    color: #fff;
+}
+html[class="dark"] #profile .userinformation .general-wrapper .profileBannerButton:hover {
+    background: #3096d1;
+}
+html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:hover {
+    background: red;
+}
 #profile .userinformation .general .general-wrapper img {
     width: 150px;
     height: 150px;
@@ -1562,6 +1572,9 @@ html[class="dark"] #editProfile .msg {
     /*margin: 0 3px;*/
     vertical-align: bottom;
 }
+html[class="dark"] #profile .usericons .fa-play:hover {
+    color: #aaa !important;
+}
 #profile .twitch-linked {
     background: #6441A5;
 }
@@ -1920,15 +1933,16 @@ html[class="dark"] #editProfile .msg {
     width: 16px;
     height: 16px;
     display: inline-block;
-    margin-right: 5px;
+    margin-right: 2px;
     float: right;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 #chamber .not-public-chambers .notification, #profile .uploadInfo .notification, #announcement .notification {
     width: calc(100% - 42px);
     display: inline-block;
     margin-right: 7px;
     margin-left: 10px;
+    font-size: 1.3rem;
 }
 #chamber .not-public-chambers .close-btn {
     margin-top: 4px;
@@ -1939,6 +1953,16 @@ html[class="dark"] #editProfile .msg {
 }
 .popover-content {
     word-wrap: break-word;
+}
+html[class="dark"] .popover {
+    background-color: inherit;
+}
+html[class="dark"] .popover-content {
+    background-color: #2a2c31;
+    color: #f6f6f7;
+}
+html[class="dark"] .popover.top > .arrow:after {
+    border-top-color: #2a2c31;
 }
 @-moz-document domain(board.portal2.sr) {
     #changelog .datetime{
@@ -1997,7 +2021,7 @@ html[class="dark"] .fa.fa-play:hover {
     color: #4ba6db !important;
 }
 
-html[class="dark"] .fa.fa-ban:hover {
+html[class="dark"] .banScore .fa.fa-ban:hover {
     color: #db4b4b !important;
 }
 
@@ -2133,11 +2157,10 @@ html[class="dark"] #changelogactivity {
     background-color: #36393f;
 }
 
-html[class="dark"] #changelogActivity .morris-hover{
+html[class="dark"] .morris-hover{
     background-color: #282b30 !important;
-    color:#a0a2a4;
-    box-shadow: 0px 1px 2px #0008;
-    -webkit-box-shadow: 0px 1px 2px #0008;
+    color:#fff !important;
+    border: solid 2px transparent;
 }
 
 html[class="dark"] #changelog>#filters{
@@ -2195,7 +2218,7 @@ html[class="dark"] #chambers .firstplace{
 }
 
 html[class="dark"] #chambers .firstplace,html[class="dark"] #chambers .othernoobscores{
-    color:#c0c1c2 !important;
+    color:#fff !important;
 }
 
 html[class="dark"] #chambers .entry .youtube i{
@@ -2257,7 +2280,7 @@ html[class="dark"] #aggregated .entry[style*="background: #d3d3d3"],html[class="
 }
 
 html[class="dark"] #aggregated .entry>div,html[class="dark"] #chamber .entry>div,html[class="dark"] #chamber .entry>a{
-    color:#b9babc;
+    color:#fff;
 }
 
 /*PROFILE*/
