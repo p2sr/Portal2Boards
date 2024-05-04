@@ -16,7 +16,6 @@ services:
     links:
       - database:database
     volumes:
-      - ./api:/var/www/html/api:rw
       - ./classes:/var/www/html/classes:rw
       - ./public:/var/www/html/public:rw
       - ./views:/var/www/html/views:rw
