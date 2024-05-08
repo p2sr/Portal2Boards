@@ -1,7 +1,7 @@
 <?php
 
 class MdpManager {
-    const mdpLocation = ROOT_PATH . "";
+    const mdpLocation = ROOT_PATH . "/util/mdp";
 
     // Executes CLI version of Mdp and dumps files into specified discord channels
     public static function Execute($demoPath, $demoDetails){
