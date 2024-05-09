@@ -188,16 +188,6 @@ class Leaderboard
         return $maps;
     }
 
-    public static function getBanList()
-    {
-        $data = Database::query("SELECT profile_number FROM usersnew WHERE banned = 1");
-        $shitlist = array();
-        while ($obj = $data->fetch_row()) {
-            $shitlist[] = $obj[0];
-        }
-        return $shitlist;
-    }
-
     public static function convertToTime($time)
     {
         if ($time != NULL) {
@@ -225,102 +215,6 @@ class Leaderboard
             }
         }
         return $time;
-    }
-
-    public static function getNewScoresLegacy($rankLimits = array())
-    {
-        $curl_master = curl_multi_init();
-        $curl_handles = array();
-
-        foreach ($rankLimits as $mapID => $amount) {
-            $curl_handles[$mapID] = curl_init();
-            curl_setopt($curl_handles[$mapID], CURLOPT_URL,
-                "https://steamcommunity.com/stats/Portal2/leaderboards/" . $mapID . "?xml=1&start=1&end=" . $amount . "&time=" . time());
-
-            curl_setopt($curl_handles[$mapID], CURLOPT_FRESH_CONNECT, TRUE);
-            curl_setopt($curl_handles[$mapID], CURLOPT_HEADER, 0);
-            curl_setopt($curl_handles[$mapID], CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($curl_handles[$mapID], CURLOPT_HTTPHEADER, array(
-                'Connection: Keep-Alive',
-                'Keep-Alive: 30',
-                "Cache-Control: no-cache"
-            ));
-            curl_setopt($curl_handles[$mapID], CURLOPT_SSL_VERIFYPEER, FALSE);
-
-            curl_setopt($curl_handles[$mapID], CURLOPT_TIMEOUT, 30);
-            curl_setopt($curl_handles[$mapID], CURLOPT_DNS_CACHE_TIMEOUT, 30);
-
-            curl_multi_add_handle($curl_master, $curl_handles[$mapID]);
-        }
-
-        $active = null;
-        do {
-            $status = curl_multi_exec($curl_master, $active);
-            $info = curl_multi_info_read($curl_master);
-            if ($info["result"] != 0) {
-                throw new Exception ("cURL request failed to this URL: " . curl_getinfo($info['handle'], CURLINFO_EFFECTIVE_URL));
-            }
-        } while ($status == CURLM_CALL_MULTI_PERFORM);
-
-        while ($active && $status == CURLM_OK) {
-            if (curl_multi_select($curl_master) == -1) usleep(100); // u w0t?
-            do {
-                $status = curl_multi_exec($curl_master, $active);
-            } while ($status == CURLM_CALL_MULTI_PERFORM);
-        }
-
-        $data = array();
-
-        $xml_total = 0;
-
-        foreach ($curl_handles as $mapID => $handle) {
-            curl_multi_remove_handle($curl_master, $handle);
-
-            $curlgetcontent = curl_multi_getcontent($handle);
-            $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
-
-            if($curlgetcontent && $http_code == 200) {
-                $xml = microtime(true);
-                try {
-                    $leaderboard = simplexml_load_string(utf8_encode($curlgetcontent));
-                } catch (Exception $e) {
-                    throw new Exception("SimpleXML error: " . $e);
-                }
-
-                libxml_use_internal_errors(true);
-                $sxe = simplexml_load_string($leaderboard);
-                if ($sxe === false) {
-                    foreach (libxml_get_errors() as $error) {
-                        throw new Exception ("SimpleXML error: " . $error->message . '\n');
-                    }
-                }
-
-                if (count($leaderboard->entries) == 0) {
-                    Debug::log("No leaderboard data found for chamber: " . $mapID);
-                    continue;
-                }
-
-                foreach ($leaderboard->entries as $key2 => $val2) {
-                    Debug::log(count($val2) . " entries fetched for chamber: " . $mapID);
-                    foreach ($val2 as $d => $b) {
-                        $steamid = $b->steamid;
-                        $score = $b->score;
-                        $data[$mapID][(string)$steamid] = (string)$score;
-                        //Debug::log("map ID: " . $mapID . " player steam id: " . $steamid . " score: " . $score);
-                    }
-                }
-
-                //Debug::log("Successfully fetched scores for map: " . $mapID);
-
-                $tt = microtime(true) - $xml;
-                $xml_total = $xml_total + $tt;
-            }
-            else {
-                Debug::log("Can't fetch scores for map: " . $mapID . ". HTTP code: " . $http_code);
-            }
-        }
-        curl_multi_close($curl_master);
-        return $data;
     }
 
     public static function getNewScores($rankLimits = array())
@@ -1410,19 +1304,6 @@ class Leaderboard
         Database::query("UPDATE scores
               SET changelog_id = ".$id."
               WHERE profile_number = ". $profileNumber . " AND map_id = " . $chamber);
-    }
-
-    private static function getSingleChangeLog($id){
-        $data = Database::query("
-            SELECT *
-            FROM changelog
-            WHERE id = '{$id}'
-            limit 1");
-        $result;
-        while ($row = $data->fetch_assoc()) {
-            $result = row[0];
-        }
-        return $result;
     }
 
     private static function wrCheck($changeLogId){
