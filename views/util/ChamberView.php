@@ -46,12 +46,16 @@ class ChamberView
                 <?php endif; ?>
             </div>
             <div class="youtube">
+                <i <?php if ($scoreData["autorender_id"] !== NULL): ?>
+                    onclick="window.open('https://autorender.portal2.sr/videos/<?=$scoreData["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                <?php else: ?>
+                    style="display:none"
+                <?php endif; ?>
+                    aria-hidden="true"></i>
+            </div>
+            <div class="youtube">
                 <i <?php if ($scoreData["youtubeID"] == NULL): ?>
-                    <?php if ($scoreData["autorender_id"] !== NULL): ?>
-                        onclick="window.open('https://autorender.portal2.sr/videos/<?=$scoreData["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
-                    <?php else: ?>
-                        style="display:none"
-                    <?php endif; ?>
+                    style="display:none"
                 <?php else : ?>
                     onclick="embedOnBody('<?=$scoreData["youtubeID"]?>', '#<?=$scoreData["playerRank"]?> - <?=Leaderboard::convertToTime($scoreData["score"])?> - <?=Util::escapeQuotesHTML($playerData["boardname"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
                 <?php endif; ?>

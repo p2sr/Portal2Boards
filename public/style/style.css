@@ -933,7 +933,7 @@ html[class="dark"] #editProfile .msg {
     color: #0066cc;;
 }
 #profile {
-    width: 1257px;
+    width: 1277px;
     min-height: 300px;
     margin: 30px auto;
     padding: 10px;
@@ -1148,13 +1148,13 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
     vertical-align: top;
 }
 #profile .column-3 .column.sp {
-    width: 410px;
+    width: 420px;
 }
 #profile .column-3 .column.mid {
     margin: 0 10px;
 }
 #profile .column-3 .column.coop {
-    width: 410px;
+    width: 420px;
 }
 #profile .column-3 .block-content {
     /*padding: 20px;*/
@@ -1280,9 +1280,6 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
     padding-right: 4px;
     color: #bbb;
     box-sizing: content-box;
-}
-#profile .sp .changeEntry .youtube, #profile .coop .changeEntry .youtube {
-    padding-right: 36px;
 }
 #profile .sp .changeEntry .rank, #profile .coop .changeEntry .rank {
     width: 32px;

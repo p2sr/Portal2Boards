@@ -79,14 +79,19 @@ class ChangelogView
                 <?php endif; ?></div>
             <div class="youtube">
                     <i <?php if ($val["youtubeID"] == NULL): ?>
-                        <?php if ($val["autorender_id"] !== NULL): ?>
+                        style="display:none"
+                    <?php else : ?>
+                        onclick="embedOnBody('<?=$val["youtubeID"]?>', '<?=$val["chamberName"]?> - <?=Leaderboard::convertToTime($val["score"])?> - <?=Util::escapeQuotesHTML($val["player_name"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
+                    <?php endif; ?>
+                        aria-hidden="true">
+                    </i>
+            </div>
+            <div class="youtube">
+                    <i <?php if ($val["autorender_id"] !== NULL): ?>
                             onclick="window.open('https://autorender.portal2.sr/videos/<?=$val["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
                         <?php else: ?>
                             style="display:none"
                         <?php endif; ?>
-                    <?php else : ?>
-                        onclick="embedOnBody('<?=$val["youtubeID"]?>', '<?=$val["chamberName"]?> - <?=Leaderboard::convertToTime($val["score"])?> - <?=Util::escapeQuotesHTML($val["player_name"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
-                    <?php endif; ?>
                         aria-hidden="true">
                     </i>
             </div>

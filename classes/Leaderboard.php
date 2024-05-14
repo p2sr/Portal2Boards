@@ -502,10 +502,10 @@ class Leaderboard
                 ranks.submission, ranks.pending, ranks.autorender_id
             FROM usersnew as u
             JOIN (
-                SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note, sc.pending,
-                RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as player_rank,
-                DENSE_RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as score_rank,
-                sc.autorender_id
+                SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note, sc.pending
+                     , sc.autorender_id
+                     , RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as player_rank
+                     , DENSE_RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as score_rank
                 FROM (
                     SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note, changelog.pending
                          , changelog.autorender_id
@@ -542,6 +542,7 @@ class Leaderboard
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["hasDemo"] = $row["has_demo"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["youtubeID"] = $row["youtube_id"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["pending"] = $row["pending"];
+            $board[$chapterId][$mapId][$profileNumber]["scoreData"]["autorender_id"] = $row["autorender_id"];
             $board[$chapterId][$mapId][$profileNumber]["userData"]["boardname"] = htmlspecialchars($row["boardname"]);
             $board[$chapterId][$mapId][$profileNumber]["userData"]["avatar"] = $row["avatar"];
         }

@@ -53,15 +53,19 @@ class ProfileView
                 </div>
                 <div class="cell youtube" align="center">
                     <i <?php if ($score["youtubeID"] == NULL): ?>
-                        <?php if ($score["autorender_id"] !== NULL): ?>
-                            onclick="window.open('https://autorender.portal2.sr/videos/<?=$score["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
-                        <?php else: ?>
-                            style="display:none"
-                        <?php endif; ?>
+                        style="display:none"
                     <?php else : ?>
                         onclick="embedOnBody('<?=$score["youtubeID"]?>', '<?=$mapInfo["maps"][$map]["mapName"]?> - #<?=$score["playerRank"]?> - <?=Leaderboard::convertToTime($score["score"])?>');" class="youtubeEmbedButton fa fa-youtube-play"
                     <?php endif; ?>
                    aria-hidden="true"></i>
+                </div>
+                <div class="cell youtube" align="center">
+                    <i <?php if ($score["autorender_id"] !== NULL): ?>
+                        onclick="window.open('https://autorender.portal2.sr/videos/<?=$score["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                    <?php else: ?>
+                        style="display:none"
+                    <?php endif; ?>
+                        aria-hidden="true"></i>
                 </div>
                 <div class="cell rank" align="right"><?=isset($score["playerRank"]) ? $score["playerRank"] : "-"?></div>
                 <a class="cell score" align="right" href="/changelog?profileNumber=<?=$user->profileNumber?>&chamber=<?=$map?>">
@@ -84,8 +88,8 @@ class ProfileView
                 <div class="cell title" align="left"><?=self::getChamberHyperlink($map, $mapInfo);?></div>
                 <div class="cell demo-url"></div>
                 <div class="cell comment"></div>
-                <div class="cell youtube">
-                </div>
+                <div class="cell youtube"></div>
+                <div class="cell youtube"></div>
                 <div class="cell rank" align="right">-</div>
                 <div class="cell score" align="right">-</div>
                 <div class="cell nr-diff" align="right">-</div>

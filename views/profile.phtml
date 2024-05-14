@@ -982,6 +982,7 @@
                     "<div class='comment'></div>" +
                     "<div class='demo-url'></div>" +
                     "<div class='youtube'></div>" +
+                    "<div class='youtube'></div>" +
                     "<div class='rankDiff' data-toggle='tooltip' title='Rank before and after time was obtained'>" +
                         "<div style='display: inline-block; text-align: center; width: 25px'>#</div>" +
                         "<i class='fa fa-arrow-right' aria-hidden='true' style='display: inline-block;'></i>" +
@@ -1239,14 +1240,12 @@
                     " onclick=\"embedOnBody('"+entry.youtubeID+"', '"+entry.chamberName+" - "+formatScoreTime(entry.score)+"');\"" +
                     " class='fa fa-youtube-play' aria-hidden='true'></i>" +
                 "</div>" +
-            // TODO - Add in later
-            // "<i" +
-            // ((entry.youtubeID == null) ?
-            //     (entry.hasDemo == 1 && (entry.post_rank != null && entry.post_rank <= 200) && (new Date(date).valueOf() > 1660433072000)) ?
-            //         " onclick=\"window.open('https://autorender.portal2.sr/video.html?v="+entry.id+"','_blank')\" class='youtubeEmbedButton fa fa-play' title='Auto Render'" :
-            //         " style='display: none'" : " onclick=\"embedOnBody('"+entry.youtubeID+"', '"+entry.chamberName+" - "+formatScoreTime(entry.score)+"');\" class='fa fa-youtube-play'") +
-            // " aria-hidden='true'></i>" +
-                //$rank.prop('outerHTML') +
+                "<div class='youtube'>" +
+                    "<i" +
+                    ((entry.autorender_id == null) ? " style='display: none'" : " ") +
+                    " onclick=\"window.open('https://autorender.portal2.sr/videos/"+entry.autorender_id+"', '_blank');\"" +
+                    " class='fa fa-play' aria-hidden='true'></i>" +
+                "</div>" +
                "<div class='rankDiff'>" +
                    $preRank.prop('outerHTML') +
                    $postRank.prop('outerHTML') +
