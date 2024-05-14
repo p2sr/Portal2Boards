@@ -498,15 +498,17 @@ class Leaderboard
 
         $query = Database::query("SELECT ranks.profile_number, u.avatar, IFNULL(u.boardname, u.steamname) as boardname,
                 chapters.id as chapterid, maps.steam_id as mapid,
-                ranks.profile_number, ranks.changelog_id, ranks.score, ranks.player_rank, ranks.score_rank, ranks.time_gained as date, has_demo, youtube_id, ranks.note,
-                ranks.submission, ranks.pending
+                ranks.profile_number, ranks.changelog_id, ranks.score, ranks.player_rank, ranks.score_rank, DATE_FORMAT(ranks.time_gained, '%Y-%m-%dT%TZ') as date, has_demo, youtube_id, ranks.note,
+                ranks.submission, ranks.pending, ranks.autorender_id
             FROM usersnew as u
             JOIN (
                 SELECT sc.changelog_id, sc.profile_number, sc.score, sc.map_id, sc.time_gained, sc.has_demo, sc.youtube_id, sc.submission, sc.note, sc.pending,
                 RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as player_rank,
-                DENSE_RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as score_rank
+                DENSE_RANK() OVER (PARTITION BY sc.map_id ORDER BY sc.score) as score_rank,
+                sc.autorender_id
                 FROM (
-                    SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note, changelog.pending 
+                    SELECT changelog.submission, scores.changelog_id, scores.profile_number, scores.map_id, changelog.score, changelog.time_gained, changelog.youtube_id, changelog.has_demo, changelog.note, changelog.pending
+                         , changelog.autorender_id
                     FROM scores
                     INNER JOIN changelog ON (scores.changelog_id = changelog.id)
                     WHERE scores.profile_number IN (SELECT profile_number FROM usersnew WHERE banned = 0)
@@ -642,8 +644,8 @@ class Leaderboard
         }
 
         $changelog_data = Database::query("SELECT IFNULL(usersnew.boardname, usersnew.steamname) AS player_name, usersnew.avatar, ch.profile_number,
-                                            ch.score, ch.id, ch.pre_rank, ch.post_rank, ch.wr_gain, ch.time_gained, ch.has_demo as hasDemo, ch.youtube_id as youtubeID, ch.note,
-                                            ch.banned, ch.submission, ch.pending,
+                                            ch.score, ch.id, ch.pre_rank, ch.post_rank, ch.wr_gain, DATE_FORMAT(ch.time_gained, '%Y-%m-%dT%TZ') as time_gained, ch.has_demo as hasDemo, ch.youtube_id as youtubeID, ch.note,
+                                            ch.banned, ch.submission, ch.pending, ch.autorender_id,
                                             ch_previous.score as previous_score,
                                             maps.name as chamberName, chapters.id as chapterId, maps.steam_id AS mapid
 												FROM (
@@ -1036,6 +1038,18 @@ class Leaderboard
     public static function setProfileBanStatus($profileNumber, $banned) 
     {
         Database::query("UPDATE usersnew SET banned = '{$banned}'  WHERE profile_number = '{$profileNumber}'");
+    }
+
+    public static function setAutorender(int $changelog_id, string $autorender_id)
+    {
+        $stmt = Database::getMysqli()->prepare("UPDATE changelog SET autorender_id = ? WHERE id = ?");
+        $stmt->bind_param('si', $autorender_id, $changelog_id);
+
+        if (!$stmt->execute()) {
+            trigger_error($stmt->error);
+        }
+
+        return $stmt->affected_rows;
     }
 
     //updating score with lowest non banned changelog entry

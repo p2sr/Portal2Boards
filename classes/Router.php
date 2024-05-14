@@ -198,6 +198,56 @@ class Router {
 
         }
 
+        // API v3 for bots
+
+        if ($location[1] === "api-v3") {
+            [$type, $token] = explode(" ", getallheaders()["Authorization"]);
+
+            if ($type !== "Bearer") {
+                echo "{\"error\":\"Invalid authorization type.\"}";
+                header('Content-Type: application/json');
+                http_response_code(400);
+                exit;
+            }
+
+            if (!hash_equals(Config::get()->autorender_api_token, $token)) {
+                echo "{\"error\":\"Unauthorized.\"}";
+                header('Content-Type: application/json');
+                http_response_code(401);
+                exit;
+            }
+
+            if ($location[2] === "set-autorender") {
+                $data = json_decode(file_get_contents("php://input"));
+
+                if (!isset($data->changelog_id) || !intval($data->changelog_id)) {
+                    echo "{\"error\":\"Invalid changelog_id.\"}";
+                    header('Content-Type: application/json');
+                    http_response_code(400);
+                    exit;
+                }
+
+                if (!isset($data->autorender_id) || strlen(strval($data->autorender_id)) !== 11) {
+                    echo "{\"error\":\"Invalid autorender_id.\"}";
+                    header('Content-Type: application/json');
+                    http_response_code(400);
+                    exit;
+                }
+
+                $affected = Leaderboard::setAutorender(intval($data->changelog_id), strval($data->autorender_id));
+
+                echo "{\"affected\":$affected}";
+                header('Content-Type: application/json');
+                http_response_code(200);
+                exit;
+            }
+
+            echo "{\"error\":\"Invalid API.\"}";
+            header('Content-Type: application/json');
+            http_response_code(400);
+            exit;
+        }
+
         //TODO: don't flush connection but rather give a more refined status update to client which can then follow up by polling the back end for successful upload
         //TODO: You could also just don't flush and hope the backend finishes in an acceptable time
         if ($location[1] == "uploadDemo") {

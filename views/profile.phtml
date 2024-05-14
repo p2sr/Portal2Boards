@@ -1,6 +1,5 @@
 <?php $user = $view->profile; ?>
 <?php $mapInfo = $GLOBALS["mapInfo"]; ?>
-<?php $autoRenderedIds = AutoRenderApiClient::getUserVideos($user); ?>
 <?php $activityDayRange = 60 ?>
 <?php $userActivity = $user->getChangelog($activityDayRange)?>
 <?php include("util/ProfileView.php")?>
@@ -345,7 +344,7 @@
                                 <div class="scoretable">
                                     <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
                                         <?php if(isset($user->times->SP["chambers"]["chamber"][$chapterId][$mapId])): ?>
-                                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->SP["chambers"]["chamber"][$chapterId][$mapId], $autoRenderedIds); ?>
+                                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->SP["chambers"]["chamber"][$chapterId][$mapId]); ?>
                                         <?php else: ?>
                                             <?php ProfileView::emptyChamberScoreRow($mapId, $mapInfo); ?>
                                         <?php endif;?>
@@ -396,7 +395,7 @@
 
                             <?php endif; ?>
                                 
-                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score, $autoRenderedIds); ?>
+                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
                             
                             <?php endforeach; ?>
                             </div>
@@ -453,7 +452,7 @@
                                                 <div class="scoretable">
                                         <?php $emptyScoresEncountered = true; ?>
                                     <?php endif; ?>
-                                    <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score, $autoRenderedIds); ?>
+                                    <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
                                 <?php endforeach; ?>
                             </div>
                         </div>                        
@@ -486,7 +485,7 @@
                           <div class="scoretable">
                               <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
                                   <?php if(isset($user->times->COOP["chambers"]["chamber"][$chapterId][$mapId])): ?>
-                                      <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->COOP["chambers"]["chamber"][$chapterId][$mapId], $autoRenderedIds); ?>
+                                      <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->COOP["chambers"]["chamber"][$chapterId][$mapId]); ?>
                                   <?php else: ?>
                                       <?php ProfileView::emptyChamberScoreRow($mapId, $mapInfo); ?>
                                   <?php endif;?>
@@ -533,7 +532,7 @@
                                     <?php $emptyScoresEncountered = true; ?>
                             <?php endif; ?>
                                 
-                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score, $autoRenderedIds); ?>
+                            <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
                             
                             <?php endforeach; ?>
                             </div>
@@ -591,7 +590,7 @@
                                                 <div class="scoretable">
                                         <?php $emptyScoresEncountered = true; ?>
                                     <?php endif; ?>
-                                    <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score, $autoRenderedIds); ?>
+                                    <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $score); ?>
                                 <?php endforeach; ?>
                             </div>
                         </div>                        

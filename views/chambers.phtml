@@ -1,7 +1,6 @@
 <?php $mapInfo = $GLOBALS["mapInfo"]; ?>
 <?php $mode = Router::$location[2]; ?>
 <?php $youtubeIDs = (($mode == "coop") ? Cache::get("COOPyoutubeIDs") : Cache::get("SPyoutubeIDs")) ?>
-<?php $autoRenderedVideoIds = AutoRenderApiClient::getChambersVideos($view->board)?>
 
 <script>
     function goToChamber(evt, map) {
@@ -55,6 +54,7 @@
                         <?php
                             $twoplayer_highlight = false;
                             $skipRank2 = false;
+                            $mapData = $mapData ?? array();
                             $keys = array_keys($mapData);
                             $rank1String = $mapData[$keys[0]]["userData"]["boardname"];
                             $rank1HTML = "<a href='/profile/" . $keys[0] . "'>" . $rank1String . "</a>";
@@ -78,6 +78,12 @@
                                 }
                             }
                         ?>
+                        <?php if(count($mapData) == 0): ?>
+                            <div class="firstplace">
+                            </div>
+                            <div class="othernoobscores">
+                            </div>
+                        <?php endif; ?>
                         <?php foreach($mapData as $player => $playerData): ?>
                         <?php $entry = array_search($player, $keys);?>
                         <?php if($entry == 0): ?>
@@ -104,44 +110,44 @@
                                                 '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($rank1String)?>');"
                                             class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
                                         <?php else: ?>
-                                            <?php if (in_array((int) $playerData["scoreData"]["changelogId"], $autoRenderedVideoIds)) : ?>
-                                                <i onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$playerData["scoreData"]["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render" aria-hidden="true"></i>
+                                            <?php if ($playerData["scoreData"]["autorender_id"] !== NULL) : ?>
+                                                <i onclick="window.open('https://autorender.portal2.sr/videos/<?=$playerData["scoreData"]["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render" aria-hidden="true"></i>
                                             <?php endif; ?>
                                         <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
-                            <div class="othernoobscores">
                         <?php elseif($skipRank2 ? ($entry < 8 && $entry != 1) : $entry < 7 ): ?>
-                          <div class="entry <?php if(SteamSignIn::isLoggedIn($player)) { echo "highlight"; } ?>">
-                              <div class="dateDifference" date="<?=$playerData["scoreData"]["date"]?>"></div>
-                              <div class="boardname"><a href="/profile/<?=$player;?>"><?=$playerData["userData"]["boardname"]?></a></div>
-                              <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$map?>" class="score">
-                                  <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?>
-                              </a>
-                              <div class="youtube">
-                                  <?php if ($playerData["scoreData"]["hasDemo"] == 1): ?>
-                                      <a href="/getDemo?id=<?=$playerData["scoreData"]["changelogId"] ?>">
-                                          <i class="fa fa-download" aria-hidden="true"></i>
-                                      </a>
-                                  <?php endif; ?>
-                              </div>
-                              <div class="youtube">
-                                  <?php if ($playerData["scoreData"]["youtubeID"] != NULL): ?>
-                                      <i onclick="embedOnBody(
-                                          '<?=$playerData["scoreData"]["youtubeID"]?>',
-                                          '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($playerData["userData"]["boardname"])?>');"
-                                         class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
-                                  <?php else: ?>
-                                    <?php if (in_array((int) $playerData["scoreData"]["changelogId"], $autoRenderedVideoIds)) : ?>
-                                          <i onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$playerData["scoreData"]["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render" aria-hidden="true"></i>
-                                    <?php endif; ?>
-                                  <?php endif; ?>
-                              </div>
-                          </div>
+                            <div class="othernoobscores">
+                                <div class="entry <?php if(SteamSignIn::isLoggedIn($player)) { echo "highlight"; } ?>">
+                                    <div class="dateDifference" date="<?=$playerData["scoreData"]["date"]?>"></div>
+                                    <div class="boardname"><a href="/profile/<?=$player;?>"><?=$playerData["userData"]["boardname"]?></a></div>
+                                    <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$map?>" class="score">
+                                        <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?>
+                                    </a>
+                                    <div class="youtube">
+                                        <?php if ($playerData["scoreData"]["hasDemo"] == 1): ?>
+                                            <a href="/getDemo?id=<?=$playerData["scoreData"]["changelogId"] ?>">
+                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                    <div class="youtube">
+                                        <?php if ($playerData["scoreData"]["youtubeID"] != NULL): ?>
+                                            <i onclick="embedOnBody(
+                                                '<?=$playerData["scoreData"]["youtubeID"]?>',
+                                                '<?=$mapName?> - <?=Leaderboard::convertToTime($playerData["scoreData"]["score"])?> - <?=Util::escapeQuotesHTML($playerData["userData"]["boardname"])?>');"
+                                                class="youtubeEmbedButton fa fa-youtube-play" aria-hidden="true"></i>
+                                        <?php else: ?>
+                                            <?php if ($playerData["scoreData"]["autorender_id"]): ?>
+                                                <i onclick="window.open('https://autorender.portal2.sr/videos/<?=$playerData["scoreData"]["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render" aria-hidden="true"></i>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
                         <?php endif ?>
                         <?php endforeach; ?>
-                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>

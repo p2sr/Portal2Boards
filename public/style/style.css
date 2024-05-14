@@ -450,7 +450,7 @@ a:hover, a:focus {
 }
 #chambers .chamber_scores .othernoobscores .entry {
     /*padding: 3px 0px 3px 0px;*/
-    padding: 3px 0px 3px 0px;
+    padding: 3px 0px 0px 0px;
     /*line-height: 13px;*/
     line-height: 17px;
     height: 17px;

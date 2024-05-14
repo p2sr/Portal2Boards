@@ -5,7 +5,7 @@ class ChangelogView
     static $lastDate = NULL;
     static $oddDateEntry = false;
 
-    static function getEntry($board, $key, $page, $entry, $autoRenderedVideoIds) { ?>
+    static function getEntry($board, $key, $page, $entry) { ?>
         <?php $val = $board[$key] ?>
         <div class="entry" <?php
             if (strtotime($val["time_gained"]) != strtotime(self::$lastDate)) {
@@ -79,8 +79,8 @@ class ChangelogView
                 <?php endif; ?></div>
             <div class="youtube">
                     <i <?php if ($val["youtubeID"] == NULL): ?>
-                        <?php if (in_array((int) $val["id"], $autoRenderedVideoIds)) : ?>
-                            onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$val["id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                        <?php if ($val["autorender_id"] !== NULL): ?>
+                            onclick="window.open('https://autorender.portal2.sr/videos/<?=$val["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
                         <?php else: ?>
                             style="display:none"
                         <?php endif; ?>

@@ -7,7 +7,6 @@ class PageGenerator {
         $numEntries = min($maxEntriesShown, count($keys));
         $pages = ceil($numEntries / $entriesPerPage);
         $page = 1;
-        $autoRenderedIds = AutoRenderApiClient::getBoardVideos($board);
         ?><div class="entries pages">
             <?php while ($page <= $pages): ?>
                 <div
@@ -19,7 +18,7 @@ class PageGenerator {
                 >
                 <?php $i = ($entriesPerPage * ($page - 1)) + 1;?>
                     <?php while (($page == $pages) ? ($i <= $numEntries) : ($i <= ($entriesPerPage * $page))): ?>
-                        <?php $entryCallback($board, $keys[$i-1], $page, $i, $autoRenderedIds) ?>
+                        <?php $entryCallback($board, $keys[$i-1], $page, $i) ?>
                     <?php $i++; endwhile; ?>
                 </div>
             <?php $page++; endwhile; ?>

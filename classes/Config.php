@@ -15,6 +15,7 @@ final class Config {
     public string $discord_webhook_wr;
     public string $discord_webhook_mdp;
     public string $steam_api_key;
+    public string $autorender_api_token;
 
     private static $_instance;
 

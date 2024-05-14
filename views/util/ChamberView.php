@@ -3,7 +3,7 @@
 class ChamberView
 {
 
-    static function getEntry($board, $player, $page, $entry, $autoRenderedVideoIds)
+    static function getEntry($board, $player, $page, $entry)
     {
         $playerData = $board[$player]["userData"];
         $scoreData = $board[$player]["scoreData"] ?>
@@ -47,8 +47,8 @@ class ChamberView
             </div>
             <div class="youtube">
                 <i <?php if ($scoreData["youtubeID"] == NULL): ?>
-                    <?php if (in_array((int) $scoreData["changelogId"], $autoRenderedVideoIds)) : ?>
-                        onclick="window.open('https://autorender.portal2.sr/video.html?v=<?=$scoreData["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                    <?php if ($scoreData["autorender_id"] !== NULL): ?>
+                        onclick="window.open('https://autorender.portal2.sr/videos/<?=$scoreData["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
                     <?php else: ?>
                         style="display:none"
                     <?php endif; ?>
