@@ -201,7 +201,15 @@ class Router {
         // API v3 for bots
 
         if ($location[1] === "api-v3") {
-            [$type, $token] = explode(" ", getallheaders()["Authorization"]);
+            $authorization = "";
+            foreach (getallheaders() as $name => $value) {
+                if (strtolower($name) === "authorization") {
+                    $authorization = $value;
+                    break;
+                }
+            }
+
+            [$type, $token] = explode(" ", $authorization);
 
             if ($type !== "Bearer") {
                 echo "{\"error\":\"Invalid authorization type.\"}";
@@ -210,7 +218,7 @@ class Router {
                 exit;
             }
 
-            if (!hash_equals(Config::get()->autorender_api_token, $token)) {
+            if ($token === NULL || !hash_equals(Config::get()->autorender_api_token, $token)) {
                 echo "{\"error\":\"Unauthorized.\"}";
                 header('Content-Type: application/json');
                 http_response_code(401);
