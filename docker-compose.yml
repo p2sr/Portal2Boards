@@ -19,6 +19,7 @@ services:
       - ./classes:/var/www/html/classes:rw
       - ./public:/var/www/html/public:rw
       - ./views:/var/www/html/views:rw
+      - ./util:/var/www/html/util:rw
       - ./loader.php:/var/www/html/loader.php:rw
       - .config.json:/var/www/html/.config.json
       - ./docker/apache/${SERVER_NAME}.conf:/etc/apache2/sites-available/${SERVER_NAME}.conf
