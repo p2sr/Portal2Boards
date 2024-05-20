@@ -7,7 +7,7 @@ class User {
     public $userData = NULL;
 
     public function __construct($id) {
-        if (is_numeric($id)) {
+        if (is_numeric($id) && strlen($id) === 17) {
             $number = $id;
         }
         else {
@@ -15,7 +15,7 @@ class User {
             $name = strtolower(urldecode($id));
 
             if (array_key_exists($name, $profileNumbers)){
-                $number = $profileNumbers[$name][0];
+                $number = $profileNumbers[$name];
             }
             else {
                 $number = NULL;
@@ -37,6 +37,20 @@ class User {
 
     //TODO: functional decomposition
     public function saveProfile($twitch = NULL, $youtube = NULL, $boardname = NULL) {
+        if ($boardname != NULL) {
+            try {
+                Database::query("UPDATE usersnew SET boardname = '$boardname' WHERE profile_number = '$this->profileNumber'");
+                $this->userData->boardname = $boardname;
+            } catch (\Exception $ex) {
+                Debug::log($ex->getMessage());
+                return "Board name already taken.";
+            }
+        }
+        else {
+          Database::query("UPDATE usersnew SET boardname = NULL WHERE profile_number = '$this->profileNumber'");
+            $this->userData->boardname = NULL;
+        }
+
         if ($twitch != NULL) {
             Database::query("UPDATE usersnew SET twitch = '$twitch' WHERE profile_number = '$this->profileNumber'");
             $this->userData->twitch = $twitch;
@@ -53,15 +67,6 @@ class User {
         else {
             Database::query("UPDATE usersnew SET youtube = NULL WHERE profile_number = '$this->profileNumber'");
             $this->userData->youtube = NULL;
-        }
-
-        if ($boardname != NULL) {
-          Database::query("UPDATE usersnew SET boardname = '$boardname' WHERE profile_number = '$this->profileNumber'");
-          $this->userData->boardname = $boardname;
-        }
-        else {
-          Database::query("UPDATE usersnew SET boardname = NULL WHERE profile_number = '$this->profileNumber'");
-            $this->userData->boardname = NULL;
         }
     }
 

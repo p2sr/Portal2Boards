@@ -493,78 +493,7 @@ class Router {
                     exit;
                 }
 
-                $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName FROM usersnew WHERE profile_number = '{$profileNumber}'");
-                $row = $data->fetch_assoc();
-                $oldNickname = str_replace(" ", "", $row["displayName"]);
-
                 User::updateProfileData($profileNumber);
-
-                $data2 = Database::query("SELECT IFNULL(boardname, steamname) as displayName FROM usersnew WHERE profile_number = '{$profileNumber}'");
-                $row2 = $data2->fetch_assoc();
-
-                $newNickname = str_replace(" ", "", $row2["displayName"]);
-
-                print_r("old nickname " . $oldNickname . "\n");
-                print_r("new nickname " . $newNickname . "\n");
-                
-                if (strtolower($oldNickname) != strtolower($newNickname)) {
-
-                    print_r("nickname updated\n");
-
-                    $nicknames = Cache::get("boardnames");
-                    $profileNumbers = Cache::get("profileNumbers");
-
-                    //remove old nickname
-                    $cleanedNumbers = array();
-
-                    foreach ($profileNumbers[strtolower($oldNickname)] as $index => $number) {
-                        if ($number != $profileNumber) {
-                            $cleanedNumbers[] = $number;
-                        }
-                    }
-
-                    print_r("cleaned profile numbers: ");
-                    print_r($cleanedNumbers);
-                    print_r("\n");
-
-                    $profileNumbers[strtolower($oldNickname)] = $cleanedNumbers;
-
-                    if (count($profileNumbers[strtolower($oldNickname)]) == 0) {
-                        print_r("no profiles with old nick\n");
-                        unset($profileNumbers[strtolower($oldNickname)]);
-                    }
-                    else if (count($profileNumbers[strtolower($oldNickname)]) == 1) {
-                        print_r("one profile with old nick. Removing conflict\n");
-                        $number = $profileNumbers[strtolower($oldNickname)][0];
-                        $nicknames[$number]["useInURL"] = true;
-                    }
-
-                    //add new nickname
-                    $nicknames[$profileNumber]["displayName"] = $newNickname;
-                    $profileNumbers[strtolower($newNickname)][] = $profileNumber;
-
-                    if (count($profileNumbers[strtolower($newNickname)]) > 1) {
-                        print_r("conflict with new nick\n");
-                        foreach ($profileNumbers[strtolower($newNickname)] as $number) {
-                            $nicknames[$number]["useInURL"] = false;
-                        }
-                    }
-                    else {
-                        print_r("no conflict with new nick");
-                        //if (preg_match("/^[a-zA-Z0-9".preg_quote("'\"£$*()][:;@~!><>,=_+¬-~")."]+$/", $newNickname)) {
-                        if (urlencode($newNickname) == $newNickname && !is_numeric($newNickname)) {
-                            $nicknames[$profileNumber]["useInURL"] = true;
-                        }
-                        else {
-                            $nicknames[$profileNumber]["useInURL"] = false;
-                        }
-                    }
-
-                    Cache::set("boardnames", $nicknames);
-                    Cache::set("profileNumbers", $profileNumbers);
-
-                }
-
                 //Leaderboard::cacheProfileURLData();
             }
             else {
@@ -732,11 +661,12 @@ class Router {
         if ($location[1] == "profile" && isset($location[2])) {
             $displayNames = Cache::get("boardnames");
             $id = $location[2];
-            if (is_numeric($id) && strlen($id) == 17 && !(isset($location[3]) && $location[3] == "json")) {
-                if ($displayNames[$location[2]]["useInURL"]) {
-                    header("Location: /profile/" . $displayNames[$location[2]]["displayName"]);
-                    exit;
-                }
+            if (is_numeric($id)
+                && strlen($id) == 17
+                && !(isset($location[3]) && $location[3] == "json")
+                && isset($displayNames[$location[2]])) {
+                header("Location: /profile/" . $displayNames[$location[2]]);
+                exit;
             }
 
             $view->profile = new User($location[2]);
@@ -839,11 +769,13 @@ class Router {
                     $boardname = trim($_POST["boardname"]);
                     $boardname = preg_replace('/\s+/', ' ', $boardname);
                     if (strlen($boardname) != 0) {
-                        if (!preg_match("/^[A-Za-z 0-9_]+$/", $boardname) || strlen($boardname) > 30) {
+                        if (!preg_match("/^[A-Za-z 0-9_]+$/", $boardname)
+                            || strlen($boardname) > 30
+                            || (strlen($boardname) === 17 && is_numeric($boardname))) {
                             $view->msg = "Board name must be at most 30 characters, and contain only letters, numbers, and underscores.";
                         }
                         else {
-                             $mysqli->real_escape_string($boardname);
+                            $boardname = $mysqli->real_escape_string($boardname);
                         }
                     }
 
@@ -876,8 +808,8 @@ class Router {
                     }
 
                     if (!isset($view->msg)) {                       
-                        SteamSignIn::$loggedInUser->saveProfile($twitch, $youtube, $boardname);
-                        $view->msg = "Profile updated. Wait a minute for the changes to take effect.";
+                        $error = SteamSignIn::$loggedInUser->saveProfile($twitch, $youtube, $boardname);
+                        $view->msg = $error ?? "Profile updated. Wait a minute for the changes to take effect.";
                     }
                 }
             }

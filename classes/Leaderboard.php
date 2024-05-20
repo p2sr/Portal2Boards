@@ -939,32 +939,15 @@ class Leaderboard
 
     public static function cacheProfileURLData()
     {
-        $data = Database::query("SELECT IFNULL(boardname, steamname) AS nickname, profile_number FROM usersnew");
+        $data = Database::query("SELECT boardname AS nickname, profile_number FROM usersnew");
         $profileNumbers = [];
         $nicknames = [];
 
         while ($row = $data->fetch_assoc()) {
             $nickname = str_replace(" ", "", $row["nickname"]);
-            $nicknames[$row["profile_number"]]["displayName"] = $nickname;
-            $profileNumbers[strtolower($nickname)][] = $row["profile_number"];
-        }
-
-        foreach ($profileNumbers as $name => $numbers) {
-            if (count($numbers) > 1) {
-                foreach ($numbers as $number) {
-                    $nicknames[$number]["useInURL"] = false;
-                }
-            }
-            else {
-                $nickname = $nicknames[$numbers[0]]["displayName"];
-
-                //if (preg_match("/^[a-zA-Z0-9".preg_quote("'\"£$*()][:;@~!><>,=_+¬-~")."]+$/", $nickname)) {
-                if (urlencode($nickname) == $nickname && !is_numeric($nickname)) {
-                    $nicknames[$numbers[0]]["useInURL"] = true;
-                }
-                else {
-                    $nicknames[$numbers[0]]["useInURL"] = false;
-                }
+            if (strlen($row["nickname"])) {
+                $nicknames[$row["profile_number"]] = $nickname;
+                $profileNumbers[strtolower($nickname)] = $row["profile_number"];
             }
         }
 
