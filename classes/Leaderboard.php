@@ -1466,7 +1466,7 @@ class Leaderboard
         }
     }
 
-    public static function getLatestPb($profile_number, $map_id){
+    public static function getLatestPb(string $profile_number, int $map_id){
         $data = Database::query("SELECT *
             FROM changelog
             where `profile_number` = '{$profile_number}' AND `map_id` = '{$map_id}' AND `banned` = 0 AND `pending` = 0

@@ -186,7 +186,7 @@ class Router {
 
             if ($location[2] == "current-pb") {
                 // Get current valid PB
-                $pb_row = Leaderboard::getLatestPb($userId, $_POST["mapId"]);
+                $pb_row = Leaderboard::getLatestPb($userId, intval($_POST["mapId"]));
                 header("Content-Type: application/json");
                 if (isset($pb_row)) {
                     echo json_encode($pb_row);
