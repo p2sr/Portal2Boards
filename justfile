@@ -36,15 +36,22 @@ reload:
 
 # Refresh leaderboard cache.
 cache:
-    docker exec -u www-data -ti {{project}}-server php /var/www/html/api/refreshCache.php > /dev/null 2>&1
+    docker exec -u www-data -ti {{project}}-server curl -Lk localhost/api/refreshCache.php
 
 # Fetch new scores from Steam.
 update:
-    docker exec -u www-data -ti {{project}}-server php /var/www/html/api/fetchNewScores.php
+    docker exec -u www-data -ti {{project}}-server curl -Lk localhost/api/fetchNewScores.php
+
+# Update Steam profiles.
+update-profiles:
+    docker exec -u www-data -ti {{project}}-server php -f /var/www/html/util/fetchImportantProfileData.php
 
 # Open shell in server container.
 server-debug:
-    docker exec -u www-data -ti {{project}}-server sh
+    docker exec -u www-data -ti {{project}}-server bash
+
+# Open shell in server container.
+debug: server-debug
 
 # Restart server container.
 server-restart:

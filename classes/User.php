@@ -108,7 +108,7 @@ class User {
             }
 
             $query = $db->prepare("UPDATE usersnew SET avatar = ?, steamname = ? WHERE profile_number = ?");
-            $query->bind_param('sss', $player["personaname"], $player["avatarfull"], $player["steamid"]);
+            $query->bind_param('sss', $player["avatarfull"], $player["personaname"], $player["steamid"]);
 
             if ($query->execute()) {
                 $diff[] = $player["steamid"];
