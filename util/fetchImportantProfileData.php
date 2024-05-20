@@ -64,18 +64,24 @@
 
     $importantProfiles = $activeProfiles + $skillFullProfiles + $bannedProfiles;
 
-    print_r("Important profiles: " . count($importantProfiles) . "\n");
+    $total = count($importantProfiles);
+    print_r("Important profiles: $total\n");
+    $count = 0;
 
+    foreach (array_chunk(array_keys($importantProfiles), 100) as $chunk) {
+        [$success, $failed] = User::updateProfiles($chunk);
 
-    $j = 1;
-    foreach (array_keys($importantProfiles) as $profileNumber) {
-        User::updateProfileData($profileNumber);
+        $count += $success;
 
-        if ($j % round(count($importantProfiles) / 10) == 0)
-            print_r("Processed " . $j . "/" . count($importantProfiles) . "\n");
+        foreach ($failed as $steamId) {
+            print_r("Failed to update profile $steamId\n");
+        }
 
-    	$sleepSeconds = (0.5 + (rand(0, 500) / 1000));
-        usleep($sleepSeconds * 1000000);
-        
-        $j++;
+        print_r("Processed $count/$total\n");
+    }
+
+    $failed = $total - $count;
+
+    if ($failed) { 
+        print_r("Failed to process $failed profiles\n");
     }

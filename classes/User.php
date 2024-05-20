@@ -89,9 +89,53 @@ class User {
         }
     }
 
+    public static function updateProfiles(array $users) {
+        $content = self::fetchProfileData($users);
+        if ($content === NULL) {
+            return [0, $users];
+        }
+
+        $db = Database::getMysqli();
+        $count = 0;
+
+        $diff = [];
+
+        $userinfo = json_decode($content, true);
+
+        foreach ($userinfo["response"]["players"] ?? [] as $player) {
+            if (!strlen($player["avatarfull"] ?? "")) {
+                continue;
+            }
+
+            $query = $db->prepare("UPDATE usersnew SET avatar = ?, steamname = ? WHERE profile_number = ?");
+            $query->bind_param('sss', $player["personaname"], $player["avatarfull"], $player["steamid"]);
+
+            if ($query->execute()) {
+                $diff[] = $player["steamid"];
+                $count += 1;
+            }
+        }
+
+        return [$count, array_diff($users, $diff)];
+    }
+
     public static function fetchCurrentProfileData($user) {
         $steamAPIKey = Config::get()->steam_api_key;
         $ch = curl_init("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=".$steamAPIKey."&steamids=" . $user);
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $content = curl_exec($ch);
+        curl_close($ch);
+
+        return $content;
+    }
+
+    public static function fetchProfileData(array $users) {
+        $key = Config::get()->steam_api_key;
+        $steamids = implode(",", $users);
+
+        $ch = curl_init("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=$key&steamids=$steamids");
         curl_setopt($ch, CURLOPT_HEADER, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
