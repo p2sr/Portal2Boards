@@ -1,0 +1,5 @@
+#!/bin/bash
+
+config=($(cat .config.json | jq -r '.database_host, .database_port, .database_user, .database_pass, .database_name'))
+
+mysql -h "${config[0]}" -P "${config[1]}" -u "${config[2]}" -p"${config[3]}" "${config[4]}"
