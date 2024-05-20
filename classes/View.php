@@ -27,9 +27,21 @@ class View {
         "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.5/moment-timezone-with-data.min.js",
         "sha512-x+XnLMzWIKaaRHpfvC5PM9Auy9NPxzV4ZQQHyLpRkinUuDZsMdNhQ7KNk68zRlYCDyFnOJ0eGwfWpGvr51S99w==",
     ];
-    const d3 = [
-        "https://cdnjs.cloudflare.com/ajax/libs/d3/4.2.2/d3.min.js",
-        "sha512-Fsayt8p+pwY5ebs4WM1KwVTQJHPKizdz4FQSuUKqR/EWcphyKiy3gGBc335410/YUHKhV1IydBMaFqwPkbT4LA==",
+    const d3Array = [
+        "https://cdn.jsdelivr.net/npm/d3-array@3.2.4/dist/d3-array.min.js",
+        "sha512-FUu0TfljRL0054gqrQPCIBOxeeSIsH3D1v/+G46KhQA9C/Tt50zC9CM4keANwsIPg57G+V4svcgUynABRUQPHg==",
+    ];
+    const d3Color = [
+        "https://cdn.jsdelivr.net/npm/d3-color@3.1.0/dist/d3-color.min.js",
+        "sha512-xhIwaq3YpclMX36JEVHVjSaZIKAjpOxkR/BJXCF/GDci4ujeWeOgimU0XYcsg0X+y+TRa9gJpUZzMuXKMeYPDQ==",
+    ];
+    const d3Interpolate = [
+        "https://cdn.jsdelivr.net/npm/d3-interpolate@3.0.1/dist/d3-interpolate.min.js",
+        "sha512-Ob/PqYxHrZnhuEbSP1NareH/8Ub/jEjALvQO1CzP5FK6GXJHR4iaYOlVBjMT9MP23tdQfkut29mO0Th5IAm+BQ==",
+    ];
+    const d3Scale = [
+        "https://cdn.jsdelivr.net/npm/d3-scale@4.0.2/dist/d3-scale.min.js",
+        "sha512-c70/2WEJ39++ozcifWYEg9uvX7mLb+zvUUSic4ZouEmkWt9kA8MmmI+fwhXBF3Pm5cCsNG/NFdc/cZVGwQ9jMA==",
     ];
     const jqueryColor = [
         "https://cdnjs.cloudflare.com/ajax/libs/jquery-color/2.1.2/jquery.color.min.js",
@@ -53,27 +65,27 @@ class View {
     static $sitePages = array(
         "chambers" => array(
             "contentTemplate" => "chambers.phtml",
-            "js" => array(self::youtubeEmbed, self::d3, self::moment, self::momentTimeZone,self::date),
+            "js" => array(self::youtubeEmbed, self::d3Array, self::d3Color, self::d3Interpolate, self::d3Scale, self::moment, self::momentTimeZone,self::date),
         ),
         "aggregated" => array(
             "contentTemplate" => "aggregated.phtml",
-            "js" => array(self::d3, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages),
+            "js" => array(self::d3Array, self::d3Color, self::d3Interpolate, self::d3Scale, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages),
         ),
         "changelog" => array(
             "contentTemplate" => "changelog.phtml",
             "pageTitle" => "Score updates",
-            "js" => array(self::d3, self::morrisJs, self::Raphael, self::moment, self::momentTimeZone,self::date, self::pages, self::score, self::youtubeEmbed, self::rank, self::chart),
+            "js" => array(self::d3Array, self::d3Color, self::d3Interpolate, self::d3Scale, self::morrisJs, self::Raphael, self::moment, self::momentTimeZone,self::date, self::pages, self::score, self::youtubeEmbed, self::rank, self::chart),
             "css" => array(self::morrisStyle)
         ),
         "profile" => array(
             "contentTemplate" => "profile.phtml",
             "pageTitle" => "Profile",
-            "js" => array(self::d3, self::Vague,  self::morrisJs, self::Raphael, self::moment, self::momentTimeZone, self::date, self::score, self::youtubeEmbed, self::rank, self::score, self::chart),
+            "js" => array(self::d3Array, self::d3Color, self::d3Interpolate, self::d3Scale, self::Vague,  self::morrisJs, self::Raphael, self::moment, self::momentTimeZone, self::date, self::score, self::youtubeEmbed, self::rank, self::score, self::chart),
             "css" => array(self::morrisStyle)
         ),
         "chamber" => array(
             "contentTemplate" => "chamber.phtml",
-            "js" => array(self::d3, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages, self::rank, self::score, self::youtubeEmbed),
+            "js" => array(self::d3Array, self::d3Color, self::d3Interpolate, self::d3Scale, self::moment, self::morrisJs, self::Raphael, self::momentTimeZone, self::jqueryColor, self::date, self::pages, self::rank, self::score, self::youtubeEmbed),
             "css" => array(self::morrisStyle)
         ),
         "404" => array(
