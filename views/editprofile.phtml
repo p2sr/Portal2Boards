@@ -14,11 +14,9 @@
             <button class="button" type="submit">Save</button>
         </form>
     </div>
-    <?php if(isset($view->msg)): ?>
-        <div class="msg"><?=$view->msg?></div>
-    <?php endif; ?>
+    <div class="msg" style="min-height: 18px"><?=$view->msg?></div>
 
-    <div class="auth_hash" style="display: flex; gap: 1rem;">
+    <div class="auth_hash" style="display: flex; gap: 1rem;margin-top: 30px;">
         <p>Auth Hash: <?=$loggedInUser->userData->auth_hash;?></p>
         <button class="button btn" data-clipboard-text="<?=$loggedInUser->userData->auth_hash;?>" style="margin: 0 0 10px;">Copy</button>
         <button class="button regen-btn" style="margin: 0 0 10px;">Regenerate</button>
