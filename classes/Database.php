@@ -6,6 +6,8 @@ class Database {
     public static function authorize() {
         $config = Config::get();
 
+        mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
         $db = new mysqli(
             $config->database_host,
             $config->database_user,
