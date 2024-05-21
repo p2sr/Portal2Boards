@@ -11,7 +11,7 @@ class Discord {
             $payload = [
                 'username' => 'Demo Parse Bot',
                 'avatar_url' => self::$avatar,
-                'content' => 'Link to change log: [Click Here](https://board.portal2.sr/changelog?id='.$data['id'].')'
+                'content' => 'Link to change log: [Click Here](<https://board.portal2.sr/changelog?id='.$data['id'].'>)'
             ];
             $tempFile = self::CreateTempFile($text);
             $tempErrFile = self::CreateTempFile($err);
@@ -81,7 +81,7 @@ class Discord {
                 ],
                 [
                     'name' => 'By',
-                    'value' => '['.self::sanitiseText($data['player']).'](https://board.portal2.sr/profile/'.$data['player_id'].')',
+                    'value' => '['.self::sanitiseText($data['player']).'](<https://board.portal2.sr/profile/'.$data['player_id'].'>)',
                     'inline' => true
                 ],
             ]
