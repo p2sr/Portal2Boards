@@ -18,6 +18,7 @@
         <meta name="referrer" content="no-referrer" />
 
         <title><?php echo $view->siteTitle . View::$pageData["pageTitle"]; ?></title>
+        <meta name="description" content="Portal 2 Challenge Mode Leaderboards.">
 
         <?php foreach($view->css as [$path, $hash]): ?>
             <link rel="stylesheet" type="text/css" href="<?=$path; ?>"<?php echo isset($hash) ? " integrity=\"$hash\" crossorigin=\"anonymous\"" : '' ?>>
