@@ -108,8 +108,8 @@
 /update/scripts/vscripts/transitions/sp_transition_list.nut E0012DAE
 /update/scripts/vscripts/panels/coop_dlc_select_panel_flip.nut BB77EBBF
 /portal2/scripts/mp_coop_toussonian_one_transition_list.nut E90FDA91
-/portal2/scripts/talker/ballbot.txt 6791649D
-/portal2/scripts/talker/eggbot.txt 45ED4E1B
+/portal2/scripts/talker/ballbot.txt B4F093BE
+/portal2/scripts/talker/eggbot.txt 695BBCD4
 /portal2/scripts/talker/response_criteria.txt 388D4771
 /portal2/scripts/vscripts/Theboxedarm.nut F69E4E18
 /portal2/scripts/vscripts/a329/a329-transition_list.nut 4799D683
