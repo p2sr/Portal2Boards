@@ -11,7 +11,7 @@ class ChamberView
         <?php if (SteamSignIn::isLoggedIn($player)) {
             echo "you";
         } ?>"
-        <?php if($scoreData["scoreRank"] % 2 == 0) { ?>
+        <?php if ($scoreData["scoreRank"] % 2 == 0) { ?>
             style="background: #d6d6d6"
         <?php } ?>
         >

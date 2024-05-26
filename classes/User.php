@@ -1,6 +1,7 @@
 <?php
 class User {
-
+    public $points;
+    public $times;
     public $profileNumber;
     public $isRegistered;
     public $hasRecords;
@@ -9,15 +10,13 @@ class User {
     public function __construct($id) {
         if (is_numeric($id) && strlen($id) === 17) {
             $number = $id;
-        }
-        else {
+        } else {
             $profileNumbers = Cache::get("profileNumbers");
             $name = strtolower(urldecode($id));
 
-            if (array_key_exists($name, $profileNumbers)){
+            if (array_key_exists($name, $profileNumbers)) {
                 $number = $profileNumbers[$name];
-            }
-            else {
+            } else {
                 $number = NULL;
             }
         }
@@ -36,54 +35,118 @@ class User {
     }
 
     //TODO: functional decomposition
-    public function saveProfile($twitch = NULL, $youtube = NULL, $boardname = NULL) {
+    public function saveProfile(?string $twitch = NULL, ?string $youtube = NULL, ?string $boardname = NULL) {
         if ($boardname != NULL) {
             try {
-                Database::query("UPDATE usersnew SET boardname = '$boardname' WHERE profile_number = '$this->profileNumber'");
+                Database::query(
+                    "UPDATE usersnew
+                     SET boardname = ?
+                     WHERE profile_number = ?",
+                    "ss",
+                    [
+                        $boardname,
+                        $this->profileNumber,
+                    ]
+                );
+
                 $this->userData->boardname = $boardname;
             } catch (\Exception $ex) {
                 Debug::log($ex->getMessage());
                 return "Board name already taken.";
             }
-        }
-        else {
-          Database::query("UPDATE usersnew SET boardname = NULL WHERE profile_number = '$this->profileNumber'");
+        } else {
+            Database::query(
+                "UPDATE usersnew
+                 SET boardname = NULL
+                 WHERE profile_number = ?",
+                "s",
+                [
+                    $this->profileNumber,
+                ]
+            );
+
             $this->userData->boardname = NULL;
         }
 
         if ($twitch != NULL) {
-            Database::query("UPDATE usersnew SET twitch = '$twitch' WHERE profile_number = '$this->profileNumber'");
+            Database::query(
+                "UPDATE usersnew
+                 SET twitch = ?
+                 WHERE profile_number = ?",
+                "ss",
+                [
+                    $twitch,
+                    $this->profileNumber,
+                ]
+            );
+
             $this->userData->twitch = $twitch;
-        }
-        else {
-            Database::query("UPDATE usersnew SET twitch = NULL WHERE profile_number = '$this->profileNumber'");
+        } else {
+            Database::query(
+                "UPDATE usersnew
+                 SET twitch = NULL
+                 WHERE profile_number = ?",
+                "s",
+                [
+                    $this->profileNumber,
+                ]
+            );
+
             $this->userData->twitch = NULL;
         }
 
         if ($youtube != NULL) {
-            Database::query("UPDATE usersnew SET youtube = '$youtube' WHERE profile_number = '$this->profileNumber'");
+            Database::query(
+                "UPDATE usersnew
+                 SET youtube = ?
+                 WHERE profile_number = ?",
+                "ss",
+                [
+                    $youtube,
+                    $this->profileNumber,
+                ]
+            );
+
             $this->userData->youtube = $youtube;
-        }
-        else {
-            Database::query("UPDATE usersnew SET youtube = NULL WHERE profile_number = '$this->profileNumber'");
+        } else {
+            Database::query(
+                "UPDATE usersnew
+                 SET youtube = NULL WHERE profile_number = ?",
+                "s",
+                [
+                    $this->profileNumber,
+                ]
+            );
+
             $this->userData->youtube = NULL;
         }
     }
 
-    public static function updateProfileData($user) {
-
-        $content = self::fetchCurrentProfileData($user);
+    public static function updateProfileData(string $profile_number) {
+        $content = self::fetchCurrentProfileData($profile_number);
 
         if ($content != NULL) {
-            $userinfo = json_decode($content, true);
+            $userInfo = json_decode($content, true);
 
-            if (isset($userinfo["response"]["players"][0]["personaname"]) && isset($userinfo["response"]["players"][0]["avatarfull"])) {
-                $nickname = Database::getMysqli()->real_escape_string($userinfo["response"]["players"][0]["personaname"]);
-                $avatar_url = $userinfo["response"]["players"][0]["avatarfull"];
+            if (isset($userInfo["response"]["players"][0]["personaname"])
+                && isset($userInfo["response"]["players"][0]["avatarfull"])) {
+                $steamname = $userInfo["response"]["players"][0]["personaname"];
+                $avatar = $userInfo["response"]["players"][0]["avatarfull"];
 
-                //making sure valid data was received
-                if ($avatar_url != "") {
-                    Database::query("UPDATE usersnew SET avatar = '{$avatar_url}', steamname = '{$nickname}' WHERE profile_number = '{$user}'");
+                // Making sure valid data was received
+                if ($avatar) {
+                    Database::query(
+                        "UPDATE usersnew
+                         SET avatar = ?
+                           , steamname = ?
+                         WHERE profile_number = ?",
+                        "sss",
+                        [
+                            $avatar,
+                            $steamname,
+                            $profile_number,
+                        ]
+                    );
                 }
             }
         }
@@ -100,9 +163,9 @@ class User {
 
         $diff = [];
 
-        $userinfo = json_decode($content, true);
+        $userInfo = json_decode($content, true);
 
-        foreach ($userinfo["response"]["players"] ?? [] as $player) {
+        foreach ($userInfo["response"]["players"] ?? [] as $player) {
             if (!strlen($player["avatarfull"] ?? "")) {
                 continue;
             }
@@ -150,17 +213,47 @@ class User {
             return;
         }
 
-        $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName, usersnew.* FROM usersnew WHERE profile_number = '$this->profileNumber'");
+        $query = Database::query(
+            "SELECT IFNULL(boardname, steamname) as displayName
+                  , usersnew.*
+             FROM usersnew
+             WHERE profile_number = ?",
+            "s",
+            [
+                $this->profileNumber,
+            ]
+        );
+
         // Creates user if profile number does not exist
-        if($data->num_rows == 0) {
-            Database::query("INSERT INTO usersnew (profile_number) VALUES (" . $this->profileNumber. ")");
+        if ($query->num_rows == 0) {
+            Database::query(
+                "INSERT INTO usersnew (
+                    profile_number
+                 ) VALUES (
+                    ?
+                 )",
+                "s",
+                [
+                    $this->profileNumber,
+                ]
+            );
+
             User::updateProfileData($this->profileNumber);
+
             // Update again data
-            $data = Database::query("SELECT IFNULL(boardname, steamname) as displayName, usersnew.* FROM usersnew WHERE profile_number = '$this->profileNumber'");
+            $query = Database::query(
+                "SELECT IFNULL(boardname, steamname) as displayName
+                      , usersnew.*
+                 FROM usersnew
+                 WHERE profile_number = ?",
+                "s",
+                [
+                    $this->profileNumber,
+                ]
+            );
         }
 
-        while($row = $data->fetch_object()) {
-
+        while ($row = $query->fetch_object()) {
             $row->displayName = htmlspecialchars($row->displayName);
             $row->steamname = htmlspecialchars($row->steamname);
             $row->boardname = htmlspecialchars($row->boardname);
@@ -170,20 +263,38 @@ class User {
     }
 
     public static function getAllUserData() {
-      $data = Database::query("SELECT avatar, profile_number, IFNULL(boardname, steamname) as displayName, boardname, steamname, banned, twitch, youtube, title FROM usersnew");
+      $data = Database::unsafe_raw(
+        "SELECT avatar
+              , profile_number
+              , IFNULL(boardname, steamname) as displayName
+              , boardname
+              , steamname
+              , banned
+              , twitch
+              , youtube
+              , title
+        FROM usersnew"
+    );
+
       while($row = $data->fetch_assoc()) {
           $userData[$row['profile_number']] = $row;
       }
+
       return $userData;
     }
 
     public function isRegistered() {
-        if($data = Database::query("SELECT profile_number FROM usersnew WHERE profile_number = '$this->profileNumber'")) {
-            if($data->num_rows > 0) {
-                return true;
-            }
-        }
-        return false;
+        $data = Database::query(
+            "SELECT profile_number
+             FROM usersnew
+             WHERE profile_number = ?",
+            "s",
+            [
+                $this->profileNumber,
+            ]
+        );
+
+        return $data && $data->num_rows > 0;
     }
 
     public function hasRecords() {
@@ -194,11 +305,6 @@ class User {
     public function getChangelog($dayAmount) {
         $leaderboard = new Leaderboard();
         return $leaderboard->getChangelog(array("profileNumber" => $this->profileNumber, "startDate" => (new DateTime("NOW - {$dayAmount} day"))->format('Y-m-d'), "hasDate" => 1));
-    }
-
-    public function getActivity($dayAmount) {
-        $leaderboard = new Leaderboard();
-        return $leaderboard->getActivity($this->getChangelog($dayAmount));
     }
 
     public function getPoints() {
@@ -325,8 +431,7 @@ class User {
             && $times->SP["chambers"]["bestRank"]["scoreData"]["playerRank"] == $times->COOP["chambers"]["bestRank"]["scoreData"]["playerRank"]) {
             $times->bestRank = $times->SP["chambers"]["bestRank"];
             $times->bestRank["map"] = "several chambers";
-        }
-        else {
+        } else {
             $times->bestRank = Util::uMin($times->SP["chambers"]["bestRank"], $times->COOP["chambers"]["bestRank"], array('User', 'getPlayerRankFromScore'));
         }
 
@@ -334,8 +439,7 @@ class User {
             && $times->SP["chambers"]["worstRank"]["scoreData"]["playerRank"] == $times->COOP["chambers"]["worstRank"]["scoreData"]["playerRank"]) {
             $times->worstRank = $times->SP["chambers"]["worstRank"];
             $times->worstRank["map"] = "several chambers";
-        }
-        else {
+        } else {
             $times->worstRank = Util::uMax($times->SP["chambers"]["worstRank"], $times->COOP["chambers"]["worstRank"], array('User', 'getPlayerRankFromScore'));
         }
 
@@ -418,8 +522,7 @@ class User {
                         $times["worstRank"]["scoreData"] = $scoreData;
                         $times["bestRank"]["map"] = $map;
                         $times["worstRank"]["map"] = $map;
-                    }
-                    else {
+                    } else {
                         if ($times["worstRank"]["scoreData"]["playerRank"] == $scoreData["playerRank"]) {
                             $times["worstRank"]["map"] = "several chambers";
                         }

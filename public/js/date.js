@@ -29,8 +29,7 @@ function getDateDifferenceColor(moment1, moment2, cutoff) {
     var color = null;
     if (passedHours <= 2 * 30 * 24) {
         color = hourScale(passedHours);
-    }
-    else if (!cutoff){
+    } else if (!cutoff) {
         color = getOldDateColor();
     }
     return color;
@@ -42,7 +41,6 @@ function getOldDateColor() {
 
 function formatDate(date, formatString) {
     if (date !== undefined) {
-
         return formatMoment(moment(date), formatString);
     }
     return null;
@@ -50,7 +48,6 @@ function formatDate(date, formatString) {
 
 function formatMoment(mom, formatString) {
     if (mom !== undefined) {
-
         if (formatString == undefined)
             formatString = "YYYY-MM-DD HH:mm:ss";
 
@@ -84,8 +81,9 @@ function getCurrentLocalDate(formatString) {
 }
 
 function getLocale() {
-    if (locale !== null && locale !== undefined && locale !== "")
+    if (locale !== null && locale !== undefined && locale !== "") {
         return locale;
-    else
+    } else {
         return "Etc/UTC";
+    }
 }

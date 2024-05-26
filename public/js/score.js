@@ -11,10 +11,11 @@ function formatScoreTime(time) {
     if (hundreds < 10)
         hundreds = "0"+hundreds.toString();
 
-    if (minutes > 0)
+    if (minutes > 0) {
         return minutes + ":" + seconds + "." + hundreds;
-    else
+    } else {
         return seconds + "." + hundreds;
+    }
 }
 
 function getScoreFromString(str) {
@@ -33,8 +34,7 @@ function getScoreFromString(str) {
             hours = minutesOrHours;
             minutes = parseInt(str.split(":")[0]);
             str = str.split(":")[1];
-        }
-        else {
+        } else {
             minutes = minutesOrHours;
         }
     }
@@ -42,19 +42,19 @@ function getScoreFromString(str) {
     if (str.indexOf(".") != -1) {
         seconds = parseInt(str.split(".")[0]);
         str = str.split(".")[1];
-    }
-    else {
+    } else {
         return null;
     }
 
     var hundredths = 0;
     var hundredthsStr = str.split(".")[0];
-    if (hundredthsStr.length == 1)
+    if (hundredthsStr.length == 1) {
         hundredths = 10 * parseInt(hundredthsStr);
-    else if (hundredthsStr.length == 2)
+    } else if (hundredthsStr.length == 2) {
         hundredths = parseInt(hundredthsStr);
-    else
+    } else {
         return null;
+    }
 
     return hundredths + (100 * seconds) + (100 * 60 * minutes) + (100 * 60 * 60 * hours);
 }

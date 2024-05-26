@@ -73,7 +73,7 @@
             <?php include("message.phtml"); ?>
             <div id="content">
                 <?php
-                    if(isset(View::$pageData["contentTemplate"])) {
+                    if (isset(View::$pageData["contentTemplate"])) {
                         require_once(__DIR__."/../".View::$pageData["contentTemplate"]);
                     }
                 ?>

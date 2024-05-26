@@ -12,10 +12,10 @@
     <div class="chamberview" style="background-image: url('/images/chambers_full/<?=$GLOBALS["chamberID"];?>.jpg')">
         <div class="chamberinfo">
             <div class="chamberchaptername"><?=$chapter;?></div>
-            <?php if($isPublic == "1"): ?>
+            <?php if ($isPublic == "1"): ?>
                 <a href="https://steamcommunity.com/stats/Portal2/leaderboards/<?=$GLOBALS["chamberID"];?>" target="_blank" class="chamberchambername"><?=$map;?></a>
             <?php endif; ?>
-            <?php if($isPublic == "0"): ?>
+            <?php if ($isPublic == "0"): ?>
                 <span class="chamberchambername"><?=$map;?></span>
             <?php endif; ?>
             <div class="controls topright">
@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="controls topleft">
-                <?php if($isPublic): ?>
+                <?php if ($isPublic): ?>
                     <div class="button standardButton fetchChamberScoresButton">
                         <i class="fa fa-fw fa-refresh" aria-hidden="true"></i>
                         Fetch new scores
@@ -41,7 +41,7 @@
                         World Record History
                     </span>
                 </div>
-                <?php if(isset($youtubeIDs[0])): ?>
+                <?php if (isset($youtubeIDs[0])): ?>
                     <div class="button standardButton videoButton"
                          onclick="embedOnBody('<?=$youtubeIDs[0]["youtubeID"]?>', '<?=Leaderboard::convertToTime($youtubeIDs[0]["score"])?> - <?=Util::escapeQuotesHTML($youtubeIDs[0]["player_name"])?>');">
                         <span class="name">
@@ -63,7 +63,7 @@
             </div>
         </div>
     </div>
-    <?php if($isPublic == "0"): ?>
+    <?php if ($isPublic == "0"): ?>
         <div class="not-public-chambers">
             <span class="notification">
               This chamber is not available through official Steam leaderboard pages, but is accessible by modifying the game's
@@ -78,7 +78,7 @@
     <div style="height: 0px; width: 100%; overflow: hidden">
         <div id="wrHistory" style="height: 175px; width: 100%"></div>
     </div>
-    <?php if(isset($youtubeIDs[0])): ?>
+    <?php if (isset($youtubeIDs[0])): ?>
     <div id="video" style="height: 540px; display:none;">
     </div>
     <?php endif; ?>
@@ -91,7 +91,7 @@
         setTimeout(function() {
             fadeInLetters(".chamberchambername");
             fadeInLetters(".chamberchaptername");
-            <?php if(!isset($_COOKIE["non-official-chamber-notification-read"])): ?>
+            <?php if (!isset($_COOKIE["non-official-chamber-notification-read"])): ?>
                 $(".not-public-chambers").slideDown();
             <?php endif;?>
         }, 1000);
@@ -126,7 +126,7 @@
         var shiny = "";
         for(var i=0;i<=$(selector).html().length - 1;i++) {
             var letter = txt.charAt(i);
-            if(letter == " ") {
+            if (letter == " ") {
                 letter = "&nbsp;";
             }
             shiny += "<div class='seperate'>"+letter+"</div>";
@@ -184,11 +184,11 @@
             var playerStr = "";
             for (var p in data.players) {
                 var player = data.players[p];
-                if (data.players.length > 1 ? data.players[data.players.length - 1] == player : false)
+                if (data.players.length > 1 ? data.players[data.players.length - 1] == player : false) {
                     playerStr += " and ";
-                else if (playerStr != "")
+                } else if (playerStr != "") {
                     playerStr += ", ";
-
+                }
                 playerStr += player;
             }
 
@@ -210,10 +210,11 @@
 
     $(".wrHistoryButton").click(function() {
         $historyContainer = $("#wrHistory").parent();
-        if ($historyContainer.is(':hidden'))
+        if ($historyContainer.is(':hidden')) {
             $historyContainer.slideDown();
-        else
+        } else {
             $historyContainer.slideUp();
+        }
     });
 
     var fetchingNewScores = false;
@@ -232,7 +233,7 @@
                     // $refreshIcon.removeClass("fa-spin");
                     document.location.href = "/chamber/<?=$GLOBALS["chamberID"]?>";
                 },
-                error: function(e){
+                error: function(e) {
                     console.log(e.message);
                 },
                 cache: false
@@ -276,7 +277,7 @@
         document.cookie = "non-official-chamber-notification-read=yes; " + expires;
     });
 
-    <?php if($isPublic == 0): ?>
+    <?php if ($isPublic == 0): ?>
         $(".chamberchambername").click(function() {
             $(".not-public-chambers").slideDown();
         });

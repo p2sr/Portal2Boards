@@ -1,5 +1,20 @@
 <?php
+
 class View {
+    public $siteTitle;
+    public $addJsMultiple;
+    public $addCssMultiple;
+    public $board;
+    public $points;
+    public $times;
+    public $mode;
+    public $changelog;
+    public $profile;
+    public $chamber;
+    public $donators;
+    public $wallofshame;
+    public $msg;
+
     public $css = array();
     public $js = array();
 
@@ -96,11 +111,6 @@ class View {
             "contentTemplate" => "editprofile.phtml",
             "pageTitle" => "Edit profile",
             "js" => [self::clipboardJs],
-        ),
-        "lp" => array(
-            "contentTemplate" => "leastportals.phtml",
-            "pageTitle" => "Least Portals",
-            "js" => array(self::youtubeEmbed)
         ),
         "about" => array(
             "contentTemplate" => "about.phtml",

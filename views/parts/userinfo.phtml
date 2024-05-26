@@ -1,4 +1,4 @@
-<?php if(!isset(SteamSignIn::$loggedInUser)): ?>
+<?php if (!isset(SteamSignIn::$loggedInUser)): ?>
 	<a href="<?php echo SteamSignIn::genUrl(Config::get()->is_using_proxy ? $_SERVER['HTTP_X_FORWARDED_HOST'] : $_SERVER['HTTP_HOST'], "/login"); ?>" id="loginsteam"></a>
 	<div id="seper"></div>
 	<div id="edition"></div>

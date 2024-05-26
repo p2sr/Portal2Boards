@@ -9,8 +9,7 @@ function nextPage($pageParent) {
     if (index == lastPage) {
         showPage(0, $pageParent);
         return 1;
-    }
-    else {
+    } else {
         showPage(index + 1, $pageParent);
         return index + 2;
     }
@@ -25,8 +24,7 @@ function previousPage($pageParent) {
     if (index == 0) {
         showPage(lastPage, $pageParent);
         return lastPage + 1;
-    }
-    else {
+    } else {
         showPage(index - 1, $pageParent);
         return index;
     }
@@ -53,8 +51,7 @@ function showPage(page, $pageParent, fade) {
         setTimeout(function () {
             $newDataTable.fadeIn(100);
         }, 100);
-    }
-    else {
+    } else {
         $oldDataTable.hide();
         $oldDataTable.removeClass("active");
         $newDataTable.addClass("active");

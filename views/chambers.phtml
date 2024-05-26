@@ -29,7 +29,7 @@
                             <div class="titlebg"><a href="/chamber/<?=$map;?>"><?=$mapName?></a></div>
                         </div>
                         <div class="chamber_icons_left">
-                            <?php if($isPublic == "1"): ?>
+                            <?php if ($isPublic == "1"): ?>
                                 <a href="<?php echo "https://steamcommunity.com/stats/Portal2/leaderboards/".$map;?>" class="icons" target="_blank">
                                      <span class="icons steamLink fa-stack">
                                           <i class="fa fa-square fa-stack-2x"></i>
@@ -78,7 +78,7 @@
                                 }
                             }
                         ?>
-                        <?php if(count($mapData) == 0): ?>
+                        <?php if (count($mapData) == 0): ?>
                             <div class="firstplace">
                             </div>
                             <div class="othernoobscores">
@@ -86,9 +86,9 @@
                         <?php endif; ?>
                         <?php foreach($mapData as $player => $playerData): ?>
                         <?php $entry = array_search($player, $keys);?>
-                        <?php if($entry == 0): ?>
+                        <?php if ($entry == 0): ?>
                             <div class="firstplace">
-                                <div class="entry <?php if(SteamSignIn::isLoggedIn($player) || $twoplayer_highlight) { echo "highlight"; } ?>">
+                                <div class="entry <?php if (SteamSignIn::isLoggedIn($player) || $twoplayer_highlight) { echo "highlight"; } ?>">
                                     <div class="dateDifference" date="<?=$playerData["scoreData"]["date"]?>"></div>
                                     <div class="boardname">
                                         <div class="content" style="width:100%; display: table"><?=$rank1HTML?></div>
@@ -117,9 +117,9 @@
                                     </div>
                                 </div>
                             </div>
-                        <?php elseif($skipRank2 ? ($entry < 8 && $entry != 1) : $entry < 7 ): ?>
+                        <?php elseif ($skipRank2 ? ($entry < 8 && $entry != 1) : $entry < 7 ): ?>
                             <div class="othernoobscores">
-                                <div class="entry <?php if(SteamSignIn::isLoggedIn($player)) { echo "highlight"; } ?>">
+                                <div class="entry <?php if (SteamSignIn::isLoggedIn($player)) { echo "highlight"; } ?>">
                                     <div class="dateDifference" date="<?=$playerData["scoreData"]["date"]?>"></div>
                                     <div class="boardname"><a href="/profile/<?=$player;?>"><?=$playerData["userData"]["boardname"]?></a></div>
                                     <a href="/changelog?profileNumber=<?=$player?>&chamber=<?=$map?>" class="score">
@@ -161,8 +161,7 @@
             var color = getDateDifferenceColorFromNow(date, true);
             if (color != null) {
                 $(this).css("border-left", color + " 2px solid");
-            }
-            else {
+            } else {
                 $(this).removeAttr("href");
             }
         });

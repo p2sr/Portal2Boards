@@ -11,7 +11,7 @@ class AggregatedView
             echo "you";
         } ?>"
         style="
-        <?php if($scoreData["scoreRank"]  % 2 == 0) { ?>
+        <?php if ($scoreData["scoreRank"]  % 2 == 0) { ?>
             background: #d3d3d3
         <?php } ?>
         ">

@@ -5,7 +5,7 @@ class Discord {
     private static $avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
     private static $embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
 
-    public static function sendMdpWebhook($data, $demoName, $text, $err = null){
+    public static function sendMdpWebhook($data, $demoName, $text, $err = null) {
         try {
             //Debug::log("Trying to sending Webhook for mdp");
             $payload = [
@@ -20,7 +20,7 @@ class Discord {
                 'payload_json' => json_encode($payload)
             ];
     
-            if($err != null){
+            if ($err != null) {
                 $post['files[1]'] = curl_file_create($tempErrFile, 'text/plain', $demoName.'_err.txt');
             }
             //Debug::log(json_encode($payload));
@@ -93,13 +93,13 @@ class Discord {
         return preg_replace('/(\\*|_|`|~)/miu', '\\\\$1', $text);
     }
 
-    private static function CreateTempFile($text){
+    private static function CreateTempFile($text) {
         $file = tempnam(sys_get_temp_dir(), 'POST');
         file_put_contents($file, $text);
         return $file;
     }
 
-    private static function DeleteTempFile($file){
+    private static function DeleteTempFile($file) {
         unlink($file);
     }
 }

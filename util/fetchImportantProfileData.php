@@ -7,7 +7,11 @@
     Debug::initializeFileLogging();
     Debug::$loggingToOutput = true;
 
-    $data = Database::query("SELECT DISTINCT profile_number FROM changelog WHERE time_gained > DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY)");
+    $data = Database::unsafe_raw(
+        "SELECT DISTINCT profile_number
+         FROM changelog
+         WHERE time_gained > DATE_SUB(CURRENT_TIMESTAMP, INTERVAL 30 DAY)"
+    );
 
     $activeProfiles = array();
     while ($row = $data->fetch_assoc()) {
@@ -53,7 +57,11 @@
 
     print_r("Skillfull profiles: " . count($skillFullProfiles) . "\n");
 
-    $data = Database::query("SELECT profile_number FROM usersnew WHERE banned = 1");
+    $data = Database::unsafe_raw(
+        "SELECT profile_number
+         FROM usersnew
+         WHERE banned = 1"
+    );
     
     $bannedProfiles = array();
     while ($row = $data->fetch_assoc()) {

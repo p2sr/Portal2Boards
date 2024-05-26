@@ -5,16 +5,14 @@ class ProfileView
     static function getChamberHyperlink($map, $mapInfo) {
         if (array_key_exists($map, $mapInfo["maps"])) {
             return "<a href=/chamber/" . $map . ">" . $mapInfo["maps"][$map]["mapName"] . "</a>";
-        }
-        else {
+        } else {
             return $map;
         }
     }
     static function getChapterHyperlink($chapter, $mapInfo) {
         if (array_key_exists($chapter, $mapInfo["chapters"])) {
             return "<a href=/aggregated/chapter/" . $chapter . ">" . $mapInfo["chapters"][$chapter]["chapterName"] . "</a>";
-        }
-        else {
+        } else {
             return $chapter;
         }
     }

@@ -15,18 +15,16 @@ function drawRank($element) {
         if (rank == 1) {
             $element.html("<i class='fa fa-trophy' aria-hidden='tru'></i>");
             $element.css("color", "#d980ff");
-        }
-        else if (rank <= 500) {
+        } else if (rank <= 500) {
             $element.css('color', scale(rank));
-        }
-        else {
+        } else {
             $element.css('color', "#888888");
         }
     }
 }
 
 function getPointsFromRank(rank) {
-    if(rank > 200){
+    if (rank > 200) {
         return 0;
     }
     var points = Math.max(1,  Math.pow(200 - (rank - 1), 2) / 200);

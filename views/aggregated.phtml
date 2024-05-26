@@ -2,19 +2,19 @@
 <?php include("util/AggregatedView.php")?>
 
 <?php function getImage() {
-    if (Router::$location[2] == "sp")
+    if (Router::$location[2] == "sp") {
         return '/images/sp.png';
-    else if (Router::$location[2] == "coop")
+    } else if (Router::$location[2] == "coop") {
         return '/images/coop.png';
-    else if (Router::$location[2] == "overall")
+    } else if (Router::$location[2] == "overall") {
         return '/images/overall.jpg';
-    else if (Router::$location[2] == "chapter") {
+    } else if (Router::$location[2] == "chapter") {
         $chapter = Router::$location[3];
         $representativeMap = $GLOBALS["mapInfo"]["chapters"][$chapter]["maps"][0];
         return '/images/chambers_full/'.$representativeMap.'.jpg';
-    }        
-    else
+    } else {
         return "";
+    }
 } ?>
 
 <div id="aggregated">
@@ -71,7 +71,7 @@
         var shiny = "";
         for(var i=0;i<=$(selector).html().length - 1;i++) {
             var letter = txt.charAt(i);
-            if(letter == " ") {
+            if (letter == " ") {
                 letter = "&nbsp;";
             }
             shiny += "<div class='seperate'>"+letter+"</div>";

@@ -83,7 +83,17 @@
     <div class="container">
         <ul>
             <?php
-                $data = Database::query("SELECT profile_number, IFNULL(boardname, steamname) as playername, title, admin FROM usersnew WHERE admin = 1 OR title = 'Developer' ORDER BY (title IS NOT NULL AND title LIKE 'Developer') DESC, playername ASC");
+                $data = Database::unsafe_raw(
+                    "SELECT profile_number
+                          , IFNULL(boardname, steamname) as playername
+                          , title, admin
+                     FROM usersnew
+                     WHERE admin = 1
+                     OR title = 'Developer'
+                     ORDER BY (title IS NOT NULL AND title LIKE 'Developer') DESC
+                            , playername ASC"
+                );
+
                 $teamMembers = array();
 
                 while ($row = $data->fetch_assoc()) {

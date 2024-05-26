@@ -82,13 +82,13 @@ function drawActivityChart(activityByDate, beginDate, endDate, $element, resize)
                 var dateA = moment(a.changeData.time_gained);
                 var dateB = moment(b.changeData.time_gained);
                 return (dateA.isAfter(dateB)) ? -1 : 1;
-            }
-            else if (rankA == null)
+            } else if (rankA == null) {
                 return 1;
-            else if (rankB == null)
+            } else if (rankB == null) {
                 return -1;
-            else
+            } else {
                 return  rankA < rankB ? -1 : 1;
+            }
         });
         dayBins.push(binData);
     }
@@ -110,10 +110,11 @@ function drawActivityChart(activityByDate, beginDate, endDate, $element, resize)
             hoverCallback: function (index, options, content) {
                 var data = options.data[index];
                 var str = "";
-                if (data.startDay == data.endDay)
+                if (data.startDay == data.endDay) {
                     str += data.startDay;
-                else
+                } else {
                     str += "From " + data.startDay + " to " + data.endDay;
+                }
 
                 str += "<br>" + data.updates + " score update" + ((data.updates != 1) ? "s" : "") + " <br><br>";
                 str += "<table>";
@@ -214,7 +215,7 @@ function getActivityByDate(activityByScore) {
 }
 
 function getActivityByScore(changelog) {
-    if(changelog != null ? changelog.length > 0 : false) {
+    if (changelog != null ? changelog.length > 0 : false) {
         var activity = {};
         for (var c in changelog) {
             var change = changelog[c];
@@ -249,8 +250,7 @@ function getActivityByScore(changelog) {
             }
         }
         return activitySimple;
-    }
-    else {
+    } else {
         return {};
     }
 }

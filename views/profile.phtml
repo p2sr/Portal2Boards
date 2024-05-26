@@ -5,7 +5,7 @@
 <?php include("util/ProfileView.php")?>
 
 <div id="profile">
-    <?php if($user->userData != NULL): ?>
+    <?php if ($user->userData != NULL): ?>
         <?php $avatar = ($user->userData->avatar != NULL) ? $user->userData->avatar : "https://media.steampowered.com/steamcommunity/public/images/avatars/f9/f91787b7fb6d4a2cb8dee079ab457839b33a8845_full.jpg"; ?>
         <div class="userinformation">
               <div class="profilebg hasavatar">
@@ -44,7 +44,7 @@
                 
                 .profileBannerButtonContainer {
                     position: absolute;
-                    <?php if(!$user->isAdmin() && $user->userData->title == NULL):; ?>
+                    <?php if (!$user->isAdmin() && $user->userData->title == NULL):; ?>
                         top: -10px;
                     <?php endif ?>
                 }
@@ -52,7 +52,7 @@
             </style>
             <div class="general">
                 <div class="general-wrapper">
-                    <?php if(SteamSignIn::hasProfilePrivileges($user->profileNumber)): ?>
+                    <?php if (SteamSignIn::hasProfilePrivileges($user->profileNumber)): ?>
                         <div class="profileBannerButtonContainer" style="right: 7px">
                             <div class="refreshAvatarButton profileBannerButton">
                                 <i class="fa fa-fw fa-refresh" aria-hidden="true"></i>
@@ -60,10 +60,10 @@
                             </div>
                         </div>
                     <?php endif; ?>
-                    <?php if(!SteamSignIn::isLoggedIn($user->profileNumber) && SteamSignIn::loggedInUserIsAdmin()): ?>
+                    <?php if (!SteamSignIn::isLoggedIn($user->profileNumber) && SteamSignIn::loggedInUserIsAdmin()): ?>
                         <div class="profileBannerButtonContainer" style="left: 7px">
                             <div class="banToggleButton profileBannerButton">
-                                <?php if($user->userData->banned): ?> 
+                                <?php if ($user->userData->banned): ?> 
                                     <i class="fa fa-fw fa-check" aria-hidden="true"></i>
                                     Unban 
                                 <?php else: ?> 
@@ -75,13 +75,13 @@
                     <?php endif; ?> 
                     <img src="<?php echo $avatar; ?>" alt=""/>
                     <div class="nickname"><?php echo $user->userData->displayName; ?></div>
-                    <?php if($user->isAdmin()): ?>
-                        <div class="profile-desc">Administrator<?php if($user->userData->title != NULL) { ?>, <?=$user->userData->title?><?php } ?></div>
-                    <?php elseif($user->userData->title != NULL): ?>
+                    <?php if ($user->isAdmin()): ?>
+                        <div class="profile-desc">Administrator<?php if ($user->userData->title != NULL) { ?>, <?=$user->userData->title?><?php } ?></div>
+                    <?php elseif ($user->userData->title != NULL): ?>
                         <div class="profile-desc"><?=$user->userData->title?></div>
                     <?php endif; ?>
                     <div class="usericons">
-                        <?php if(strlen($user->userData->youtube) > 0): ?>
+                        <?php if (strlen($user->userData->youtube) > 0): ?>
                             <a href="https://www.youtube.com<?=$user->userData->youtube;?>" style="text-decoration : none;" target="_blank">
                                 <span class="youtubeLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>
@@ -90,7 +90,7 @@
                             </a>
                         <?php endif; ?>
 
-                        <?php if(strlen($user->userData->twitch) > 0): ?>
+                        <?php if (strlen($user->userData->twitch) > 0): ?>
                             <a href="https://www.twitch.tv/<?=$user->userData->twitch;?>" style="text-decoration : none;" target="_blank">
                                 <span class="twitchLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>
@@ -108,7 +108,7 @@
                 </div>
             </div>
         </div>
-        <?php if(!isset($_COOKIE["upload-notification-read"])): ?>
+        <?php if (!isset($_COOKIE["upload-notification-read"])): ?>
             <div class="uploadInfo">
                 <span class="notification">
                     For linking demos or YouTube videos to any of your runs, hover over one of the chambers, and click the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> button to the left of it. This will show an overview of your score history for that chamber. In this overview, YouTube videos and demos can be linked by hovering over any of your old scores, and clicking the <i class='fa fa-fw fa-xs fa-caret-right' aria-hidden='true'></i> button to the left of it.
@@ -118,7 +118,7 @@
             </div>
         <?php endif; ?>
 
-        <?php if($user->userData->banned == 1): ?>
+        <?php if ($user->userData->banned == 1): ?>
             <div class="noactivity" style="float: none;">
                  <span class="noact-wrap">
                       <span>This player is banned.</span>
@@ -131,19 +131,19 @@
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo $user->times->SP["chambers"]["numWRs"]; ?></div>
-                        <div class="title"><span>Single Player <br/>World Record<?php if($user->times->SP["chambers"]["numWRs"] != 1) {?>s<?php } ?></span></div>
+                        <div class="title"><span>Single Player <br/>World Record<?php if ($user->times->SP["chambers"]["numWRs"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo $user->times->COOP["chambers"]["numWRs"]; ?></div>
-                        <div class="title"><span>Cooperative <br/>World Record<?php if($user->times->COOP["chambers"]["numWRs"] != 1) {?>s<?php } ?></span></div>
+                        <div class="title"><span>Cooperative <br/>World Record<?php if ($user->times->COOP["chambers"]["numWRs"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo $user->times->numWRs; ?></div>
-                        <div class="title"><span>World Record<?php if($user->times->numWRs != 1) {?>s<?php } ?><br/>overall</span></div>
+                        <div class="title"><span>World Record<?php if ($user->times->numWRs != 1) {?>s<?php } ?><br/>overall</span></div>
                     </div>
                 </div>
             </div>
@@ -151,19 +151,19 @@
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo round($user->points->SP["score"]);?></div>
-                        <div class="title"><span>Single Player <br/>Point<?php if($user->points->SP["score"] != 1) {?>s<?php } ?></span></div>
+                        <div class="title"><span>Single Player <br/>Point<?php if ($user->points->SP["score"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo round($user->points->COOP["score"]);  ?></div>
-                        <div class="title"><span>Cooperative <br/>Point<?php if($user->points->COOP["score"] != 1) {?>s<?php } ?></span></div>
+                        <div class="title"><span>Cooperative <br/>Point<?php if ($user->points->COOP["score"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
                         <div class="number"><?php echo round($user->points->global["score"]); ?></div>
-                        <div class="title"><span>Point<?php if($user->points->global["score"] != 1) {?>s<?php } ?> <br/>overall</span></div>
+                        <div class="title"><span>Point<?php if ($user->points->global["score"] != 1) {?>s<?php } ?> <br/>overall</span></div>
                     </div>
                 </div>
             </div>
@@ -190,7 +190,7 @@
             <div class="block-container average">
                 <div class="block">
                     <?php $place = $user->times->SP["chambers"]["averagePlace"]; ?>
-                    <div class="block-inner" <?php if($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores in single player is required to determine the average place"; endif; ?>">
+                    <div class="block-inner" <?php if ($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores in single player is required to determine the average place"; endif; ?>">
                         <div class="number">
                             <?php if ($place != NULL): ?>
                                 <?=$place?>
@@ -207,7 +207,7 @@
                 </div>
                 <div class="block">
                     <?php $place = $user->times->COOP["chambers"]["averagePlace"]; ?>
-                    <div class="block-inner" <?php if($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores in cooperative is required to determine the average place"; endif; ?>">
+                    <div class="block-inner" <?php if ($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores in cooperative is required to determine the average place"; endif; ?>">
                         <div class="number">
                             <?php if ($place != NULL): ?>
                                 <?=$place?>
@@ -224,7 +224,7 @@
                 </div>
                 <div class="block">
                     <?php $place = $user->times->globalAveragePlace; ?>
-                    <div class="block-inner" <?php if($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores is required to determine the average place"; endif; ?>">
+                    <div class="block-inner" <?php if ($place == NULL) : echo "data-toggle=\"tooltip\" title=\"A minimum of 10 scores is required to determine the average place"; endif; ?>">
                         <div class="number">
                             <?php if ($place != NULL): ?>
                                 <?=$place?>
@@ -303,7 +303,7 @@
         <div class="profile-title"><span>Recent Activity</span><span style="float: right"><a href="/changelog?profileNumber=<?=$user->profileNumber?>">All history</a></span></div>
         <div class="statistics">
             <div class="activity">
-                <?php if(count($userActivity) > 0): ?>
+                <?php if (count($userActivity) > 0): ?>
                     <div id="changelogactivity" style="height: 175px;">
                         <i class="fa fa-circle-o-notch fa-spin fa-fw loading"></i>
                     </div>
@@ -331,7 +331,7 @@
                             <?php $keys = array_keys($mapInfo["modes"]["sp"]); ?>
                             <div class="column-title">
                                 <?=$mapInfo["chapters"][$chapterId]["chapterName"];?>
-                                <?php if($chapterId == $keys[0]): ?>
+                                <?php if ($chapterId == $keys[0]): ?>
                                     <div style="float: right">
                                         <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
                                         <div class="cell score" align="right">Time</div>
@@ -343,7 +343,7 @@
                             <div class="column-content">
                                 <div class="scoretable">
                                     <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
-                                        <?php if(isset($user->times->SP["chambers"]["chamber"][$chapterId][$mapId])): ?>
+                                        <?php if (isset($user->times->SP["chambers"]["chamber"][$chapterId][$mapId])): ?>
                                             <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->SP["chambers"]["chamber"][$chapterId][$mapId]); ?>
                                         <?php else: ?>
                                             <?php ProfileView::emptyChamberScoreRow($mapId, $mapInfo); ?>
@@ -472,7 +472,7 @@
                     <?php $keys = array_keys($mapInfo["modes"]["coop"]); ?>
                       <div class="column-title">
                           <?=$mapInfo["chapters"][$chapterId]["chapterName"];?>
-                          <?php if($chapterId == $keys[0]): ?>
+                          <?php if ($chapterId == $keys[0]): ?>
                               <div style="float: right">
                                   <div class="cell rank" align="right" data-toggle="tooltip" title="Current rank">#</div>
                                   <div class="cell score" align="right">Time</div>
@@ -484,7 +484,7 @@
                       <div class="column-content">
                           <div class="scoretable">
                               <?php foreach($mapInfo["chapters"][$chapterId]["maps"] as $mapId): ?>
-                                  <?php if(isset($user->times->COOP["chambers"]["chamber"][$chapterId][$mapId])): ?>
+                                  <?php if (isset($user->times->COOP["chambers"]["chamber"][$chapterId][$mapId])): ?>
                                       <?php ProfileView::chamberScoreRow($user, $mapInfo, $mapId, $user->times->COOP["chambers"]["chamber"][$chapterId][$mapId]); ?>
                                   <?php else: ?>
                                       <?php ProfileView::emptyChamberScoreRow($mapId, $mapInfo); ?>
@@ -679,12 +679,12 @@
     }
 
     setTimeout(function() {
-        <?php if(SteamSignIn::isLoggedIn($user->profileNumber)): ?>
+        <?php if (SteamSignIn::isLoggedIn($user->profileNumber)): ?>
             $(".uploadInfo").slideDown('slow');
         <?php endif; ?>
     }, 2000);
 
-    <?php if(SteamSignIn::hasProfilePrivileges($user->profileNumber)): ?>
+    <?php if (SteamSignIn::hasProfilePrivileges($user->profileNumber)): ?>
         var refreshingAvatar = false;
         $(".refreshAvatarButton").click(function() {
             if (!refreshingAvatar) {
@@ -701,7 +701,7 @@
                         // $refreshIcon.removeClass("fa-spin");
                         document.location.href = "/profile/<?=$user->profileNumber?>";
                     },
-                    error: function(e){
+                    error: function(e) {
                         console.log(e.message);
                     },
                     cache: false
@@ -710,7 +710,7 @@
         });
     <?php endif; ?>
 
-    <?php if(!SteamSignIn::isLoggedIn($user->profileNumber) && SteamSignIn::loggedInUserIsAdmin()): ?>
+    <?php if (!SteamSignIn::isLoggedIn($user->profileNumber) && SteamSignIn::loggedInUserIsAdmin()): ?>
         var changingBannedState = false;
         $(".banToggleButton").click(function() {
             if (!changingBannedState) {
@@ -731,7 +731,7 @@
                         // $refreshIcon.removeClass("fa-spin");
                         document.location.href = "/profile/<?=$user->profileNumber?>";
                     },
-                    error: function(e){
+                    error: function(e) {
                         console.log(e.message);
                     },
                     cache: false
@@ -760,14 +760,12 @@
             });
             
             $(this).text("Rank");
-        }
-        else if ($(this).text() == "Rank") {
+        } else if ($(this).text() == "Rank") {
             $("#spOrderedByRank").fadeOut(animationDelay, function() {
                 $("#spOrderedByDate").fadeIn(animationDelay);
             });
             $(this).text("Date");
-        }
-        else {
+        } else {
             $("#spOrderedByDate").fadeOut(animationDelay, function() {
                 $("#spUnordered").fadeIn(animationDelay);
             });
@@ -781,14 +779,12 @@
                 $("#coopOrderedByRank").fadeIn(animationDelay);
             });
             $(this).text("Rank");
-        }
-        else if ($(this).text() == "Rank") {
+        } else if ($(this).text() == "Rank") {
             $("#coopOrderedByRank").fadeOut(animationDelay, function() {
                 $("#coopOrderedByDate").fadeIn(animationDelay);
             });
             $(this).text("Date");
-        }
-        else {
+        } else {
             $("#coopOrderedByDate").fadeOut(animationDelay, function() {
                 $("#coopUnordered").fadeIn(animationDelay);
             });
@@ -799,7 +795,7 @@
     $(".global-stats .block-container").each(function() {
         var width = 0;
         $(this).find(".number").each(function() {
-            if($(this).width() > width) {
+            if ($(this).width() > width) {
                 width = $(this).width();
             }
         });
@@ -827,8 +823,7 @@
             if (color != null) {
                 $(this).css("background", color);
                 $(this).css("border-radius", "500px");
-            }
-            else {
+            } else {
                 $(this).removeAttr("href");
             }
         }
@@ -838,8 +833,7 @@
         var date = $(this).attr("date");
         if (realDate(date)) {
             formatDateDifferenceFromNow($(this), date, true);
-        }
-        else {
+        } else {
             $(this).text("Unknown");
         }
     });
@@ -869,8 +863,7 @@
         if ($target.hasClass("scoreMenuToggle")) {
             $scoreMenu = $target.parent().parent().find(".scoreMenu");
             $scoreMenuToggleIcon = $target.find("i");
-        }
-        else if ($target.hasClass("fa")) {
+        } else if ($target.hasClass("fa")) {
             $scoreMenu = $target.parent().parent().parent().find(".scoreMenu");
             $scoreMenuToggleIcon = $target;
         }
@@ -935,7 +928,7 @@
 
     function updateBestScore() {
         var unbannedEntries = entries.filter(function(e) { return e.banned == 0; });
-        bestScore = Math.min.apply(Math, unbannedEntries.map(function(o){ return o.score; }));
+        bestScore = Math.min.apply(Math, unbannedEntries.map(function(o) { return o.score; }));
     }
 
     function drawScoreMenu() {
@@ -1079,7 +1072,7 @@
             event.preventDefault();
             var el = $(this);
             el.prop('disabled', true);
-            setTimeout(function(){el.prop('disabled', false); }, 1000);
+            setTimeout(function() {el.prop('disabled', false); }, 1000);
 
             var $youtubeField = $submissionForm.find(".setYoutubeContainer input");
             var $scoreField = $submissionForm.find(".scoreInputContainer input");
@@ -1112,8 +1105,7 @@
             if (isNaN(score) || score == null) {
                 setStatusError("Invalid score.");
                 return;
-            }
-            else if (score >= bestScore) {
+            } else if (score >= bestScore) {
                 setStatusError("Score too high.");
                 return;
             }
@@ -1162,7 +1154,7 @@
             }, 'json');
         });
 
-        $submissionForm.find("input[name='demoFile']").change(function (){
+        $submissionForm.find("input[name='demoFile']").change(function () {
             var fileNameComponents = $(this).val().split("\\");
             var fileName = fileNameComponents[fileNameComponents.length - 1];
             $(this).parent().parent().find(".uploadDemo").show();
@@ -1180,8 +1172,7 @@
 
         if (realDate(date)) {
             formatDateDifferenceFromNow($dateDifference, date, false);
-        }
-        else {
+        } else {
             $dateDifference.text("Unknown");
             $dateDifference.css("color", getOldDateColor());
         }
@@ -1289,8 +1280,7 @@
         if ($target.hasClass("changeMenuToggle")) {
             $changeMenu = $target.parent().find(".changeMenu");
             $changeMenuToggleIcon = $target.find("i");
-        }
-        else if ($target.hasClass("fa")) {
+        } else if ($target.hasClass("fa")) {
             $changeMenu = $target.parent().parent().find(".changeMenu");
             $changeMenuToggleIcon = $target;
         }
@@ -1380,7 +1370,7 @@
                 var $form = $(this).closest(".changeForm");
                 var el = $(this);
                 el.prop('disabled', true);
-                setTimeout(function(){el.prop('disabled', false); }, 1000);
+                setTimeout(function() {el.prop('disabled', false); }, 1000);
                 setStatusProcessing();
 
                 $.ajax({
@@ -1400,7 +1390,7 @@
                 event.preventDefault();
                 var el = $(this);
                 el.prop('disabled', true);
-                setTimeout(function(){el.prop('disabled', false); }, 1000);
+                setTimeout(function() {el.prop('disabled', false); }, 1000);
 
                 if (confirm("Are you sure you want to delete this submission?")) {
                     var $form = $(this).closest(".changeForm");
@@ -1475,8 +1465,7 @@
                         contentType: false,
                         processData: false
                     }, 'json');
-                }
-                else {
+                } else {
                     setStatusError("Comment can't be empty.");
                 }
             });
@@ -1562,8 +1551,7 @@
                         contentType: false,
                         processData: false
                     }, 'json');
-                }
-                else {
+                } else {
                     setStatusError("Youtube URL can't be empty.");
                 }
             });
@@ -1572,7 +1560,7 @@
                 event.preventDefault();
                 var el = $(this);
                 el.prop('disabled', true);
-                setTimeout(function(){el.prop('disabled', false); }, 1000);
+                setTimeout(function() {el.prop('disabled', false); }, 1000);
                 var $deleteYoutubeButton = $(this);
                 var $form = $(this).closest(".changeForm");
                 var $setYoutubeContainer = $form.find(".setYoutubeContainer");
@@ -1605,7 +1593,7 @@
                 }, 'json');
             });
 
-            $changeMenu.find(".changeForm input[name='demoFile']").change(function (){
+            $changeMenu.find(".changeForm input[name='demoFile']").change(function () {
                 var fileNameComponents = $(this).val().split("\\");
                 var fileName = fileNameComponents[fileNameComponents.length - 1];
                 $(this).parent().parent().find(".uploadDemo").show();
@@ -1616,7 +1604,7 @@
                 event.preventDefault();
                 var el = $(this);
                 el.prop('disabled', true);
-                setTimeout(function(){el.prop('disabled', false); }, 1000);
+                setTimeout(function() {el.prop('disabled', false); }, 1000);
 
                 var $uploadDemoContainer = $(this).parent();
                 var $form = $(this).closest(".changeForm");
@@ -1655,8 +1643,7 @@
                         contentType: false,
                         processData: false
                     }, 'json');
-                }
-                else {
+                } else {
                     setStatusError("No file chosen.");
                 }
             });
@@ -1665,7 +1652,7 @@
                 event.preventDefault();
                 var el = $(this);
                 el.prop('disabled', true);
-                setTimeout(function(){el.prop('disabled', false); }, 1000);
+                setTimeout(function() {el.prop('disabled', false); }, 1000);
                 if (confirm("Are you sure you want to delete this demo?")) {
                     var $deleteButton = $(this);
                     var $form = $(this).closest(".changeForm");
@@ -1758,11 +1745,9 @@
         //domain name checking
         if (ytURL.indexOf("/watch?v=") != -1) {
             ytURL = ytURL.split("/watch?v=")[1];
-        }
-        else if (ytURL.indexOf("youtu.be/") != -1) {
+        } else if (ytURL.indexOf("youtu.be/") != -1) {
             ytURL = ytURL.split("youtu.be/")[1];
-        }
-        else {
+        } else {
             setStatusError("Invalid YouTube URL. Use either youtu.be/[ID] or youtube.com/watch?v=[ID].");
             return null;
         }
@@ -1794,12 +1779,10 @@
                 if (hours === 0 && minutes === 0 && seconds === 0) {
                     timestamp = ytURL.split("#t=")[1];
                     timestampSeconds = parseInt(timestamp);
-                }
-                else {
+                } else {
                     timestampSeconds = parseInt(seconds) + (parseInt(minutes) * 60) + (parseInt(hours) * 60 * 60);
                 }
-            }
-            else if (ytURL.indexOf("#start=") != -1) {
+            } else if (ytURL.indexOf("#start=") != -1) {
                 timestamp = ytURL.split("#start=")[1];
                 timestampSeconds = parseInt(timestamp);
             }

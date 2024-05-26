@@ -1,49 +1,62 @@
 <?php
 
 class Auth {
-
-    public static function gen_auth_hash($userId)
-    {
-        if (!ctype_alnum($userId)) return null;
-
+    public static function gen_auth_hash(string $profile_number) {
         // Create Auth hash
         $auth_hash = Util::random_str(32);
-        //Debug::log("User id: ".$userId." - Hash: ".$auth_hash);
+
         // Save to db
-        Database::query("UPDATE usersnew 
-                                SET usersnew.auth_hash = '{$auth_hash}'
-                                WHERE usersnew.profile_number = '{$userId}'");
-        // return auth hash
+        Database::query(
+            "UPDATE usersnew 
+             SET usersnew.auth_hash = ?
+             WHERE usersnew.profile_number = ?",
+            "ss",
+            [
+                $auth_hash,
+                $profile_number,
+            ]
+        );
+
         return $auth_hash;
     }
 
-    public static function test_auth_hash($auth_hash){
-        if (!ctype_alnum($auth_hash)) return null;
+    public static function test_auth_hash(string $auth_hash) {
+        $row = Database::findOne(
+            "SELECT usersnew.profile_number
+             FROM usersnew
+             WHERE usersnew.auth_hash = ?",
+            "s",
+            [
+                $auth_hash,
+            ]
+        );
 
-        $data = Database::query("SELECT usersnew.profile_number FROM usersnew
-                                WHERE usersnew.auth_hash = '{$auth_hash}'");
-
-        $userId = null;
-        while ($row = $data->fetch_assoc()) {
-            $userId = $row["profile_number"];
-        }
-        return $userId;
+        return $row ? strval($row["profile_number"]) : null;
     }
 
-    public static function get_auth_hash($userId) {
-        if (!ctype_alnum($userId)) return null;
-        $data = Database::query("SELECT usersnew.auth_hash FROM usersnew WHERE profile_number = {$userId}");
-        $auth_hash = null;
-        while ($row = $data->fetch_assoc()) {
-            $auth_hash = $row["auth_hash"];
-        }
-        return $auth_hash;
+    public static function get_auth_hash(string $profile_number) {
+        $row = Database::findOne(
+            "SELECT usersnew.auth_hash
+             FROM usersnew
+             WHERE profile_number = ?",
+            "s",
+            [
+                $profile_number,
+            ]
+        );
+
+        return $row ? strval($row["auth_hash"]) : null;
     }
 
-    public static function del_auth_hash($userId){
-        if (!ctype_alnum($userId)) return null;
-        Database::query("UPDATE usersnew 
-                                SET usersnew.auth_hash = NULL
-                                WHERE usersnew.profile_number = ".$userId);
+    public static function del_auth_hash(string $profile_number) {
+        Database::query(
+            "UPDATE usersnew 
+             SET usersnew.auth_hash = NULL
+             WHERE usersnew.profile_number = ?",
+            "s",
+            [
+                $profile_number,
+            ]
+        );
     }
 }
