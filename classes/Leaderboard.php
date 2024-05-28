@@ -449,7 +449,7 @@ class Leaderboard
                   , ?
                   , ?
                   , ?
-                  , ?",
+                  , ?)",
                 "sisiii",
                 [
                     $change["profileNumber"],
