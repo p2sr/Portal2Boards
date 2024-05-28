@@ -150,7 +150,7 @@ Deno.test("Current PB", async () => {
   const pb = await res.json();
   assert(typeof pb === "object");
 
-  assertEquals(pb.time_gained, "2014-03-22 10:36:59");
+  assertEquals(pb.time_gained, "2014-03-22T10:36:59Z");
   assertEquals(pb.profile_number, "76561198049848090");
   assertEquals(pb.score, 3006);
   assertEquals(pb.map_id, "62758");
