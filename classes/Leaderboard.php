@@ -1586,7 +1586,7 @@ class Leaderboard
 
         $data = Database::unsafe_raw(
             "SELECT id
-                  , rank
+                  , evidence_requirements.rank
                   , demo
                   , video
                   , active
