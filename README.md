@@ -60,23 +60,26 @@ This is used by the server.
 
 Command shortcuts with [just]. Example: `just cache`
 
-| Command        | Description                                                               |
-| -------------- | ------------------------------------------------------------------------- |
-| up             | Start all containers. Accepts arguments like `-d` to start in background. |
-| down           | Stop all containers.                                                      |
-| build          | Build the server image.                                                   |
-| reload         | Start and recreate containers.                                            |
-| cache          | Refresh leaderboard cache.                                                |
-| update         | Update scores by fetching new scores from Steam.                          |
-| server-debug   | Open shell in server container.                                           |
-| server-restart | Restart server container.                                                 |
-| server-stop    | Stop server container.                                                    |
-| db             | Connect to database.                                                      |
-| db-debug       | Open shell in database container.                                         |
-| db-restart     | Restart database container.                                               |
-| db-stop        | Stop database container.                                                  |
-| db-dump        | Dump and compress a backup of the database.                               |
-| db-dump-raw    | Only dump a backup of the database.                                       |
+| Command         | Description                                                               |
+| --------------- | ------------------------------------------------------------------------- |
+| up              | Start all containers. Accepts arguments like `-d` to start in background. |
+| down            | Stop all containers.                                                      |
+| build           | Build the server image.                                                   |
+| reload          | Start and recreate containers.                                            |
+| cache           | Refresh leaderboard cache.                                                |
+| update          | Update scores by fetching new scores from Steam.                          |
+| update-profiles | Update profile data from Steam.                                           |
+| debug           | Open shell in server container.                                           |
+| root            | Open shell in server container as root user.                              |
+| server-debug    | Open shell in server container.                                           |
+| server-restart  | Restart server container.                                                 |
+| server-stop     | Stop server container.                                                    |
+| db              | Connect to database.                                                      |
+| db-debug        | Open shell in database container.                                         |
+| db-restart      | Restart database container.                                               |
+| db-stop         | Stop database container.                                                  |
+| db-dump         | Dump and compress a backup of the database.                               |
+| db-dump-raw     | Only dump a backup of the database.                                       |
 
 ### Updates
 
@@ -86,11 +89,23 @@ Make sure to fill out all empty fields in
 [.config.json](#overview-of-configjson).
 
 ```bash
-# NOTE: This might take a while to complete.
-docker exec -u www-data -ti board-server php /var/www/html/api/fetchNewScores.php
-
-# or with just
 just update
+```
+
+Updating profile data can be done with:
+
+```bash
+just update-profiles
+```
+
+### Testing
+
+Regression tests are written in TypeScript and require the
+[Deno runtime](https://deno.com). Make sure to fill out the `AUTH_HASH` and
+`COOKIE` constants.
+
+```bash
+just test
 ```
 
 ## Credits
