@@ -60,6 +60,8 @@ class ProfileView
                 <div class="cell youtube" align="center">
                     <i <?php if ($score["autorender_id"] !== NULL): ?>
                         onclick="window.open('https://autorender.portal2.sr/videos/<?=$score["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                    <?php elseif (SteamSignIn::loggedInUserIsAdmin() && $score["hasDemo"] === 1): ?>
+                        onclick="window.open('https://autorender.portal2.sr/render/portal2/<?=$score["changelogId"]?>','_blank')" class="youtubeEmbedButton fa fa-video-camera" title="Start a render"
                     <?php else: ?>
                         style="display:none"
                     <?php endif; ?>

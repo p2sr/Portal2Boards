@@ -89,6 +89,8 @@ class ChangelogView
             <div class="youtube">
                     <i <?php if ($val["autorender_id"] !== NULL): ?>
                             onclick="window.open('https://autorender.portal2.sr/videos/<?=$val["autorender_id"]?>','_blank')" class="youtubeEmbedButton fa fa-play" title="Auto Render"
+                        <?php elseif (SteamSignIn::loggedInUserIsAdmin() && $val["hasDemo"] === 1): ?>
+                            onclick="window.open('https://autorender.portal2.sr/render/portal2/<?=$val["id"]?>','_blank')" class="youtubeEmbedButton fa fa-video-camera" title="Start a render"
                         <?php else: ?>
                             style="display:none"
                         <?php endif; ?>

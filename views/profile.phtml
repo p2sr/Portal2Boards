@@ -1233,9 +1233,12 @@
                 "</div>" +
                 "<div class='youtube'>" +
                     "<i" +
-                    ((entry.autorender_id == null) ? " style='display: none'" : " ") +
-                    " onclick=\"window.open('https://autorender.portal2.sr/videos/"+entry.autorender_id+"', '_blank');\"" +
-                    " class='fa fa-play' aria-hidden='true'></i>" +
+                    (entry.autorender_id !== null
+                    ? " onclick=\"window.open('https://autorender.portal2.sr/videos/"+entry.autorender_id+"', '_blank');\" class='fa fa-play'"
+                        : isAdmin && entry.hasDemo === 1
+                            ? " onclick=\"window.open('https://autorender.portal2.sr/render/portal2/"+entry.id+"', '_blank');\" class='fa fa-video-camera'"
+                            : " style='display: none'") +
+                    " aria-hidden='true'></i>" +
                 "</div>" +
                "<div class='rankDiff'>" +
                    $preRank.prop('outerHTML') +
