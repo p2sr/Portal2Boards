@@ -246,7 +246,6 @@ class Leaderboard
                 'Keep-Alive: 10',
                 "Cache-Control: no-cache"
             ));
-            curl_setopt($handle, CURLOPT_SSL_VERIFYPEER, FALSE);
             curl_setopt($handle, CURLOPT_TIMEOUT, 10);
             curl_setopt($handle, CURLOPT_DNS_CACHE_TIMEOUT, 10);
 

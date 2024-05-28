@@ -25,7 +25,6 @@ class Discord {
             }
             //Debug::log(json_encode($payload));
             $ch = curl_init(Config::get()->discord_webhook_mdp);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // DEV TESTING
             curl_setopt($ch, CURLOPT_USERAGENT, 'board.portal2.sr (https://github.com/p2sr/Portal2Boards)');
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
@@ -59,7 +58,6 @@ class Discord {
         ];
         Debug::log(json_encode($payload));
         $ch = curl_init(Config::get()->discord_webhook_wr);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // DEV TESTING
         curl_setopt($ch, CURLOPT_USERAGENT, 'board.portal2.sr (https://github.com/p2sr/Portal2Boards)');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
