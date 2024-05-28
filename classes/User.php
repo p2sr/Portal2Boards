@@ -544,11 +544,11 @@ class User {
                             $times["oldestScore"]["map"] = $map;
                             $times["newestScore"]["map"] = $map;
                         } else {
-                            if (strtotime(date($scoreData["date"])) < strtotime(date($times["oldestScore"]["scoreData"]["date"]))) {
+                            if (strtotime($scoreData["date"]) < strtotime($times["oldestScore"]["scoreData"]["date"])) {
                                 $times["oldestScore"]["scoreData"] = $scoreData;
                                 $times["oldestScore"]["map"] = $map;
                             }
-                            if (strtotime(date($scoreData["date"])) > strtotime(date($times["newestScore"]["scoreData"]["date"]))) {
+                            if (strtotime($scoreData["date"]) > strtotime($times["newestScore"]["scoreData"]["date"])) {
                                 $times["newestScore"]["scoreData"] = $scoreData;
                                 $times["newestScore"]["map"] = $map;
                             }
@@ -570,7 +570,7 @@ class User {
     }
 
     public static function getTimeFromScore($score) {
-        return strtotime(date($score["scoreData"]["date"]));
+        return strtotime($score["scoreData"]["date"]);
     }
 
     public static function getPlayerRankFromScore($score) {
