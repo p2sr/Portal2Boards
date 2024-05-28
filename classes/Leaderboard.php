@@ -426,10 +426,10 @@ class Leaderboard
 
             $previousId = isset($oldBoards[$chapter][$change["mapId"]][$change["profileNumber"]])
                 ? $oldBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["changelogId"]
-                : "NULL";
+                : null;
             $preRank = isset($oldBoards[$chapter][$change["mapId"]][$change["profileNumber"]])
                 ? $oldBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["playerRank"]
-                : "NULL";
+                : null;
 
             Debug::log("Inserting change. Player: ".$change["profileNumber"]." Map: ".$change["mapId"]." Score: ".$change["score"]);
 
@@ -505,10 +505,10 @@ class Leaderboard
             $chapter = $maps["maps"][$change["mapId"]]["chapterId"];
             $postRank = isset($newBoards[$chapter][$change["mapId"]][$change["profileNumber"]])
                 ? $newBoards[$chapter][$change["mapId"]][$change["profileNumber"]]["scoreData"]["playerRank"]
-                : "NULL";
+                : null;
 
             $pending = 0;
-            if ($postRank != "NULL" && $postRank <= $highestEvidenceRank) {
+            if ($postRank != null && $postRank <= $highestEvidenceRank) {
                 $pending = 1;
             }
 
@@ -1444,10 +1444,10 @@ class Leaderboard
         $comment = Database::getMysqli()->real_escape_string($comment);
         $preRank = isset($oldChamberBoard[$profileNumber])
             ? $oldChamberBoard[$profileNumber]["scoreData"]["playerRank"]
-            : "NULL";
+            : null;
         $previousId = isset($oldChamberBoard[$profileNumber])
             ? $oldChamberBoard[$profileNumber]["scoreData"]["changelogId"]
-            : "NULL";
+            : null;
 
         Debug::log("Submitting change to Change LOG");
 
@@ -1497,7 +1497,7 @@ class Leaderboard
 
         $postRank = isset($newChamberBoard[$profileNumber])
             ? $newChamberBoard[$profileNumber]["scoreData"]["playerRank"]
-            : "NULL";
+            : null;
 
         Debug::log("Updating post rank");
 
