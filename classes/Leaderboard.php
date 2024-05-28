@@ -1757,7 +1757,7 @@ class Leaderboard
     }
 
     public static function getLatestPb(string $profile_number, string $map_id) {
-        return Database::findOne(
+        $pb = Database::findOne(
             "SELECT *
                   , DATE_FORMAT(CONVERT_TZ(time_gained, @@session.time_zone, '+00:00'), '%Y-%m-%dT%TZ') as time_gained
              FROM changelog
@@ -1773,6 +1773,13 @@ class Leaderboard
                 $map_id,
             ]
         );
+
+        // TODO: Make sure clients understand the new format so we can remove this in the future.
+        if ($pb) {
+            $pb["score"] = strval($pb["score"]);
+        }
+
+        return $pb;
     }
 
     private static function isBest(string $profile_number, string $map_id, int $changelogId) {
