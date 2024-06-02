@@ -238,13 +238,13 @@ a:hover, a:focus {
     margin: 0px;
 }
 #sp_icon {
-    background: url("/images/sp_noborder_gradient.jpg");
+    background: url("/images/sp_noborder_gradient.png");
 }
 #coop_icon {
-    background: url("/images/coop_noborder_gradient.jpg");
+    background: url("/images/coop_noborder_gradient.png");
 }
 #cube_icon {
-    background: url("/images/cube_noborder_gradient.jpg");
+    background: url("/images/cube_noborder_gradient.png");
     background-size: 29px 29px;
 }
 #lp_icon {
@@ -255,7 +255,7 @@ a:hover, a:focus {
     background-size: 29px 29px;
 }
 #time_icon {
-    background: url("/images/time_noborder_gradient.jpg");
+    background: url("/images/time_noborder_gradient.png");
 }
 #loginsteam {
     display: block;
