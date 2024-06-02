@@ -40,13 +40,13 @@ services:
     container_name: "${PROJECT_NAME}-db"
     restart: unless-stopped
     ports:
-      - "127.0.0.1:${DATABASE_PORT}:${DATABASE_PORT}"
+      - "127.0.0.1:${DATABASE_PORT}:3306"
     environment:
       MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
       MARIADB_USER: ${MARIADB_USER}
       MARIADB_PASSWORD: ${MARIADB_PASSWORD}
       MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MYSQL_TCP_PORT: ${DATABASE_PORT}
+      MYSQL_TCP_PORT: 3306
     volumes:
       - ./docker/initdb:/docker-entrypoint-initdb.d
       - ./docker/volumes/mysql:/var/lib/mysql
