@@ -4,6 +4,10 @@
 <?php $userActivity = $user->getChangelog($activityDayRange)?>
 <?php include("util/ProfileView.php")?>
 
+<script>
+    $("body").css("min-width", "1365px");
+</script>
+
 <div id="profile">
     <?php if ($user->userData != NULL): ?>
         <?php $avatar = ($user->userData->avatar != NULL) ? $user->userData->avatar : "https://media.steampowered.com/steamcommunity/public/images/avatars/f9/f91787b7fb6d4a2cb8dee079ab457839b33a8845_full.jpg"; ?>
