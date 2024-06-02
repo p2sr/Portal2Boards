@@ -71,6 +71,9 @@ class Discord {
             'title' => $data['map'],
             'url' => 'https://board.portal2.sr/chamber/'.$data['map_id'],
             'color' => 295077,
+            'thumbnail' => [
+                'url' => 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/thumbnails/'.$data['map_id'].'.jpg',
+            ],
             'fields' => [
                 [
                     'name' => 'WR',
