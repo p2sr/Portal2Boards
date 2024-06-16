@@ -1,0 +1,23 @@
+{
+  "name": "Ubuntu",
+  "image": "mcr.microsoft.com/devcontainers/base:jammy",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers-contrib/features/mkcert:1": {},
+    "ghcr.io/eitsupi/devcontainer-features/just:0": {},
+    "ghcr.io/devcontainers-contrib/features/deno:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.watcherExclude": {
+          "docker/volumes/**": true
+        }
+      },
+      "extensions": [
+        "bmewburn.vscode-intelephense-client"
+      ]
+    }
+  },
+  "postCreateCommand": "./setup dev && just up -d"
+}
