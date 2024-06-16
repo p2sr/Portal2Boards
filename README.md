@@ -10,12 +10,17 @@ Challenge Mode leaderboard for Portal 2 speedrunners.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/p2sr/Portal2Boards)
 
+* Wait for containers to start
+* Update `"is_using_proxy": true` in `.config.json`
+* Go to the ports tab and open the forwarded address of port 443 in the browser
+
 #### With VS Code
 
 * Read the [system requirements](https://code.visualstudio.com/docs/devcontainers/containers)
 * Make sure [the extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) is installed
 * Add the host entry `127.0.0.1 board.portal2.local` to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
 * Open container with VS Code
+* Wait for containers to start
 * Forward port 443 from ports tab in VS Code
 * Access site with the forwarded port: `https://board.portal2.local:`
 
