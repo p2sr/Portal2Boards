@@ -759,39 +759,32 @@
     var animationDelay = 120;
     $(".spChangeOrderingButton").click(function() {
         if ($(this).text() == "Default") {
-            $("#spUnordered").fadeOut(animationDelay, function() {
-                $("#spOrderedByRank").fadeIn(animationDelay);    
-            });
-            
+            $("#spUnordered").fadeOut(animationDelay);
+            $("#spOrderedByRank").fadeIn(animationDelay * 2);
             $(this).text("Rank");
         } else if ($(this).text() == "Rank") {
-            $("#spOrderedByRank").fadeOut(animationDelay, function() {
-                $("#spOrderedByDate").fadeIn(animationDelay);
-            });
+            $("#spOrderedByRank").fadeOut(animationDelay);
+            $("#spOrderedByDate").fadeIn(animationDelay * 2);
             $(this).text("Date");
         } else {
-            $("#spOrderedByDate").fadeOut(animationDelay, function() {
-                $("#spUnordered").fadeIn(animationDelay);
-            });
+            $("#spOrderedByDate").fadeOut(animationDelay);
+            $("#spUnordered").fadeIn(animationDelay * 2);
             $(this).text("Default");
         }
     });
 
     $(".coopChangeOrderingButton").click(function() {
         if ($(this).text() == "Default") {
-            $("#coopUnordered").fadeOut(animationDelay, function() {
-                $("#coopOrderedByRank").fadeIn(animationDelay);
-            });
+            $("#coopUnordered").fadeOut(animationDelay);
+            $("#coopOrderedByRank").fadeIn(animationDelay * 2);
             $(this).text("Rank");
         } else if ($(this).text() == "Rank") {
-            $("#coopOrderedByRank").fadeOut(animationDelay, function() {
-                $("#coopOrderedByDate").fadeIn(animationDelay);
-            });
+            $("#coopOrderedByRank").fadeOut(animationDelay);
+            $("#coopOrderedByDate").fadeIn(animationDelay * 2);
             $(this).text("Date");
         } else {
-            $("#coopOrderedByDate").fadeOut(animationDelay, function() {
-                $("#coopUnordered").fadeIn(animationDelay);
-            });
+            $("#coopOrderedByDate").fadeOut(animationDelay);
+            $("#coopUnordered").fadeIn(animationDelay * 2);
             $(this).text("Default");
         }
     });
