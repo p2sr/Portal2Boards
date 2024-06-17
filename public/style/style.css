@@ -1590,6 +1590,7 @@ html[class="dark"] #profile .usericons .fa-play:hover {
 
 #profile .scoretable {
     font-size: small;
+    text-wrap-mode: nowrap;
     width: 100%;
 }
 #profile .youtubeLink .fa-square {
