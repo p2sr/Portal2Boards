@@ -29,7 +29,7 @@ RUN a2dissite 000-default.conf
 RUN rm /var/www/html/index.html
 
 # setup source files
-COPY . .
+COPY ./app .
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 RUN mkdir -p cache demos sessions /etc/apache2/ssl
 RUN chown -R www-data:www-data .
