@@ -18,19 +18,13 @@ services:
       - default
       - board-net
     volumes:
-      - ./classes:/var/www/html/classes:rw
-      - ./public:/var/www/html/public:rw
-      - ./views:/var/www/html/views:rw
-      - ./util:/var/www/html/util:rw
-      - ./loader.php:/var/www/html/loader.php:rw
-      - .config.json:/var/www/html/.config.json
-      - ./docker/apache/${SERVER_NAME}.conf:/etc/apache2/sites-available/${SERVER_NAME}.conf
+      - ./app:/var/www/html
+      - ./app/.config.json:/var/www/html/.config.json
+      - ./docker/apache/boards.conf:/etc/apache2/sites-available/boards.conf
       - ./docker/logs/error.log:/var/log/apache2/error.log
       - ./docker/logs/access.log:/var/log/apache2/other_vhosts_access.log
       - ./docker/logs/debug.txt:/var/www/html/debug.txt
       - ./docker/php/board.ini:/etc/php/7.4/apache2/conf.d/board.ini
-      - ./docker/ssl/${SERVER_NAME}.key:/etc/apache2/ssl/${SERVER_NAME}.key
-      - ./docker/ssl/${SERVER_NAME}.crt:/etc/apache2/ssl/${SERVER_NAME}.crt
       - ./docker/volumes/cache:/tmp/myCache # lol
       - ./docker/volumes/demos:/var/www/html/demos
       - ./docker/volumes/sessions:/var/www/html/sessions
