@@ -34,6 +34,7 @@ RUN ls -l
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 RUN mkdir -p cache demos sessions /etc/apache2/ssl
 RUN chown -R www-data:www-data .
+RUN ls -l
 
 # enable site
 RUN ln -s /etc/apache2/sites-available/${SERVER_NAME}.conf /etc/apache2/sites-enabled/${SERVER_NAME}.conf
@@ -45,5 +46,7 @@ RUN echo '*/1 * * * * www-data curl -Lk localhost/api/refreshCache.php > /dev/nu
 #RUN echo '0 0 */4 * * www-data php -f /var/www/html/util/fetchImportantProfileData.php > /dev/null 2>&1' >> /etc/cron.d/board
 
 EXPOSE 80 443
+
+RUN ls -l
 
 CMD service cron start && apachectl -D FOREGROUND
