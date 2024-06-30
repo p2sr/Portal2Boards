@@ -18,7 +18,7 @@ services:
       - default
       - board-net
     volumes:
-      - ./app:/var/www/html
+      - ./app:/var/www/html:rw
       - ./app/.config.json:/var/www/html/.config.json
       - ./docker/apache/boards.conf:/etc/apache2/sites-available/boards.conf
       - ./docker/logs/error.log:/var/log/apache2/error.log
