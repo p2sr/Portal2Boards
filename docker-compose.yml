@@ -18,12 +18,8 @@ services:
       - default
       - board-net
     volumes:
-      - ./app:/var/www/html:rw
       - ./app/.config.json:/var/www/html/.config.json
       - ./docker/apache/boards.conf:/etc/apache2/sites-available/boards.conf
-      - ./docker/logs/error.log:/var/log/apache2/error.log
-      - ./docker/logs/access.log:/var/log/apache2/other_vhosts_access.log
-      - ./docker/logs/debug.txt:/var/www/html/debug.txt
       - ./docker/php/board.ini:/etc/php/7.4/apache2/conf.d/board.ini
       - ./docker/volumes/cache:/tmp/myCache # lol
       - ./docker/volumes/demos:/var/www/html/demos
