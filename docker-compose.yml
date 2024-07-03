@@ -3,15 +3,15 @@ services:
     build:
       context: .
       args:
-        SERVER_NAME: ${SERVER_NAME}
+        SERVER_NAME: board
         APT_PACKAGES: ${APT_PACKAGES}
     container_name: "${PROJECT_NAME}-server"
     restart: always
     stdin_open: true
     tty: true
     ports:
-      - "127.0.0.1:${HTTP_PORT}:80"
-      - "127.0.0.1:${HTTPS_PORT}:443"
+      - "${HTTP_PORT}:80"
+      - "${HTTPS_PORT}:443"
     links:
       - database:database
     networks:
@@ -19,7 +19,7 @@ services:
       - board-net
     volumes:
       - .config.json:/var/www/html/.config.json
-      - ./docker/apache/${SERVER_NAME}.conf:/etc/apache2/sites-available/${SERVER_NAME}.conf
+      - ./docker/apache/board.conf:/etc/apache2/sites-available/board.conf
       - ./docker/logs/error.log:/var/log/apache2/error.log
       - ./docker/logs/access.log:/var/log/apache2/other_vhosts_access.log
       - ./docker/logs/debug.txt:/var/www/html/debug.txt
