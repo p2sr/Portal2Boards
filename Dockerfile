@@ -3,7 +3,7 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y cron curl unzip
-RUN docker-php-ext-install mysql mbstring xml curl
+RUN docker-php-ext-install mysqli mbstring xml curl
 
 WORKDIR /var/www/html
 
