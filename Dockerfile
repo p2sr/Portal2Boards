@@ -2,7 +2,8 @@ FROM php:7.4-apache
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y cron curl unzip php-mysql php-mbstring php-curl php-xml
+RUN apt-get install -y cron curl unzip
+RUN docker-php-ext-install mysql mbstring xml curl
 
 WORKDIR /var/www/html
 
