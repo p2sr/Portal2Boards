@@ -22,9 +22,9 @@ services:
       - ./docker/logs/access.log:/var/log/apache2/other_vhosts_access.log
       - ./docker/logs/debug.txt:/var/www/html/debug.txt
       - ./docker/php/board.ini:/etc/php/7.4/apache2/conf.d/board.ini
-      - ./docker/volumes/cache:/var/www/html/cache
-      - ./docker/volumes/demos:/var/www/html/demos
-      - ./docker/volumes/sessions:/var/www/html/sessions
+      - ./docker/volumes/cache:/var/www/html/cache:rw
+      - ./docker/volumes/demos:/var/www/html/demos:rw
+      - ./docker/volumes/sessions:/var/www/html/sessions:rw
   database:
     image: mariadb:11.4.2
     container_name: "${PROJECT_NAME}-db"
