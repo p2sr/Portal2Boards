@@ -2,7 +2,7 @@ FROM php:7.4-apache
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y cron curl unzip
+RUN apt-get install -y cron curl unzip php7.4-mysql php7.4-mbstring php7.4-curl php7.4-xml
 
 WORKDIR /var/www/html
 
