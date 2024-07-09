@@ -24,6 +24,6 @@ RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 # enable cron jobs
 RUN echo '*/1 * * * * www-data curl -Lk localhost/api/refreshCache.php > /dev/null 2>&1' > /etc/cron.d/board
 
-EXPOSE 80
+EXPOSE 5000
 
 CMD service cron start && apachectl -D FOREGROUND
