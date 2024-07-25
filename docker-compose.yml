@@ -8,8 +8,6 @@ services:
     restart: always
     stdin_open: true
     tty: true
-    links:
-      - database:database
     networks:
       - default
       - board-net
@@ -23,22 +21,6 @@ services:
       - ./docker/volumes/cache:/var/www/html/cache:rw
       - ./docker/volumes/demos:/var/www/html/demos:rw
       - ./docker/volumes/sessions:/var/www/html/sessions:rw
-  database:
-    image: mariadb:11.4.2
-    container_name: "${PROJECT_NAME}-db"
-    restart: unless-stopped
-    ports:
-      - "127.0.0.1:${DATABASE_PORT}:3306"
-    environment:
-      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD}
-      MARIADB_USER: ${MARIADB_USER}
-      MARIADB_PASSWORD: ${MARIADB_PASSWORD}
-      MARIADB_DATABASE: ${MARIADB_DATABASE}
-      MYSQL_TCP_PORT: 3306
-    volumes:
-      - ./docker/initdb:/docker-entrypoint-initdb.d
-      - ./docker/volumes/mysql:/var/lib/mysql
-      - ./docker/volumes/backups:/backups
 networks:
     board-net:
       name: board-net
