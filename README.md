@@ -135,8 +135,3 @@ just test
 
 [ncla]: https://github.com/ncla/Portal-2-Leaderboard
 [iVerb]: https://github.com/iVerb1/Portal2Boards
-
-## License
-
-Software licensed under CC Attribution - Non-commercial license.
-https://creativecommons.org/licenses/by-nc/4.0/legalcode
