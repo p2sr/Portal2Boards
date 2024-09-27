@@ -1359,6 +1359,10 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
 #profile .changeForm .fileName {
     max-width: 183px;
 }
+#profile .submissionForm {
+    display: inline-block;
+    width: 100%;
+}
 #profile .submissionForm .fileName {
     max-width: 229px;
 }
