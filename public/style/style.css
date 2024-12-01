@@ -154,6 +154,7 @@ a:hover, a:focus {
     text-transform: none;
 }
 #navigation .nav_button, #navigation .nav_dropdown {
+    user-select: none;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -165,7 +166,6 @@ a:hover, a:focus {
     width: 29px;
     height: 29px;
     float: left;
-    display: inline-block;
     font-family: Aperture;
     text-align: center;
     font-size: 17px;
@@ -185,25 +185,24 @@ a:hover, a:focus {
     display: inline-block;
 }
 #navigation .nav_dropdown {
-    position:relative;
+    position: relative;
     vertical-align: top;
     cursor: pointer;
-    position:relative;
 }
 #navigation .nav_dropdown li:hover {
     background: #ddd;
 }
 #navigation .nav_dropdown > ul {
     /*padding-top: 3px;*/
-    position:absolute;
-    top:29px;
-    left:0px;
+    position: absolute;
+    top: 29px;
+    left: 0px;
 }
 #navigation a {
     color: #3d3d3d;
 }
 #navigation .nav_dropdown li  {
-    position:relative;
+    position: relative;
     list-style-type: none;
     /*margin-bottom: 3px;*/
 }
@@ -217,7 +216,7 @@ a:hover, a:focus {
     font-size: 15px;
 }
 #navigation .nav_dropdown > ul ul {
-    position:absolute;
+    position: absolute;
     left: 140px;
     top: 0px;
 }
@@ -267,8 +266,8 @@ a:hover, a:focus {
 }
 #userinfo {
     height: 49px;
-    display:table-cell;
-    vertical-align:middle;
+    display: table-cell;
+    vertical-align: middle;
     /* shit will not work in IE */
 }
 #seper {
@@ -460,11 +459,11 @@ a:hover, a:focus {
     /*width: 170px;*/
 }
 #chambers .chamber_scores .firstplace .entry .youtube {
-    display:inline-block;
+    display: inline-block;
     padding-top: 11px;
 }
 #chambers .chamber_scores .othernoobscores .entry .youtube {
-    display:inline-block;
+    display: inline-block;
     padding-top: 0px;
 }
 #chambers .chamber_scores .entry .youtube {
@@ -491,7 +490,6 @@ a:hover, a:focus {
     border-radius: 2px;
     margin-left: -2px;
     width: 3px;
-    display: inline-block;
     float: left;
     margin-right: -3px;
     height: 100%;
@@ -613,7 +611,7 @@ a:hover, a:focus {
     text-decoration: underline;
 }
 .footerleft {
-    float:left;
+    float: left;
     /*margin-top: 16px;*/
     line-height: 56px;
 }
@@ -665,14 +663,14 @@ a:hover, a:focus {
     display: block;
     width: 21px;
     height: 21px;
-    background:url("/images/unticked.png");
+    background: url("/images/unticked.png");
     cursor: pointer;
     text-align: center;
     /*margin: 7px auto;*/
     margin: 10px auto auto;
 }
 #changelog .ticked {
-    background:url("/images/ticked.png");
+    background: url("/images/ticked.png");
 }
 #changelog .check {
     margin: 0px 0px 0px 20px;
@@ -728,7 +726,7 @@ a:hover, a:focus {
     border-bottom: 1px solid #a9a9a9;
 }
 #changelog {
-    /*min-width:1450px;*/
+    /*min-width: 1450px;*/
 }
 #changelog #otherentries .entry.hidden, #changelog #otherentries .entry.hidden a, #changelog .datatable #otherentries .entry.hidden {
     color: #a5a5a5;
@@ -778,9 +776,8 @@ a:hover, a:focus {
     margin-right: 30px;
 }
 #changelog #entries .rank {
-    display: inline-block;
     width: 50%;
-    float:left;
+    float: left;
     /*font-weight: 500;*/
 }
 #changelog #entries .rank i {
@@ -788,12 +785,10 @@ a:hover, a:focus {
     font-size: 14px;
 }
 #changelog .rankImprovement {
-    display: inline-block;
     width: 50%;
-    float:left;
+    float: left;
 }
 #changelog .time {
-    display: inline-block;
     float: right;
     width: 50%;
 }
@@ -1024,7 +1019,7 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
 #profile .global-stats .block-container {
     width: 14%;
     float: left;
-    padding-left:10px;
+    padding-left: 10px;
     padding-top: 5px;
 }
 #profile .global-stats .block-container.wr {
@@ -1034,7 +1029,7 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
     width: 19%;
 }
 #profile .global-stats .block-container.oldnew .number {
-    font-size:25px;
+    font-size: 25px;
     vertical-align: top;
 }
 #profile .global-stats .block-container.average {
@@ -1066,13 +1061,12 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
 #profile .global-stats .block .number {
     font-size: 26px;
     text-align: right;
-    display: inline-block;
     position: relative;
     top: -6px;
     float: left;
     max-width: 73px;
     /*vertical-align: top;*/
-    /*line-height:34px;*/
+    /*line-height: 34px;*/
 }
 #profile .global-stats .block-inner[title] {
     cursor: help;
@@ -1196,6 +1190,7 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
     width: 15px;
     text-align: center;
     cursor: pointer;
+    user-select: none;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -1203,7 +1198,7 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
     /*vertical-align: text-bottom;*/
 }
 #profile .scoreMenuToggle i {
-    display:none;
+    display: none;
 }
 #profile .scoreMenu {
     z-index: 999;
@@ -1250,7 +1245,7 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
     /*padding-bottom: 13px;*/
 }
 #profile .sp .changeEntry > *:not(.changeMenu), #profile .coop .changeEntry > *:not(.changeMenu) {
-    display:inline-block;
+    display: inline-block;
     padding-bottom: 10px;
 }
 #profile .sp .changeEntry.header, #profile .coop .changeEntry.header {
@@ -1359,11 +1354,15 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
 #profile .changeForm .fileName {
     max-width: 183px;
 }
+#profile .submissionForm {
+    display: inline-block;
+    width: 100%;
+}
 #profile .submissionForm .fileName {
     max-width: 229px;
 }
 #profile .submissionForm input[type=text] {
-    float:right;
+    float: right;
     text-align: right;
 }
 #profile form {
@@ -1380,6 +1379,7 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
 #profile .button, #editProfile .button {
     display: inline-block;
     cursor: pointer;
+    user-select: none;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -1590,6 +1590,7 @@ html[class="dark"] #profile .usericons .fa-play:hover {
 
 #profile .scoretable {
     font-size: small;
+    text-wrap-mode: nowrap;
     width: 100%;
 }
 #profile .youtubeLink .fa-square {
@@ -1721,7 +1722,7 @@ html[class="dark"] #profile .usericons .fa-play:hover {
 #chamber .entry .date {
     width: 130px;
     height: 100%;
-    float:right;
+    float: right;
     text-align: right;
 }
 #chamber .entry .date a, #chamber .entry .boardname a{
@@ -1818,8 +1819,8 @@ html[class="dark"] #profile .usericons .fa-play:hover {
 }
 #aggregated #points, #aggregated #time {
     width: 49.5%;
-    margin-left:0%;
-    margin-right:0%;
+    margin-left: 0%;
+    margin-right: 0%;
 }
 #changelog .controls {
     position: absolute;
@@ -1838,7 +1839,8 @@ html[class="dark"] #profile .usericons .fa-play:hover {
     box-sizing: content-box;
 }
 .controls .button {
-    cursor:pointer;
+    cursor: pointer;
+    user-select: none;
     -moz-user-select: -moz-none;
     -khtml-user-select: none;
     -webkit-user-select: none;
@@ -1929,7 +1931,6 @@ html[class="dark"] #profile .usericons .fa-play:hover {
     background: url("/images/cross.png");
     width: 16px;
     height: 16px;
-    display: inline-block;
     margin-right: 2px;
     float: right;
     margin-top: 2px;
@@ -2095,13 +2096,13 @@ html[class="dark"] #navigation>a:hover .btnLabel,html[class="dark"]#navigation>d
 }
 
 html[class="dark"] .nav_button>.nav_icon,html[class="dark"] .nav_dropdown>.nav_icon,html[class="dark"] #edition{
-    filter:brightness(110%) invert(88%)  hue-rotate(180deg);
-    -webkit-filter:brightness(110%) invert(88%)  hue-rotate(180deg);
+    filter: brightness(110%) invert(88%)  hue-rotate(180deg);
+    -webkit-filter: brightness(110%) invert(88%)  hue-rotate(180deg);
 }
 
 html[class="dark"] .nav_dropdown>ul {
     background-color: #282b30 !important;
-    /*border-radius:5px;*/
+    /*border-radius: 5px;*/
     box-shadow: 0px 1px 2px #0008;
     -webkit-box-shadow: 0px 1px 2px #0008;
 }
@@ -2111,8 +2112,8 @@ html[class="dark"] .nav_dropdown>ul .btnLabel{
 }
 
 html[class="dark"] .nav_dropdown>ul .nav_icon{
-    filter:brightness(110%) invert(85%) hue-rotate(180deg);
-    -webkit-filter:brightness(110%) invert(85%) hue-rotate(180deg);
+    filter: brightness(110%) invert(85%) hue-rotate(180deg);
+    -webkit-filter: brightness(110%) invert(85%) hue-rotate(180deg);
 }
 
 html[class="dark"] .nav_dropdown li:hover{
@@ -2193,7 +2194,7 @@ html[class="dark"] #entries .entry{
 html[class="dark"] #entries #firstentry,html[class="dark"] #entries .entry[style="background: #d6d6d6"]{
     background-color: #36393e !important;
     border-bottom: 1px solid #3e4146;
-    border-top:none;
+    border-top: none;
     color:#b9babc;
 }
 
@@ -2303,11 +2304,11 @@ html[class="dark"] .button.deleteComment:hover {
 }
 
 html[class="dark"] #profile{
-    background:none;
+    background: none;
 }
 
 html[class="dark"] #profile .noactivity{
-    background:none;
+    background: none;
     color:#c0c1c2;
 }
 
@@ -2327,7 +2328,7 @@ html[class="dark"] #about .container,html[class="dark"] #about td{
 
 html[class="dark"] #about a{
     color:#fff;
-    font-weight:bold;
+    font-weight: bold;
 }
 
 html[class="dark"] code {

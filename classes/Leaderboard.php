@@ -701,6 +701,121 @@ class Leaderboard
         return $board;
     }
 
+    public static function getLeaderboard(string $mapId)
+    {
+        // NOTE: Copy from function "getBoard" above (formatted but not optimized)
+        $query = Database::query(
+            "SELECT ranks.profile_number
+                  , u.avatar
+                  , IFNULL(u.boardname, u.steamname) as boardname
+                  , chapters.id as chapterid
+                  , maps.steam_id as mapid
+                  , ranks.profile_number
+                  , ranks.changelog_id
+                  , ranks.score
+                  , ranks.player_rank
+                  , ranks.score_rank
+                  , DATE_FORMAT(ranks.time_gained, '%Y-%m-%dT%TZ') as date
+                  , has_demo
+                  , youtube_id
+                  , ranks.note
+                  , ranks.submission
+                  , ranks.pending
+                  , ranks.autorender_id
+               FROM usersnew as u
+               JOIN (
+                   SELECT sc.changelog_id
+                        , sc.profile_number
+                        , sc.score
+                        , sc.map_id
+                        , sc.time_gained
+                        , sc.has_demo
+                        , sc.youtube_id
+                        , sc.submission
+                        , sc.note
+                        , sc.pending
+                        , sc.autorender_id
+                        , RANK() OVER (
+                            PARTITION BY sc.map_id
+                                ORDER BY sc.score
+                        ) as player_rank
+                        , DENSE_RANK() OVER (
+                            PARTITION BY sc.map_id
+                                ORDER BY sc.score
+                        ) as score_rank
+                   FROM (
+                       SELECT changelog.submission
+                            , scores.changelog_id
+                            , scores.profile_number
+                            , scores.map_id
+                            , changelog.score
+                            , changelog.time_gained
+                            , changelog.youtube_id
+                            , changelog.has_demo
+                            , changelog.note
+                            , changelog.pending
+                            , changelog.autorender_id
+                         FROM scores
+                   INNER JOIN changelog
+                           ON (scores.changelog_id = changelog.id)
+                        WHERE scores.profile_number IN (
+                            SELECT profile_number
+                            FROM usersnew
+                            WHERE banned = 0
+                        )
+                         AND scores.map_id = ?
+                         AND changelog.banned = '0'
+                         AND changelog.pending = '0'
+                   ) as sc
+                    ORDER BY sc.map_id
+                           , sc.score
+                           , sc.time_gained
+                           , sc.profile_number ASC
+               ) as ranks
+                   ON u.profile_number = ranks.profile_number
+               JOIN maps
+                   ON ranks.map_id = maps.steam_id
+               JOIN chapters
+                   ON maps.chapter_id = chapters.id
+                       AND player_rank <= ?
+               ORDER BY map_id
+                      , score
+                      , time_gained
+                      , profile_number ASC",
+                "si",
+                [
+                    $mapId,
+                    self::numTrackedPlayerRanks,
+                ]
+            );
+
+        $board = [];
+        $idx = 0;
+
+        while ($row = $query->fetch_assoc()) {
+            $board[$idx]["scoreData"]["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
+            $board[$idx]["scoreData"]["submission"] = $row["submission"];
+            $board[$idx]["scoreData"]["changelogId"] = $row["changelog_id"];
+            $board[$idx]["scoreData"]["playerRank"] = $row["player_rank"];
+            $board[$idx]["scoreData"]["scoreRank"] = $row["score_rank"];
+            // TODO: Remove string cast in the future.
+            $board[$idx]["scoreData"]["score"] = strval($row["score"]);
+            $board[$idx]["scoreData"]["date"] = $row["date"];
+            $board[$idx]["scoreData"]["hasDemo"] = $row["has_demo"];
+            $board[$idx]["scoreData"]["youtubeId"] = $row["youtube_id"];
+            $board[$idx]["scoreData"]["pending"] = $row["pending"];
+            $board[$idx]["scoreData"]["autorenderId"] = $row["autorender_id"];
+            $board[$idx]["scoreData"]["mapId"] = $row["mapid"];
+            $board[$idx]["scoreData"]["chapterId"] = $row["chapterid"];
+            $board[$idx]["userData"]["boardname"] = htmlspecialchars($row["boardname"]);
+            $board[$idx]["userData"]["avatar"] = $row["avatar"];
+            $board[$idx]["userData"]["profileNumber"] = $row["profile_number"];
+            ++$idx;
+        }
+
+        return $board;
+    }
+
     public static function cacheChamberBoards($board) {
         foreach ($board as $chapter => $chapterData) {
             foreach ($chapterData as $map => $mapData) {
@@ -1780,6 +1895,40 @@ class Leaderboard
         }
 
         return $pb;
+    }
+
+    public static function getTopScores(string $profile_number, string $mapId, int $before, int $after) {
+        $leaderboard = self::getLeaderboard($mapId);
+        if (!$leaderboard) {
+            return [];
+        }
+
+        $profileIds = array_map(
+            function ($entry) {
+                return $entry["userData"]["profileNumber"];
+            },
+            $leaderboard
+        );
+
+        $offset = 0;
+        $length = $before + $after + 1;
+
+        $pbIndex = array_search($profile_number, $profileIds);
+        if ($pbIndex === false) {
+            return array_slice($leaderboard, $offset, $length);
+        }
+
+        $beforeIndex = $pbIndex - $before;
+        $afterIndex = $pbIndex + $after;
+
+        $lastIndex = count($leaderboard) - 1;
+        $offset = max(0, $beforeIndex);
+
+        if ($afterIndex > $lastIndex) {
+            $offset = max(0, $offset - ($afterIndex - $lastIndex));
+        }
+
+        return array_slice($leaderboard, $offset, $length);
     }
 
     private static function isBest(string $profile_number, string $map_id, int $changelogId) {
