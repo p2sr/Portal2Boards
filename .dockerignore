@@ -3,7 +3,6 @@
 data/
 docker/
 migrations/
-util/
 
 .config.example.json
 .dockerignore
