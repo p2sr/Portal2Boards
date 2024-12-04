@@ -16,6 +16,7 @@ COPY . .
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 RUN mkdir -p cache demos sessions
 RUN chown -R www-data:www-data .
+RUN chmod +x /var/www/html/util/mdp/mdp
 
 # enable site
 RUN ln -s /etc/apache2/sites-available/boards.conf /etc/apache2/sites-enabled/boards.conf
