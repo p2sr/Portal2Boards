@@ -7,6 +7,7 @@ Deno.test("Changelog", async () => {
   const res = await fetch(`${API}/changelog/json`);
 
   assertEquals(res.status, 200);
+  assertEquals(res.headers.get('Access-Control-Allow-Origin'), '*');
 
   const json = await res.json();
   assert(typeof json === "object");
