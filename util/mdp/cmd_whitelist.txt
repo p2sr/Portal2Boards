@@ -4,16 +4,61 @@ sar_speedrun_smartsplit 1
 sar_autorecord 1
 sar_record_at_demo_name "drink_water"
 sar_record_prefix "demo/fullgame/%Y-%m-%d/"
++remote_view
 sar_fast_load_preset full
 ui_loadingscreen_transition_time 0.0
+cl_showpos
 ui_loadingscreen_fadein_time 0.0
+fps_max 60
+mat_motion_blur_enabled
+bind mwheeldown +attack
+echo "SAR
+bind
+sv_pausable
+cl_forwardspeed 175 65
+cl_forwardspeed 175
++ghost_list
+-ghost_list
+echo "SAR 1.13.5
+sar_chat
+ghost_leaderboard_y
+ghost_chat
+say
+joy_remap_player_for_controller1
++strafe
+-strafe
+mat_software_aa_quality
++voicerecord
+sar_font_list
+-voicerecord
+volume
+bind s "+back;cl_forwardspeed 35"
+bind mwheelup +attack
+r_portal_use_pvs_optimization 0 33
+bind s "+back"
+toggle cl_forwardspeed
+snd_setmixer potatosVO
+snd_setmixer gladosVO
+snd_setmixer announcerVO
+snd_setmixer wheatleyVO
+snd_setmixer caveVO
+snd_setmixer coreVO
+snd_disable_mixer_duck
 svar_set course_name
+leaderboard_open 1
 developer
 ui_loadingscreen_mintransition_time 0.0
+sar_speedrun_result
 sar_disable_progress_bar_update 2
 fs_fios_prefetch_file_in_pack models/container_ride
 bind mwheelup +jump
+m_yaw
+m_pitch
+sensitivity
+sar_dpi_scale
+NetMessage (b): srtimer
 sar_hud_x
+sar_disable_weapon_sway
 sar_hud_y
 sar_hud_font_index
 sar_speedrun_autostop 2
@@ -154,6 +199,7 @@ autosave
 soundfade
 map_wants_save_disable 1
 cond
+say !SAR:
 
 ui_transition_effect
 save_screenshot
