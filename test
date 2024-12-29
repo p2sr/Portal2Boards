@@ -2,7 +2,8 @@
 
 deno test \
     --allow-env \
+    --env-file=./tests/.env \
     --allow-read=./tests/data \
     --allow-net=board.portal2.local \
     --unsafely-ignore-certificate-errors=board.portal2.local \
-    tests/
+    tests/$1

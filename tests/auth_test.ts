@@ -1,8 +1,8 @@
 import { assert, assertEquals } from "jsr:@std/assert";
 
 const API = "https://board.portal2.local";
-const PROFILE = "76561198049848090";
-const COOKIE = "PHPSESSID=rfaktvssd448o1t93nvnhh187t";
+const PROFILE = Deno.env.get('STEAM_ID')!;
+const COOKIE = `PHPSESSID=${Deno.env.get('PHPSESSID')}`;
 
 Deno.test("Manual submission", async (t) => {
   let id = "";
@@ -32,12 +32,9 @@ Deno.test("Manual submission", async (t) => {
     const run = await res.json();
     assert(typeof run === "object");
 
-    assertEquals(run.player_name, "NeKz");
-    assertEquals(
-      run.avatar,
-      "https://avatars.steamstatic.com/9a86e6554aee395b3ac37d96a808335363eb79ff_full.jpg",
-    );
-    assertEquals(run.profile_number, "76561198049848090");
+    assert(run.player_name);
+    assert(run.avatar);
+    assertEquals(run.profile_number, PROFILE);
     assertEquals(run.score, 2300);
     assert(run.id);
     assert(run.pre_rank);

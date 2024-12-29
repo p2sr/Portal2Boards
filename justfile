@@ -66,8 +66,8 @@ server-stop:
     docker container stop {{project}}-server
 
 # Run server tests.
-test:
-    ./test
+test *args='':
+    ./test $@
 
 # Connect to database.
 db:

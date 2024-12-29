@@ -10,19 +10,23 @@ Challenge Mode leaderboard for Portal 2 speedrunners.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/p2sr/Portal2Boards)
 
-* Wait for containers to start
-* Update `"is_using_proxy": true` in `.config.json`
-* Go to the ports tab and open the forwarded address of port 443 in the browser
+- Wait for containers to start
+- Update `"is_using_proxy": true` in `.config.json`
+- Go to the ports tab and open the forwarded address of port 443 in the browser
 
 #### With VS Code
 
-* Read the [system requirements](https://code.visualstudio.com/docs/devcontainers/containers)
-* Make sure [the extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) is installed
-* Add the host entry `127.0.0.1 board.portal2.local` to `/etc/hosts` or `C:\Windows\System32\drivers\etc\hosts`
-* Open container with VS Code
-* Wait for containers to start
-* Forward port 443 from ports tab in VS Code
-* Access site with the forwarded port: `https://board.portal2.local:`
+- Read the
+  [system requirements](https://code.visualstudio.com/docs/devcontainers/containers)
+- Make sure
+  [the extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+  is installed
+- Add the host entry `127.0.0.1 board.portal2.local` to `/etc/hosts` or
+  `C:\Windows\System32\drivers\etc\hosts`
+- Open container with VS Code
+- Wait for containers to start
+- Forward port 443 from ports tab in VS Code
+- Access site with the forwarded port: `https://board.portal2.local:`
 
 ### Requirements
 
@@ -121,11 +125,42 @@ just update-profiles
 ### Testing
 
 Regression tests are written in TypeScript and require the
-[Deno runtime](https://deno.com). Make sure to fill out the `AUTH_HASH` and
-`COOKIE` constants.
+[Deno runtime](https://deno.com).
+
+- Create env file: `cp tests/.env.example tests/.env`
+- Set env vars:
+  - `STEAM_ID` - logged in Steam ID
+  - `AUTH_HASH` - generated auth hash in settings
+  - `PHPSESSID` - session cookie from broser
 
 ```bash
+# all tests
 just test
+
+# or specific test
+just test auth_test.ts
+```
+
+Usage with LSP:
+```json
+{
+  "deno.enable": true,
+  "deno.enablePaths": ["./tests"],
+  "deno.testing.args": [
+    "--allow-env",
+    "--env-file=./tests/.env",
+    "--allow-read=./tests/data",
+    "--allow-net=board.portal2.local",
+    "--unsafely-ignore-certificate-errors=board.portal2.local"
+  ],
+  "deno.codeLens.testArgs": [
+    "--allow-env",
+    "--env-file=./tests/.env",
+    "--allow-read=./tests/data",
+    "--allow-net=board.portal2.local",
+    "--unsafely-ignore-certificate-errors=board.portal2.local"
+  ]
+}
 ```
 
 ## Credits
