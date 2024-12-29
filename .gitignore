@@ -1,4 +1,5 @@
 .idea/
+.vim/
 .vscode/
 
 db-dump/
@@ -7,7 +8,6 @@ secret/
 sessions/
 vendor/
 
-util/mdp/mdp
 debug.txt
 demo_list
 

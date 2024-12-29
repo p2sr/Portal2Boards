@@ -440,6 +440,47 @@ class Router {
             exit;
         }
 
+        if ($location[1] == "runMdp") {
+            if (!isset($_GET["id"])) {
+                echo "missing id param";
+                http_response_code(400);
+                exit;
+            }
+
+            if (!is_numeric($_GET["id"])) {
+                echo "invalid id param";
+                http_response_code(400);
+                exit;
+            }
+
+            if (!SteamSignIn::loggedInUserIsAdmin()) {
+                echo "only admins are allowed to access this endpoint";
+                http_response_code(401);
+                exit;
+            }
+
+            $demoManager = new DemoManager();
+            $demoPath = $demoManager->getDemoPath(intval($_GET["id"]));
+
+            if (!file_exists($demoPath)) {
+                echo "demo cannot be found ";
+                exit;
+            }
+
+            try {
+                [$stdout, $stderr] = MdpManager::ExecuteOnly($demoPath);
+
+                echo "<code style=\"white-space: pre\">";
+                echo htmlspecialchars($stderr === null ? $stdout : $stderr);
+                echo "</code>";
+            } catch (\Throwable $th) {
+                Debug::log("FAILED to Execute mdp");
+                Debug::log($th->__toString());
+            }
+
+            exit;
+        }
+
         if ($location[1] == "setScoreBanStatus") {
             if (isset($_POST["id"]) && isset($_POST["banStatus"])) {
 

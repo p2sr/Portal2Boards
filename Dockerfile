@@ -23,6 +23,11 @@ RUN php composer-setup.php
 RUN php -r "unlink('composer-setup.php');"
 RUN mv composer.phar /usr/local/bin/composer
 
+# install mdp
+# blocked by https://github.com/p2sr/mdp/issues/13
+#RUN curl -L https://github.com/p2sr/mdp/releases/download/1.2/mdp -o /usr/bin/mdp
+#RUN chmod +x /usr/bin/mdp
+
 # setup apache
 RUN a2enmod rewrite expires headers ssl
 RUN a2dissite 000-default.conf
@@ -33,6 +38,10 @@ COPY . .
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
 RUN mkdir -p cache demos sessions /etc/apache2/ssl
 RUN chown -R www-data:www-data .
+
+# TODO: remove checked-in binary
+RUN cp util/mdp/mdp /usr/bin/mdp
+RUN chmod +x /usr/bin/mdp
 
 # enable site
 RUN ln -s /etc/apache2/sites-available/${SERVER_NAME}.conf /etc/apache2/sites-enabled/${SERVER_NAME}.conf

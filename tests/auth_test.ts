@@ -169,6 +169,26 @@ Deno.test("Manual submission", async (t) => {
     await res.body?.cancel();
   });
 
+  await t.step("Run mdp", async () => {
+    const res = await fetch(`${API}/runMdp?id=${id}`, {
+      method: "GET",
+      headers: {
+        "Cookie": COOKIE,
+      },
+    });
+
+    assertEquals(res.status, 200);
+
+    assertEquals(
+      await res.text(),
+      `<code style="white-space: pre">demo: '/var/www/html/demos/PortalGun_2300_76561198049848090_${id}.dem'\n` +
+        `\t'NeKz' on sp_a2_triple_laser - 60.00 TPS - 79 ticks\n` +
+        `\tevents:\n` +
+        `\tno checksums found; vanilla demo?\n` +
+        `</code>`,
+    );
+  });
+
   await t.step("Set score ban status", async () => {
     const body = new FormData();
     body.append("id", "82802");

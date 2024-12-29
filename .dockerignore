@@ -3,7 +3,6 @@
 data/
 docker/
 migrations/
-util/
 
 .config.example.json
 .dockerignore
@@ -19,6 +18,7 @@ setup
 # from .gitignore
 
 .idea/
+.vim/
 .vscode/
 
 db-dump/

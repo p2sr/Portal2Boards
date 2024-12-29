@@ -1,14 +1,15 @@
 <?php
 
 class MdpManager {
-    const mdpLocation = ROOT_PATH . "/util/mdp";
+    const mdpBinary = "/usr/bin/mdp";
+    const mdpFiles = ROOT_PATH . "/util/mdp";
 
     // Executes CLI version of Mdp and dumps files into specified discord channels
     public static function Execute($demoPath, $demoDetails) {
         //Debug::log("Attempting to execute mdp for $demoPath");
         $demoName = substr($demoPath, strrpos( $demoPath, '/')+1, strlen($demoPath));
         //Debug::log("Demo Name:  $demoName");
-        $cmd = MdpManager::mdpLocation . '/mdp ' . $demoPath;
+        $cmd = MdpManager::mdpBinary . " " . $demoPath;
         //Debug::log("CMD: $cmd");
         $stdout = null;
         $stderr = null;
@@ -26,11 +27,25 @@ class MdpManager {
         }
     }
 
+    public static function ExecuteOnly($demoPath) {
+        $demoName = substr($demoPath, strrpos( $demoPath, '/')+1, strlen($demoPath));
+        $cmd = MdpManager::mdpBinary . " " . $demoPath;
+        $stdout = null;
+        $stderr = null;
+        $resultCode = self::RunCmd($cmd, $stdout, $stderr);
+
+        if ($resultCode == -1 || strlen($stderr) > 1) {
+            return [$stdout, $stderr];
+        } else {
+            return [$stdout, null];
+        }
+    }
+
     private static function RunCmd($cmd, &$stdout=null, &$stderr=null) {
         $proc = proc_open($cmd,[
             1 => ['pipe','w'],
             2 => ['pipe','w'],
-        ],$pipes, MdpManager::mdpLocation);
+        ],$pipes, MdpManager::mdpFiles);
         $stdout = stream_get_contents($pipes[1]);
         fclose($pipes[1]);
         $stderr = stream_get_contents($pipes[2]);
