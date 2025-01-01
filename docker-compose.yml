@@ -17,7 +17,7 @@ services:
       - ./docker/logs/error.log:/var/log/apache2/error.log
       - ./docker/logs/access.log:/var/log/apache2/other_vhosts_access.log
       - ./docker/logs/debug.txt:/var/www/html/debug.txt
-      - ./docker/php/board.ini:/etc/php/7.4/apache2/conf.d/php.ini
+      - ./docker/php/board.ini:/usr/local/etc/php/conf.d/php.ini
       - ./docker/volumes/cache:/var/www/html/cache:rw
       - ./docker/volumes/demos:/var/www/html/demos:rw
       - ./docker/volumes/sessions:/var/www/html/sessions:rw
