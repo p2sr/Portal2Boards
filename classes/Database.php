@@ -31,6 +31,7 @@ class Database {
     }
 
     public function reconnect() {
+        Debug::log("Reconnecting to database as connection has broken.")
         self::disconnect();
         self::authorize();
     }
