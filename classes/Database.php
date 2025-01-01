@@ -5,6 +5,7 @@ class Database {
     static $instance;
 
     public static function authorize() {
+        Debug::log("Connecting to DB");
         $config = Config::get();
 
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
