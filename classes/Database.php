@@ -17,7 +17,8 @@ class Database {
             $config->database_port,
         );
 
-        if ($db->connect_errno) {
+        if ($db->connect_error) {
+            Debug::log("DB Error: " + $db->connect_error);
             trigger_error($db->connect_error);
         }
 
