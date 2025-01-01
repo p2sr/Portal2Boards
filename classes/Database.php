@@ -26,6 +26,15 @@ class Database {
         self::$instance = $db;
     }
 
+    public static function disconnect() {
+        mysqli_close(self::$instance);
+    }
+
+    public function reconnect() {
+        self::disconnect();
+        self::authorize();
+    }
+
     public static function unsafe_raw(string $query, int $result_mode = MYSQLI_STORE_RESULT) {
         $db = self::getMysqli();
         $result = $db->query($query, $result_mode);
@@ -58,6 +67,8 @@ class Database {
         if ($typesLen !== $paramsCount) {
             throw new \Exception('Params count does not match with the provided types!');
         }
+
+        if (!mysqli_ping(self::getMysqli())) self::reconnect();
 
         $query = self::getMysqli()->prepare($query);
         $query->bind_param($types, ...$params);
