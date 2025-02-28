@@ -1307,17 +1307,17 @@
             if ($changeMenu.find(".changeForm").length == 0) {
                 var adminButtons = "";
                 if (isAdmin) {
-                    adminButtons = "<div><div class='button verifyScore' style='" + ((entry.pending == 0) ? "display:none;" : "") + "'>Manually Verify</div></div>";
+                    adminButtons = "<div><div class='button verifyScore' style='" + ((entry.pending == 0) ? "display:none;" : "") + "'>Manually Verify</div></div>" +
+                        "<div>" +
+                            "<div class='button deleteSubmission' style='" + ((entry.submission == 0) ? "display:none;" : "") + "'>" +
+                            "Delete Submission" +
+                            "</div>" +
+                        "</div>";
                 }
 
                 var $content = $(
                     "<form class='changeForm'>" +
                         "<input type='text' name='id' style='display: none' value='" + entry.id + "'>" +
-                        "<div>" +
-                            "<div class='button deleteSubmission' style='" + ((entry.submission == 0) ? "display:none;" : "") + "'>" +
-                            "Delete Submission" +
-                            "</div>" +
-                        "</div>" +
                         "<div class='uploadDemoContainer'" + ((entry.hasDemo == 1) ? " style='display:none'" : "") + ">" +
                             "<label class='button browseDemo'>" +
                                 "<input type='file' name='demoFile' accept='.dem'/>" +
