@@ -1037,8 +1037,8 @@
                 "<input type='text' name='profileNumber' style='display: none' value='"+user+"'>" +
                 "<input type='text' name='chamber' style='display: none' value='"+currentMap+"'>" +
                 "<div class='scoreInputContainer' style='display:inline-block; width: 100%;'>" +
-                    "<label for='score' style='float: left; color: inherit; margin-top: 3px;'>Time</label>" +
-                    "<input type='text' id='score' name='score' value='' style='width: 65px;'>" +
+                    "<label for='score' style='float: left; color: inherit; margin-top: 3px;'>Time <span style='font-size: 11px; color: #aaa; margin-left: 5px;'>(MM:SS.xx — e.g. 5:46.14)</span></label>" +
+                    "<input type='text' id='score' name='score' value='' style='width: 65px;' placeholder='5:46.14'>" +
                 "</div><br/>" +
                 "<div class='setYoutubeContainer' style='display:inline-block; width: 100%;'>" +
                     "<label for='youtubeID' style='float: left; color: inherit; margin-top: 3px;'>Youtube URL</label>" +
@@ -1097,14 +1097,45 @@
                 }
             }
 
-            var score = $scoreField.val();
-            score = getScoreFromString(score);
+            var rawScoreInput = $scoreField.val().trim();
+            var score = getScoreFromString(rawScoreInput);
             if (isNaN(score) || score == null) {
                 setStatusError("Invalid score.");
                 return;
             } else if (score >= bestScore) {
                 setStatusError("Score too high.");
                 return;
+            }
+
+            if (typeof formatScoreTime === "function") {
+                var formattedScore = formatScoreTime(score);
+                if (rawScoreInput.indexOf(":") === -1) {
+                    var totalSeconds = Math.floor(score / 100);
+                    var minutesComponent = Math.floor(totalSeconds / 60);
+                    var secondsComponent = totalSeconds % 60;
+                    var hundredths = score % 100;
+                    var milliseconds = hundredths * 10;
+                    var breakdown;
+
+                    if (minutesComponent > 0) {
+                        breakdown = minutesComponent + " minute" + (minutesComponent !== 1 ? "s" : "") + ", " +
+                            secondsComponent + " second" + (secondsComponent !== 1 ? "s" : "") +
+                            " and " + milliseconds + " millisecond" + (milliseconds !== 1 ? "s" : "");
+                    } else {
+                        breakdown = secondsComponent + " second" + (secondsComponent !== 1 ? "s" : "") +
+                            " and " + milliseconds + " millisecond" + (milliseconds !== 1 ? "s" : "");
+                    }
+
+                    var confirmationMessage = "You entered \"" + rawScoreInput + "\". This will be recorded as " + formattedScore +
+                        " (" + breakdown + ")." +
+                        "\n\nIf you intended a time with minutes, include a colon, e.g. 5:46.14." +
+                        "\n\nContinue with this value?";
+
+                    if (!window.confirm(confirmationMessage)) {
+                        setStatusError("Submission cancelled. Please adjust the time and try again.");
+                        return;
+                    }
+                }
             }
 
             var comment = $commentField.val();
