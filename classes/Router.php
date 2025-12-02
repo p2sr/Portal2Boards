@@ -409,7 +409,8 @@ class Router {
                 }
 
                 $change = Leaderboard::getChange($_POST["id"]);
-                if (SteamSignIn::hasProfilePrivileges($change["profile_number"])) {
+                //only admins can delete demos!
+                if (SteamSignIn::loggedInUserIsAdmin()) {
                     $demoManager = new DemoManager();
                     $demoManager->deleteDemo(intval($_POST["id"]));
                     Leaderboard::setDemo(intval($_POST["id"]), 0);
