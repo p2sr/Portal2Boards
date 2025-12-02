@@ -1323,11 +1323,11 @@
 
         event.stopPropagation();
 
-        if ($changeMenu.hasClass("open")) {
-            $changeMenu.removeClass("open");
-            $changeMenu.slideUp("slow");
-            $changeMenuToggleIcon.attr("class", "fa fa-caret-right");
-            return;
+            if ($changeMenu.hasClass("open")) {
+                $changeMenu.removeClass("open");
+                $changeMenu.slideUp("slow");
+                $changeMenuToggleIcon.attr("class", "fa fa-caret-right");
+                return;
         }
 
         if ($changeMenuToggleIcon.length > 0) { //change row accessible
@@ -1335,22 +1335,32 @@
             closeSubmissionForm();
 
             var entryId = entry.id;
-            if ($changeMenu.find(".changeForm").length == 0) {
-                var adminButtons = "";
-                if (isAdmin) {
-                    adminButtons = "<div><div class='button verifyScore' style='" + ((entry.pending == 0) ? "display:none;" : "") + "'>Manually Verify</div></div>" +
-                        "<div>" +
-                            "<div class='button deleteSubmission' style='" + ((entry.submission == 0) ? "display:none;" : "") + "'>" +
-                            "Delete Submission" +
-                            "</div>" +
-                        "</div>";
-                }
+                if ($changeMenu.find(".changeForm").length == 0) {
+                    var adminButtons = "";
+                    if (isAdmin) {
+                        adminButtons = "<div><div class='button verifyScore' style='" + ((entry.pending == 0) ? "display:none;" : "") + "'>Manually Verify</div></div>" +
+                            "<div>" +
+                                "<div class='button deleteSubmission' style='" + ((entry.submission == 0) ? "display:none;" : "") + "'>" +
+                                "Delete Submission" +
+                                "</div>" +
+                            "</div>";
+                    }
 
-                var $content = $(
-                    "<form class='changeForm'>" +
-                        "<input type='text' name='id' style='display: none' value='" + entry.id + "'>" +
-                        "<div class='uploadDemoContainer'" + ((entry.hasDemo == 1) ? " style='display:none'" : "") + ">" +
-                            "<label class='button browseDemo'>" +
+                    var deleteDemoBlock = "";
+                    if (isAdmin) {
+                        deleteDemoBlock =
+                            "<div>" +
+                                "<div class='button deleteDemo' style='" + ((entry.hasDemo == 0) ? "display:none;" : "") + "'>" +
+                                    "Delete Demo" +
+                                "</div>" +
+                            "</div>";
+                    }
+
+                    var $content = $(
+                        "<form class='changeForm'>" +
+                            "<input type='text' name='id' style='display: none' value='" + entry.id + "'>" +
+                            "<div class='uploadDemoContainer'" + ((entry.hasDemo == 1) ? " style='display:none'" : "") + ">" +
+                                "<label class='button browseDemo'>" +
                                 "<input type='file' name='demoFile' accept='.dem'/>" +
                                 "<span>Browse for demo</span>" +
                             "</label>" +
@@ -1359,11 +1369,7 @@
                                 "Upload" +
                             "</div>" +
                         "</div>" +
-                        "<div>" +
-                            "<div class='button deleteDemo' style='" + ((entry.hasDemo == 0) ? "display:none;" : "") + "'>" +
-                            "Delete Demo" +
-                            "</div>" +
-                        "</div>" +
+                        deleteDemoBlock +
                         "<div class='setYoutubeContainer'" + ((entry.youtubeID != null) ? " style='display:none'" : "") + "'>" +
                             "<input type='text' name='youtubeID' value='" + ((entry.youtubeID != null) ? "www.youtube.com/watch?v="+entry.youtubeID : "") + "'>" +
                             "<div class='button setYoutube' style='margin-left: 3px'>" +
