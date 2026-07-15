@@ -151,6 +151,13 @@ Deno.test("Manual submission", async (t) => {
     await res.body?.cancel();
   });
 
+  await t.step("Deleted demo does not resolve", async () => {
+    const res = await fetch(`${API}/getDemo?id=${id}`);
+
+    assertEquals(res.status, 200);
+    assertEquals(await res.text(), "Demo URL cannot be resolved");
+  });
+
   await t.step("Upload demo", async () => {
     const body = new FormData();
     body.append("id", id);
