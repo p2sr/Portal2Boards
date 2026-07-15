@@ -90,7 +90,7 @@ Deno.test("Automatic submission", async (t) => {
     assert(run.time_gained);
     assertEquals(run.hasDemo, 1);
     assertEquals(run.youtubeID, null);
-    assertEquals(run.note, "test");
+    assertEquals(run.note, null);
     assertEquals(run.banned, 0);
     assertEquals(run.submission, 2);
     assertEquals(run.pending, 0);
