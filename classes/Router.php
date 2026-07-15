@@ -168,14 +168,12 @@ class Router {
                     exit;
                 }
 
-                $comment = isset($_POST["comment"]) ? strval($_POST["comment"]) : null;
-
                 $id = Leaderboard::submitChange(
                     $userId,
                     strval($_POST["mapId"]),
                     intval($_POST["score"]),
                     null,
-                    $comment,
+                    null,
                     true
                 );
 
