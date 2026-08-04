@@ -1178,15 +1178,64 @@
                 },
                 cache: false,
                 contentType: false,
+                error: function(xhr) {
+                    var message = xhr.responseJSON && xhr.responseJSON.message
+                        ? xhr.responseJSON.message
+                        : "Failed to submit time.";
+                    setStatusError(message);
+                },
                 processData: false
             }, 'json');
         });
 
         $submissionForm.find("input[name='demoFile']").change(function () {
-            var fileNameComponents = $(this).val().split("\\");
+            var $demoFileChooser = $(this);
+            var fileNameComponents = $demoFileChooser.val().split("\\");
             var fileName = fileNameComponents[fileNameComponents.length - 1];
-            $(this).parent().parent().find(".uploadDemo").show();
-            $(this).parent().parent().find(".fileName").text(fileName);
+            var $form = $demoFileChooser.closest(".submissionForm");
+            var file = $demoFileChooser.get(0).files[0];
+
+            $demoFileChooser.parent().parent().find(".uploadDemo").show();
+            $demoFileChooser.parent().parent().find(".fileName").text(fileName);
+
+            if (!file || !validateFileSize(file)) {
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("profileNumber", $form.find("input[name='profileNumber']").val());
+            formData.append("chamber", $form.find("input[name='chamber']").val());
+            formData.append("demoFile", file);
+
+            setStatus("Reading demo...", "fa-circle-o-notch fa-spin", false);
+
+            $.ajax({
+                url: "/previewDemoSubmission",
+                type: "POST",
+                data: formData,
+                success: function(data) {
+                    if (data.mapMatches === false) {
+                        setStatusError("Demo map does not match this chamber. Demo is " + data.demoMap + ", selected chamber is " + data.submittedMap + ".");
+                        return;
+                    }
+
+                    if (data.score !== null && data.score !== undefined) {
+                        $form.find(".scoreInputContainer input").val(data.formattedScore || formatScoreTime(data.score));
+                        setStatus("Demo read. Time filled as " + (data.formattedScore || formatScoreTime(data.score)) + ".", "fa-info-circle", false);
+                    } else {
+                        setStatus("Demo selected, but no challenge mode time was found.", "fa-info-circle", false);
+                    }
+                },
+                cache: false,
+                contentType: false,
+                error: function(xhr) {
+                    var message = xhr.responseJSON && xhr.responseJSON.message
+                        ? xhr.responseJSON.message
+                        : "Failed to read demo.";
+                    setStatusError(message);
+                },
+                processData: false
+            }, "json");
         });
     }
 

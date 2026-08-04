@@ -1331,7 +1331,11 @@ html[class="dark"] #profile .userinformation .general-wrapper .banToggleButton:h
 }
 #profile .sp .scoreMenu .status .text, #profile .coop .scoreMenu .status .text {
     display: inline-block;
-    width: 341px;
+    box-sizing: border-box;
+    max-width: calc(100% - 22px);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    vertical-align: top;
     /*float: right;*/
     padding-left: 10px;
 }
