@@ -3,6 +3,7 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y cron curl unzip libonig-dev libxml2-dev libcurl4-openssl-dev
+RUN curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
 RUN docker-php-ext-install mysqli mbstring xml curl
 
 WORKDIR /var/www/html
@@ -14,6 +15,7 @@ RUN a2dissite 000-default.conf
 # setup source files
 COPY . .
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install
+RUN deno cache --config util/demo_validator/deno.json util/demo_validator/parse_demo.ts
 RUN mkdir -p cache demos sessions
 RUN chown -R www-data:www-data .
 RUN chmod +x /var/www/html/util/mdp/mdp

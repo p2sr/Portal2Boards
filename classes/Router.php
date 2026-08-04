@@ -455,6 +455,39 @@ class Router {
             exit;
         }
 
+        if ($location[1] == "previewDemoSubmission") {
+            header("Content-Type: application/json");
+
+            if (!isset($_POST["profileNumber"]) || !isset($_POST["chamber"]) || !isset($_FILES["demoFile"])) {
+                $this->jsonError("Missing post data!", 400);
+            }
+
+            if (!is_numeric($_POST["profileNumber"]) || !is_numeric($_POST["chamber"])) {
+                $this->jsonError("Invalid post data!", 400);
+            }
+
+            if (!SteamSignIn::hasProfilePrivileges($_POST["profileNumber"])) {
+                $this->jsonError("You do not have permission to submit for this profile.", 403);
+            }
+
+            $file = $_FILES["demoFile"];
+            if ($file["name"] == "") {
+                $this->jsonError("No demo selected.", 400);
+            }
+
+            if ($file["size"] >= self::maxUploadBytes) {
+                $this->jsonError("File is too big. Max upload size: " . (self::maxUploadBytes / (1024 * 1024)) . "MB", 400);
+            }
+
+            $preview = DemoValidator::previewManualSubmission($file["tmp_name"], strval($_POST["chamber"]));
+            if (!$preview["valid"]) {
+                $this->jsonError($preview["message"], 400);
+            }
+
+            echo json_encode($preview);
+            exit;
+        }
+
         if ($location[1] == "submitChange") {
             if (isset($_POST["profileNumber"]) && isset($_POST["chamber"]) && isset($_POST["score"]) && isset($_POST["youtubeID"]) && isset($_POST["comment"])) {
 
@@ -475,6 +508,15 @@ class Router {
                 }
 
                 if (SteamSignIn::hasProfilePrivileges($_POST["profileNumber"])) {
+                    if (array_key_exists("demoFile", $_FILES) && $_FILES["demoFile"]["name"] != "") {
+                        $validation = DemoValidator::validateManualSubmission(
+                            $_FILES["demoFile"]["tmp_name"],
+                            strval($_POST["chamber"]),
+                            intval($_POST["score"])
+                        );
+                        $this->rejectInvalidDemoSubmission($validation);
+                    }
+
                     $id = Leaderboard::submitChange(
                         strval($_POST["profileNumber"]),
                         strval($_POST["chamber"]),
@@ -524,9 +566,7 @@ class Router {
             header("Content-Type: application/json");
 
             if (!isset($_POST["id"])) {
-                http_response_code(400);
-                echo json_encode(["status" => "error", "message" => "Missing post data!"]);
-                exit;
+                $this->jsonError("Missing post data!", 400);
             }
 
             if (!is_numeric($_POST["id"])) {
@@ -927,6 +967,22 @@ class Router {
 
         include(ROOT_PATH . '/views/parts/main.phtml');
 
+    }
+
+    private function jsonError(string $message, int $statusCode) {
+        header("Content-Type: application/json");
+        http_response_code($statusCode);
+        echo json_encode(array(
+            "status" => "error",
+            "message" => $message,
+        ));
+        exit;
+    }
+
+    private function rejectInvalidDemoSubmission(array $validation) {
+        if (!$validation["valid"]) {
+            $this->jsonError($validation["message"], 400);
+        }
     }
 
     private function uploadDemo($file, int $id) {

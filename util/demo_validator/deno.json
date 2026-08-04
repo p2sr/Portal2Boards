@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@nekz/sdp": "jsr:@nekz/sdp@^0.10.1"
+  },
+  "lock": false
+}
