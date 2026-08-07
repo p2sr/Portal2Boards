@@ -16,7 +16,7 @@ function embedOnBody(youtubeID, description) {
                 "<i class='fa fa-lg fa-times' aria-hidden='true'></i> " +
                 "</div>" +
             "</div>" +
-            "<iframe id='ytplayer' allowfullscreen='allowfullscreen' type='text/html' width='640' height='360' align='middle' src='https://www.youtube.com/embed/"+youtubeID+"&autoplay=1' frameborder='0'>" +
+            "<iframe id='ytplayer' allowfullscreen='allowfullscreen' type='text/html' width='640' height='360' align='middle' referrerpolicy='strict-origin-when-cross-origin' src='https://www.youtube.com/embed/"+youtubeID+"&autoplay=1' frameborder='0'>" +
             "</iframe>" +
         "</div>");
     $("body").append($yt);
@@ -28,6 +28,6 @@ function embedOnBody(youtubeID, description) {
 
 function embedInDiv($element, youtubeID) {
     $("#youtube").remove();
-    var $yt = $("<iframe id='ytplayer' allowfullscreen='allowfullscreen' type='text/html' width='100%' height='100%' align='middle' src='https://www.youtube.com/embed/"+youtubeID+"&autoplay=1' frameborder='0'></iframe>");
+    var $yt = $("<iframe id='ytplayer' allowfullscreen='allowfullscreen' type='text/html' width='100%' height='100%' align='middle' referrerpolicy='strict-origin-when-cross-origin' src='https://www.youtube.com/embed/"+youtubeID+"&autoplay=1' frameborder='0'></iframe>");
     $element.append($yt);
 }
