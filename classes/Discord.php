@@ -2,8 +2,8 @@
 
 class Discord {
     private static $username = 'board.portal2.sr';
-    private static $avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_avatar.jpg';
-    private static $embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_icon.png';
+    private static $avatar = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_logo.png';
+    private static $embed_icon = 'https://raw.githubusercontent.com/p2sr/Portal2Boards/master/public/images/portal2boards_logo.png';
 
     public static function sendMdpWebhook($data, $demoName, $text, $err = null) {
         try {
