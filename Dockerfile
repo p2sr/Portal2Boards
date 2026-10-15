@@ -1,6 +1,12 @@
 FROM php:7.4-apache
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
+# php:7.4 is based on Debian 11 (bullseye), which is EOL and moved to archive.debian.org
+RUN printf '%s\n' \
+        'deb http://archive.debian.org/debian bullseye main' \
+        'deb http://archive.debian.org/debian-security bullseye-security main' \
+        > /etc/apt/sources.list \
+    && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/99archive
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y cron curl unzip libonig-dev libxml2-dev libcurl4-openssl-dev
 RUN curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh
