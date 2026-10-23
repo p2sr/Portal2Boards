@@ -8,7 +8,7 @@ class ChangelogView
     static function getEntry($board, $key, $page, $entry) { ?>
         <?php $val = $board[$key] ?>
         <div class="entry" <?php
-            if (strtotime($val["time_gained"]) != strtotime(self::$lastDate)) {
+            if (strtotime($val["time_gained"] ?? "") != strtotime(self::$lastDate ?? "")) {
                 self::$oddDateEntry = !self::$oddDateEntry;
             }
             if (!self::$oddDateEntry) { ?>

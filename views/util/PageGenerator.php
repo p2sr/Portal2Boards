@@ -3,7 +3,8 @@
 class PageGenerator {
 
     static function generatePages($board, $entryCallback, $maxEntriesShown = PHP_INT_MAX, $entriesPerPage = 40) {
-        $keys = array_keys($board);
+        // A board that doesn't exist (e.g. an unknown chapter) shows no entries.
+        $keys = array_keys($board ?? array());
         $numEntries = min($maxEntriesShown, count($keys));
         $pages = ceil($numEntries / $entriesPerPage);
         $page = 1;

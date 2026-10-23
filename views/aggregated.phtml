@@ -136,6 +136,6 @@
             .css("width", 20 + (2 * (Math.floor(Math.log(Math.max(2, lastPage)) / Math.LN10) + 1) * 7));
     });
 
-    $("#time .entries.pages").css("height", Math.min(25, <?=count($view->times)?>) * 43);
-    $("#points .entries.pages").css("height", Math.min(25, <?=count($view->points)?>) * 43);
+    $("#time .entries.pages").css("height", Math.min(25, <?=count($view->times ?? array())?>) * 43);
+    $("#points .entries.pages").css("height", Math.min(25, <?=count($view->points ?? array())?>) * 43);
 </script>

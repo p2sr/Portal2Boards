@@ -66,6 +66,13 @@ class Util {
         return htmlspecialchars(htmlspecialchars($str, ENT_QUOTES));
     }
 
+    // Rounds a sum of fractional points half up, as PHP 7 did. Such sums carry floating-point error
+    // (221.5 comes out as 221.49999999999997): before 8.4 round() still rounded them up, 8.4 rounds
+    // the exact value down. Rounding to 10 places first drops the error.
+    public static function roundSum($value, int $precision = 0) {
+        return round(round($value, 10), $precision);
+    }
+
     public static function formatPoints($points) {
         if ($points >= 1000) {
             return number_format($points, 0, "." , "");

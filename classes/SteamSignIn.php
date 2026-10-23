@@ -67,11 +67,11 @@ class SteamSignIn
 		);
 
 		// Get all the params that were sent back and resend them for validation
-		$signed = explode(',', $_GET['openid_signed']);
+		$signed = explode(',', $_GET['openid_signed'] ?? '');
 		foreach($signed as $item)
 		{
 			$val = $_GET['openid_' . str_replace('.', '_', $item)];
-			$params['openid.' . $item] = get_magic_quotes_gpc() ? stripslashes($val) : $val;
+			$params['openid.' . $item] = $val;
 		}
 
 		// Finally, add the all important mode.
@@ -93,7 +93,7 @@ class SteamSignIn
 		$result = file_get_contents(self::STEAM_LOGIN, false, $context);
 
 		// Validate whether it's true and if we have a good ID
-		preg_match("#^https://steamcommunity.com/openid/id/([0-9]{17,25})#", $_GET['openid_claimed_id'], $matches);
+		preg_match("#^https://steamcommunity.com/openid/id/([0-9]{17,25})#", $_GET['openid_claimed_id'] ?? '', $matches);
 		$steamID64 = is_numeric($matches[1]) ? $matches[1] : 0;
 
 		// Return our final value
