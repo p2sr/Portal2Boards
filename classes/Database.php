@@ -32,7 +32,7 @@ class Database {
         mysqli_close(self::$instance);
     }
 
-    public function reconnect() {
+    public static function reconnect() {
         Debug::log("Reconnecting to database as connection has broken.");
         self::disconnect();
         self::authorize();
@@ -71,7 +71,13 @@ class Database {
             throw new \Exception('Params count does not match with the provided types!');
         }
 
-        if (!mysqli_ping(self::getMysqli())) self::reconnect();
+        // A dropped connection makes this throw (mysqli is in strict mode), so reconnect. Replaces
+        // mysqli_ping(), deprecated in PHP 8.4; reconnect() also had to become static for PHP 8.
+        try {
+            self::getMysqli()->query('DO 1');
+        } catch (\mysqli_sql_exception $e) {
+            self::reconnect();
+        }
 
         $query = self::getMysqli()->prepare($query);
         $query->bind_param($types, ...$params);
