@@ -1,11 +1,11 @@
 {
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "tedivm/stash": "^0.17"
     },
     "config": {
         "platform": {
-            "php": "8.2"
+            "php": "8.4"
         }
     }
 }
