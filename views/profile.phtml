@@ -154,19 +154,19 @@
             <div class="block-container points">
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo round($user->points->SP["score"]);?></div>
+                        <div class="number"><?php echo Util::roundSum($user->points->SP["score"]);?></div>
                         <div class="title"><span>Single Player <br/>Point<?php if ($user->points->SP["score"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo round($user->points->COOP["score"]);  ?></div>
+                        <div class="number"><?php echo Util::roundSum($user->points->COOP["score"]);  ?></div>
                         <div class="title"><span>Cooperative <br/>Point<?php if ($user->points->COOP["score"] != 1) {?>s<?php } ?></span></div>
                     </div>
                 </div>
                 <div class="block">
                     <div class="block-inner">
-                        <div class="number"><?php echo round($user->points->global["score"]); ?></div>
+                        <div class="number"><?php echo Util::roundSum($user->points->global["score"]); ?></div>
                         <div class="title"><span>Point<?php if ($user->points->global["score"] != 1) {?>s<?php } ?> <br/>overall</span></div>
                     </div>
                 </div>

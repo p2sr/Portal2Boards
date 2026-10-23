@@ -1138,7 +1138,7 @@ class Leaderboard
 
     public static function roundBoardScores($board) {
         foreach ($board as $profileNumber => $playerData) {
-            $board[$profileNumber]["scoreData"]["score"] = round($playerData["scoreData"]["score"]);
+            $board[$profileNumber]["scoreData"]["score"] = Util::roundSum($playerData["scoreData"]["score"]);
         }
         return $board;
     }
