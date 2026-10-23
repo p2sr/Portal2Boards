@@ -252,9 +252,9 @@ class User {
         }
 
         while ($row = $query->fetch_object()) {
-            $row->displayName = htmlspecialchars($row->displayName);
-            $row->steamname = htmlspecialchars($row->steamname);
-            $row->boardname = htmlspecialchars($row->boardname);
+            $row->displayName = htmlspecialchars($row->displayName ?? "", ENT_COMPAT | ENT_HTML401);
+            $row->steamname = htmlspecialchars($row->steamname ?? "", ENT_COMPAT | ENT_HTML401);
+            $row->boardname = htmlspecialchars($row->boardname ?? "", ENT_COMPAT | ENT_HTML401);
             $this->userData = $row;
             return;
         }

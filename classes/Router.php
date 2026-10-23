@@ -861,7 +861,7 @@ class Router {
             $view->donators = array();
 
             while ($row = $data->fetch_assoc()) {
-                $row["playername"] = htmlspecialchars($row["playername"]);
+                $row["playername"] = htmlspecialchars($row["playername"] ?? "", ENT_COMPAT | ENT_HTML401);
                 $view->donators[] = $row;
             }
 
@@ -885,7 +885,7 @@ class Router {
             $view->wallofshame = array();
 
             while ($row = $data->fetch_assoc()) {
-                $row["playername"] = htmlspecialchars($row["playername"]);
+                $row["playername"] = htmlspecialchars($row["playername"] ?? "", ENT_COMPAT | ENT_HTML401);
                 $view->wallofshame[] = $row;
             }
 
@@ -1030,7 +1030,8 @@ class Router {
             , "pending" => "");
 
         foreach ($params as $key => $val) {
-            if (array_key_exists($key, $result)) {
+            // Filters are plain values; an array (e.g. ?startDate[]=x) is ignored.
+            if (array_key_exists($key, $result) && is_scalar($val)) {
                 $result[$key] = $val;
             }
         }
@@ -1044,7 +1045,7 @@ class Router {
     }
 
     private function destroySession() {
-        setcookie(session_name(), null, -1, '/');
+        setcookie(session_name(), '', -1, '/');
         session_destroy();
         unset($_SESSION);
     }

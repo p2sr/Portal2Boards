@@ -85,7 +85,7 @@
                         <div class="profile-desc"><?=$user->userData->title?></div>
                     <?php endif; ?>
                     <div class="usericons">
-                        <?php if (strlen($user->userData->youtube) > 0): ?>
+                        <?php if (strlen($user->userData->youtube ?? "") > 0): ?>
                             <a href="https://www.youtube.com<?=$user->userData->youtube;?>" style="text-decoration : none;" target="_blank">
                                 <span class="youtubeLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>
@@ -94,7 +94,7 @@
                             </a>
                         <?php endif; ?>
 
-                        <?php if (strlen($user->userData->twitch) > 0): ?>
+                        <?php if (strlen($user->userData->twitch ?? "") > 0): ?>
                             <a href="https://www.twitch.tv/<?=$user->userData->twitch;?>" style="text-decoration : none;" target="_blank">
                                 <span class="twitchLink fa-stack">
                                   <i class="fa fa-square fa-stack-2x"></i>

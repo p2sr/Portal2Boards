@@ -21,7 +21,7 @@ class DemoManager {
             ]
         );
 
-        $map = str_replace(" ", "" , $GLOBALS["mapInfo"]["maps"][$row["map_id"]]["mapName"]);
+        $map = str_replace(" ", "" , $GLOBALS["mapInfo"]["maps"][$row["map_id"]]["mapName"] ?? "");
         return $map."_".$row["score"]."_".$row["profile_number"]."_".$id.".dem";
     }
 

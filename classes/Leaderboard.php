@@ -257,7 +257,7 @@ class Leaderboard
                 $xml = microtime(true);
 
                 try {
-                    $mapLeaderboard = simplexml_load_string(utf8_encode($xmlContent));
+                    $mapLeaderboard = simplexml_load_string(mb_convert_encoding($xmlContent, 'UTF-8', 'ISO-8859-1'));
                 } 
                 catch (Exception $e) {
                     throw new Exception("SimpleXML error: " . $e);
@@ -592,7 +592,7 @@ class Leaderboard
 
         foreach ($unsafe_parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
-                $param[$key] = preg_replace("/[^a-zA-Z0-9]+\s/", "", $unsafe_parameters[$key]);
+                $param[$key] = preg_replace("/[^a-zA-Z0-9]+\s/", "", $unsafe_parameters[$key] ?? "");
             }
         }
 
@@ -683,7 +683,9 @@ class Leaderboard
             $profileNumber = $row["profile_number"];
             $chapterId = $row["chapterid"];
             $mapId = $row["mapid"];
-            $board[$chapterId][$mapId][$profileNumber]["scoreData"]["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
+            // Names and notes are HTML-escaped when boards are loaded, with PHP 7's htmlspecialchars() flags
+            // (ENT_COMPAT): PHP 8.1 also escapes ' by default, which would change the JSON API's output.
+            $board[$chapterId][$mapId][$profileNumber]["scoreData"]["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"], ENT_COMPAT | ENT_HTML401) : NULL;
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["submission"] = $row["submission"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["changelogId"] = $row["changelog_id"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["playerRank"] = $row["player_rank"];
@@ -694,7 +696,7 @@ class Leaderboard
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["youtubeID"] = $row["youtube_id"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["pending"] = $row["pending"];
             $board[$chapterId][$mapId][$profileNumber]["scoreData"]["autorender_id"] = $row["autorender_id"];
-            $board[$chapterId][$mapId][$profileNumber]["userData"]["boardname"] = htmlspecialchars($row["boardname"]);
+            $board[$chapterId][$mapId][$profileNumber]["userData"]["boardname"] = htmlspecialchars($row["boardname"] ?? "", ENT_COMPAT | ENT_HTML401);
             $board[$chapterId][$mapId][$profileNumber]["userData"]["avatar"] = $row["avatar"];
         }
 
@@ -793,7 +795,7 @@ class Leaderboard
         $idx = 0;
 
         while ($row = $query->fetch_assoc()) {
-            $board[$idx]["scoreData"]["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
+            $board[$idx]["scoreData"]["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"], ENT_COMPAT | ENT_HTML401) : NULL;
             $board[$idx]["scoreData"]["submission"] = $row["submission"];
             $board[$idx]["scoreData"]["changelogId"] = $row["changelog_id"];
             $board[$idx]["scoreData"]["playerRank"] = $row["player_rank"];
@@ -807,7 +809,7 @@ class Leaderboard
             $board[$idx]["scoreData"]["autorenderId"] = $row["autorender_id"];
             $board[$idx]["scoreData"]["mapId"] = $row["mapid"];
             $board[$idx]["scoreData"]["chapterId"] = $row["chapterid"];
-            $board[$idx]["userData"]["boardname"] = htmlspecialchars($row["boardname"]);
+            $board[$idx]["userData"]["boardname"] = htmlspecialchars($row["boardname"] ?? "", ENT_COMPAT | ENT_HTML401);
             $board[$idx]["userData"]["avatar"] = $row["avatar"];
             $board[$idx]["userData"]["profileNumber"] = $row["profile_number"];
             ++$idx;
@@ -854,7 +856,7 @@ class Leaderboard
 
         foreach ($unsafe_parameters as $key => $val) {
             if (array_key_exists($key, $param)) {
-                $param[$key] = preg_replace("/[^a-zA-Z0-9]+\s/", "", $unsafe_parameters[$key]);
+                $param[$key] = preg_replace("/[^a-zA-Z0-9]+\s/", "", $unsafe_parameters[$key] ?? "");
             }
         }
 
@@ -990,8 +992,8 @@ class Leaderboard
 
         $changelog = array();
         while ($row = $changelog_data->fetch_assoc()) {
-            $row["player_name"] = htmlspecialchars($row["player_name"]);
-            $row["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"]) : NULL;
+            $row["player_name"] = htmlspecialchars($row["player_name"] ?? "", ENT_COMPAT | ENT_HTML401);
+            $row["note"] = $row["note"] != NULL ? htmlspecialchars($row["note"], ENT_COMPAT | ENT_HTML401) : NULL;
 
             $row["improvement"] = null;
             $row["rank_improvement"] = null;
@@ -1282,8 +1284,9 @@ class Leaderboard
         $nicknames = [];
 
         while ($row = $data->fetch_assoc()) {
-            $nickname = str_replace(" ", "", $row["nickname"]);
-            if (strlen($row["nickname"])) {
+            // No nickname is NULL; PHP 8.1 deprecates passing NULL to string functions.
+            $nickname = str_replace(" ", "", $row["nickname"] ?? "");
+            if (strlen($row["nickname"] ?? "")) {
                 $nicknames[$row["profile_number"]] = $nickname;
                 $profileNumbers[strtolower($nickname)] = $row["profile_number"];
             }
@@ -1556,7 +1559,7 @@ class Leaderboard
             $diff = abs($score - $oldChamberBoard[$keys[0]]["scoreData"]["score"]);
         }
 
-        $comment = Database::getMysqli()->real_escape_string($comment);
+        $comment = Database::getMysqli()->real_escape_string($comment ?? "");
         $preRank = isset($oldChamberBoard[$profileNumber])
             ? $oldChamberBoard[$profileNumber]["scoreData"]["playerRank"]
             : null;
